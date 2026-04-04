@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects — Shaoyi Wang</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="../index.html">Shaoyi Wang</a>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li class="has-dropdown">
+            <a href="projects.html">Projects</a>
+            <ul class="dropdown">
+              <li><a href="app-development.html">App Development</a></li>
+              <li><a href="coding.html">Coding</a></li>
+              <li><a href="game.html">Game</a></li>
+              <li><a href="publication.html">Publication</a></li>
+            </ul>
+          </li>
+          <li><a href="app-development.html">App Development</a></li>
+          <li><a href="coding.html">Coding</a></li>
+          <li><a href="game.html">Game</a></li>
+          <li><a href="publication.html">Publication</a></li>
+        </ul>
+      </nav>
+      <button class="nav-toggle" aria-label="Toggle menu">&#9776;</button>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="container">
+      <h1>All Projects</h1>
+      <p>Everything I've built — apps, tools, games, and more.</p>
+    </div>
+  </section>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <div class="card-grid" id="category-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 Shaoyi Wang</p>
+  </footer>
+
+  <script src="../scripts/projects.js"></script>
+  <script src="../scripts/main.js"></script>
+  <script>
+    // Show all projects on this page
+    renderCards(PROJECTS, "category-grid");
+  </script>
+</body>
+</html>
