@@ -1,0 +1,18 @@
+{
+    "css|/wp-content/plugins/jetpack/modules/related-posts/related-posts.css": "related-posts.css",
+    "css|/wp-content/plugins/gutenberg/build/styles/block-library/navigation/style.min.css": "style.min.css",
+    "css|/wp-content/plugins/gravatar-enhanced/build/patterns-view.css": "patterns-view.css",
+    "css|/wp-content/themes/creatio-2/style.css": "style.css",
+    "css|/wp-content/mu-plugins/wpcomsh/jetpack_vendor/automattic/jetpack-newsletter/src/../build/reader-link.css": "reader-link.css",
+    "css|/wp-content/plugins/add-to-any/addtoany.min.css": "addtoany.min.css",
+    "js|/wp-includes/js/jquery/jquery.min.js": "jquery.min.js",
+    "js|/wp-includes/js/jquery/jquery-migrate.min.js": "jquery-migrate.min.js",
+    "js|/wp-content/plugins/add-to-any/addtoany.min.js": "addtoany.min.js",
+    "js|/wp-content/plugins/gutenberg/build/modules/interactivity/index.min.js": "index.min.js",
+    "js|/wp-content/plugins/gutenberg/build/modules/block-library/navigation/view.min.js": "view.min.js",
+    "js|/wp-content/plugins/jetpack/_inc/build/carousel/jetpack-carousel.min.js": "jetpack-carousel.min.js",
+    "assets|/wp-content/themes/creatio-2/assets/fonts/inter_normal_700.ttf": "inter_normal_700.ttf",
+    "assets|/wp-content/themes/creatio-2/assets/fonts/inter_normal_500.ttf": "inter_normal_500.ttf",
+    "assets|/wp-content/themes/creatio-2/assets/fonts/inter_normal_600.ttf": "inter_normal_600.ttf",
+    "assets|/wp-content/themes/creatio-2/assets/fonts/inter_normal_400.ttf": "inter_normal_400.ttf"
+}

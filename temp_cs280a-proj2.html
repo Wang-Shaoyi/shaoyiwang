@@ -1,0 +1,980 @@
+﻿<div class="entry-content wp-block-post-content has-global-padding is-layout-constrained wp-container-core-post-content-is-layout-f32baf6b wp-block-post-content-is-layout-constrained">
+<h1 class="wp-block-heading has-text-align-left"><strong>Part 1: Fun with Filters</strong></h1>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading">Part 1.1: Convolutions from Scratch</h2>
+
+
+
+<h4 class="wp-block-heading has-text-align-center">Convolutions with loops</h4>
+
+
+
+<p class="wp-block-paragraph">I selected a photo of mine and performed convolution from scratch with 4 for loops, 2 for loops, and <code><a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.convolve2d.html" data-type="link" data-id="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.convolve2d.html"><mark style="background-color:rgba(0, 0, 0, 0);color:#cf2e2e" class="has-inline-color">scipy.signal.convolve2d</mark></a></code>. The convolutions are performed with a 9 x 9 box filter and the customized padding uses <code>np.pad()</code> function. The box filter is:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>K_{9 \times 9}(i,j) = \frac{1}{81}, \quad i,j \in {1,\dots,9}<br>$$</p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj2/"}' class="wp-block-gallery has-nested-images columns-4 is-cropped wp-block-gallery-2 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" fetchpriority="high" decoding="async" width="417" height="409" data-attachment-id="645" data-permalink="/?attachment_id=645" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-0.png?fit=417%2C409&amp;ssl=1" data-orig-size="417,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="1-0" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-0.png?fit=417%2C409&amp;ssl=1" data-id="645" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-0.png?resize=417%2C409&amp;ssl=1" alt="" class="wp-image-645" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-0.png?w=417&amp;ssl=1 417w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-0.png?resize=300%2C294&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-0.png?resize=50%2C50&amp;ssl=1 50w" sizes="(max-width: 417px) 100vw, 417px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" decoding="async" width="417" height="409" data-attachment-id="647" data-permalink="/?attachment_id=647" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-1.png?fit=417%2C409&amp;ssl=1" data-orig-size="417,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="1-1" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-1.png?fit=417%2C409&amp;ssl=1" data-id="647" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-1.png?resize=417%2C409&amp;ssl=1" alt="" class="wp-image-647" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-1.png?w=417&amp;ssl=1 417w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-1.png?resize=300%2C294&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-1.png?resize=50%2C50&amp;ssl=1 50w" sizes="(max-width: 417px) 100vw, 417px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" decoding="async" width="417" height="409" data-attachment-id="646" data-permalink="/?attachment_id=646" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-2.png?fit=417%2C409&amp;ssl=1" data-orig-size="417,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="1-2" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-2.png?fit=417%2C409&amp;ssl=1" data-id="646" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-2.png?resize=417%2C409&amp;ssl=1" alt="" class="wp-image-646" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-2.png?w=417&amp;ssl=1 417w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-2.png?resize=300%2C294&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-2.png?resize=50%2C50&amp;ssl=1 50w" sizes="(max-width: 417px) 100vw, 417px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="417" height="409" data-attachment-id="648" data-permalink="/?attachment_id=648" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-3.png?fit=417%2C409&amp;ssl=1" data-orig-size="417,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="1-3" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-3.png?fit=417%2C409&amp;ssl=1" data-id="648" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-3.png?resize=417%2C409&amp;ssl=1" alt="" class="wp-image-648" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-3.png?w=417&amp;ssl=1 417w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-3.png?resize=300%2C294&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-3.png?resize=50%2C50&amp;ssl=1 50w" sizes="auto, (max-width: 417px) 100vw, 417px"></figure>
+</figure>
+
+
+
+<h5 class="wp-block-heading has-text-align-center">Convolution with 4 for loops</h5>
+
+
+
+<p class="wp-block-paragraph">The function <code><mark style="background-color:rgba(0, 0, 0, 0);color:#cf2e2e" class="has-inline-color">convolution_4_for_loops(image, filter)</mark></code> here carries out 2D convolution with four nested loops. The outer two loops slide across the image, while the inner two loops move over every element of the filter. At each position, it multiplies the filter values with the corresponding image patch pixel by pixel, sums them up, and assigns the result to the output. The edges are padded with zeros (<code><mark style="background-color:rgba(0, 0, 0, 0);color:#cf2e2e" class="has-inline-color">'mode = constant'</mark></code> in <code><mark style="background-color:rgba(0, 0, 0, 0);color:#cf2e2e" class="has-inline-color">np.pad</mark></code>).</p>
+
+
+<div class="wp-block-code">
+	<div class="cm-editor">
+		<div class="cm-scroller">
+			
+<pre><code><div class="cm-line">def convolution_4_for_loops(image, filter):</div><div class="cm-line">    image_h, image_w = image.shape</div><div class="cm-line">    filter_h, filter_w = filter.shape</div><div class="cm-line"></div><div class="cm-line">    # padding size</div><div class="cm-line">    pad_h = filter_h // 2</div><div class="cm-line">    pad_w = filter_w // 2</div><div class="cm-line">    </div><div class="cm-line">    # intiailize result image</div><div class="cm-line">    result_image = np.zeros((image_h - pad_h * 2, image_w - pad_w * 2)) </div><div class="cm-line"></div><div class="cm-line">    # for loops for image</div><div class="cm-line">    for h in range(0,image_h - pad_h * 2 ):</div><div class="cm-line">        for w in range(0, image_w - 2* pad_w):</div><div class="cm-line">            current_pixel = 0</div><div class="cm-line"></div><div class="cm-line">            # for loops for filter</div><div class="cm-line">            for i in range(filter_h):</div><div class="cm-line">                for j in range(filter_w):</div><div class="cm-line">                    current_pixel += image[h - pad_h + i, w - pad_w + j] * filter[i,j] # update value pixel by pixel</div><div class="cm-line">    </div><div class="cm-line">            result_image[h, w] = current_pixel</div><div class="cm-line">    </div><div class="cm-line">    padded_a_edge = np.pad(result_image, pad_width=((pad_h, pad_h), (pad_w, pad_w)), mode='constant')</div><div class="cm-line"></div><div class="cm-line">    return padded_a_edge</div></code></pre>
+		</div>
+	</div>
+</div>
+
+
+<h5 class="wp-block-heading has-text-align-center">Convolution with 2 for loops</h5>
+
+
+
+<p class="wp-block-paragraph">The function <code>convolution_2_for_loops(image, filter)</code> performs 2D convolution using two loops. For each pixel, it extracts a patch the size of the filter, multiplies it element-wise with the filter, sums the result, and stores it in the output (<code><mark style="background-color:rgba(0, 0, 0, 0);color:#cf2e2e" class="has-inline-color">'mode = constant'</mark></code> in <code><mark style="background-color:rgba(0, 0, 0, 0);color:#cf2e2e" class="has-inline-color">np.pad</mark></code>). </p>
+
+
+<div class="wp-block-code">
+	<div class="cm-editor">
+		<div class="cm-scroller">
+			
+<pre><code><div class="cm-line">def convolution_2_for_loops(image, filter):</div><div class="cm-line">    image_h, image_w = image.shape</div><div class="cm-line">    filter_h, filter_w = filter.shape</div><div class="cm-line">    </div><div class="cm-line">    # padding size</div><div class="cm-line">    pad_h = filter_h // 2</div><div class="cm-line">    pad_w = filter_w // 2</div><div class="cm-line"></div><div class="cm-line">    # intiailize result image</div><div class="cm-line">    result_image = np.zeros((image_h - pad_h * 2, image_w - pad_w * 2)) </div><div class="cm-line"></div><div class="cm-line">    # for loops for image</div><div class="cm-line">    for h in range(0,image_h - pad_h * 2 ):</div><div class="cm-line">        for w in range(0, image_w - 2* pad_w):</div><div class="cm-line"></div><div class="cm-line">            current_image = image[ h : h+2*pad_h+1, w : w+2*pad_w+1]</div><div class="cm-line">            result_image[h, w] = np.sum(current_image * filter)</div><div class="cm-line"></div><div class="cm-line">    padded_a_edge = np.pad(result_image, pad_width=((pad_h, pad_h), (pad_w, pad_w)), mode='constant')</div><div class="cm-line"></div><div class="cm-line">    return padded_a_edge</div></code></pre>
+		</div>
+	</div>
+</div>
+
+
+<h5 class="wp-block-heading has-text-align-center">Comparing the methods</h5>
+
+
+
+<p class="wp-block-paragraph">Comparing the two implementations, the <strong>four-loop version</strong> explicitly iterates over both the image and the filter, which makes it the slowest (&asymp;7.9 s). The <strong>two-loop version</strong> is more efficient since it replaces the inner loops with NumPy operations, reducing the runtime to about 1.1 s. In contrast, the built-in <code><strong>scipy.signal.convolve2d</strong></code> is the fastest (&asymp;0.7 s), as it is highly optimized. The results from all three methods are essentially the same, except for minor differences at the boundaries due to different padding treatments.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><strong>.</strong></p>
+
+
+
+<h3 class="wp-block-heading">1.1.2 Convolution with finite difference operators</h3>
+
+
+
+<p class="wp-block-paragraph">To compute <strong>partial derivatives</strong> in x and y directions, I used the following kernels:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>D_x = [\,1 \; 0 \; -1\,], \quad D_y = \begin{bmatrix} 1 \ 0 \ -1 \end{bmatrix} <br>$$</p>
+
+
+
+<p class="wp-block-paragraph">These are discrete approximations of image gradients:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br> \frac{\partial I}{\partial x} \approx I * D_x, \quad \frac{\partial I}{\partial y} \approx I * D_y <br>$$</p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj2/"}' class="wp-block-gallery has-nested-images columns-1 is-cropped wp-block-gallery-3 is-layout-flex wp-block-gallery-is-layout-flex" style="border-style:none;border-width:0px;border-radius:0px">
+<figure class="wp-block-image size-full" style="margin-right:200px;margin-left:200px"><img data-recalc-dims="1" loading="lazy" decoding="async" width="794" height="367" data-attachment-id="664" data-permalink="/?attachment_id=664" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-4-1.png?fit=794%2C367&amp;ssl=1" data-orig-size="794,367" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="1-4" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-4-1.png?fit=794%2C367&amp;ssl=1" data-id="664" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-4-1.png?resize=794%2C367&amp;ssl=1" alt="" class="wp-image-664" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-4-1.png?w=794&amp;ssl=1 794w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-4-1.png?resize=300%2C139&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-4-1.png?resize=768%2C355&amp;ssl=1 768w" sizes="auto, (max-width: 794px) 100vw, 794px"></figure>
+
+
+
+<figure class="wp-block-image size-full" style="margin-right:200px;margin-left:200px"><img data-recalc-dims="1" loading="lazy" decoding="async" width="794" height="367" data-attachment-id="651" data-permalink="/?attachment_id=651" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-5.png?fit=794%2C367&amp;ssl=1" data-orig-size="794,367" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="1-5" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-5.png?fit=794%2C367&amp;ssl=1" data-id="651" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-5.png?resize=794%2C367&amp;ssl=1" alt="" class="wp-image-651" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-5.png?w=794&amp;ssl=1 794w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-5.png?resize=300%2C139&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-5.png?resize=768%2C355&amp;ssl=1 768w" sizes="auto, (max-width: 794px) 100vw, 794px"></figure>
+
+
+
+<figure class="wp-block-image size-full" style="margin-right:200px;margin-left:200px"><img data-recalc-dims="1" loading="lazy" decoding="async" width="794" height="369" data-attachment-id="650" data-permalink="/?attachment_id=650" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-6.png?fit=794%2C369&amp;ssl=1" data-orig-size="794,369" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="1-6" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-6.png?fit=794%2C369&amp;ssl=1" data-id="650" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-6.png?resize=794%2C369&amp;ssl=1" alt="" class="wp-image-650" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-6.png?w=794&amp;ssl=1 794w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-6.png?resize=300%2C139&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-6.png?resize=768%2C357&amp;ssl=1 768w" sizes="auto, (max-width: 794px) 100vw, 794px"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">I computed the partial derivatives in both x and y directions using all three methods mentioned in the previous section. The results are similar, but there are still differences in runtime performance.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading">Part 1.2: Finite Difference Operator</h2>
+
+
+
+<p class="wp-block-paragraph">Using the same&nbsp;finite difference operators&nbsp;<img decoding="async" src="https://s0.wp.com/latex.php?latex=D_x&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="D_x" class="latex"> and <img decoding="async" src="https://s0.wp.com/latex.php?latex=D_y&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="D_y" class="latex"> as the previous section, I performed partial derivatives of the cameraman image.</p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj2/"}' class="wp-block-gallery has-nested-images columns-2 wp-block-gallery-4 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-full"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1182" height="383" data-attachment-id="672" data-permalink="/?attachment_id=672" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-7-1.png?fit=1182%2C383&amp;ssl=1" data-orig-size="1182,383" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="1-7" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-7-1.png?fit=1024%2C332&amp;ssl=1" data-id="672" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-7-1.png?resize=1182%2C383&amp;ssl=1" alt="" class="wp-image-672" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-7-1.png?w=1182&amp;ssl=1 1182w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-7-1.png?resize=300%2C97&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-7-1.png?resize=1024%2C332&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-7-1.png?resize=768%2C249&amp;ssl=1 768w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">Then I combine them to form the <strong>gradient magnitude image</strong>. This image highlights edges regardless of their direction. The formula is:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>G(x,y) = \sqrt{\left(\frac{\partial I}{\partial x}(x,y)\right)^2 + \left(\frac{\partial I}{\partial y}(x,y)\right)^2} <br>$$</p>
+
+
+
+<p class="wp-block-paragraph">where <img decoding="async" src="https://s0.wp.com/latex.php?latex=G%28x%2Cy%29&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="G(x,y)" class="latex"> represents the gradient magnitude at pixel <img decoding="async" src="https://s0.wp.com/latex.php?latex=%28x%2Cy%29&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="(x,y)" class="latex">.</p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj2/"}' class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-5 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="388" height="409" data-attachment-id="693" data-permalink="/?attachment_id=693" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-8.png?fit=388%2C409&amp;ssl=1" data-orig-size="388,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="1-8" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-8.png?fit=388%2C409&amp;ssl=1" data-id="693" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-8.png?resize=388%2C409&amp;ssl=1" alt="" class="wp-image-693" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-8.png?w=388&amp;ssl=1 388w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-8.png?resize=285%2C300&amp;ssl=1 285w" sizes="auto, (max-width: 388px) 100vw, 388px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="388" height="409" data-attachment-id="692" data-permalink="/?attachment_id=692" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-9.png?fit=388%2C409&amp;ssl=1" data-orig-size="388,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="1-9" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-9.png?fit=388%2C409&amp;ssl=1" data-id="692" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-9.png?resize=388%2C409&amp;ssl=1" alt="" class="wp-image-692" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-9.png?w=388&amp;ssl=1 388w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-9.png?resize=285%2C300&amp;ssl=1 285w" sizes="auto, (max-width: 388px) 100vw, 388px"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">To convert the gradient magnitude image into a <strong>binary edge image</strong>, I used a threshold <img decoding="async" src="https://s0.wp.com/latex.php?latex=T+%3D+0.25+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="T = 0.25 " class="latex">. This threshold is selected because it keeps most edges of the human and the camera, including some background information (to keep the edges, some noise is also kept). Pixels with gradient magnitude larger than <img decoding="async" src="https://s0.wp.com/latex.php?latex=T&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="T" class="latex"> are marked as edges (1), otherwise suppressed (0):</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>B(x,y) = \{<br>\begin{array}{ll}<br>1, &amp; \text{if } G(x,y) &gt; T \\<br>0, &amp; \text{otherwise}<br>\end{array}<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">As we can see the in the result binarized image, the operation successfully extracted the edges, but the result is a bit noisy.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading">Part 1.3: Derivative of Gaussian (DoG) Filter</h2>
+
+
+
+<p class="wp-block-paragraph">Since the raw difference operator <img decoding="async" src="https://s0.wp.com/latex.php?latex=D_x&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="D_x" class="latex">, <img decoding="async" src="https://s0.wp.com/latex.php?latex=D_y&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="D_y" class="latex"> is sensitive to noise, here are two methods to solve the issue. The first method uses a Gaussian filter to blur the image and then applies finite difference operators (the two left images), the second method takes the derivative of the Gaussian filter then uses the filter to convolve the image (the two right images). The threshold for the binary edge images are still set as <img decoding="async" src="https://s0.wp.com/latex.php?latex=T+%3D+0.25+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="T = 0.25 " class="latex">. The details of the process is as follows:</p>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1024" height="247" data-attachment-id="691" data-permalink="/?attachment_id=691" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-11.png?fit=1570%2C378&amp;ssl=1" data-orig-size="1570,378" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="1-11" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-11.png?fit=1024%2C247&amp;ssl=1" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-11.png?resize=1024%2C247&amp;ssl=1" alt="" class="wp-image-691" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-11.png?resize=1024%2C247&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-11.png?resize=300%2C72&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-11.png?resize=768%2C185&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-11.png?resize=1536%2C370&amp;ssl=1 1536w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-11.png?resize=1200%2C289&amp;ssl=1 1200w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-11.png?w=1570&amp;ssl=1 1570w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+
+
+
+<h4 class="wp-block-heading has-text-align-center">Gaussian blurring + Finite difference operators</h4>
+
+
+
+<p class="wp-block-paragraph">The 2D Gaussian kernel is created from the outer product of a 1D Gaussian vector with its transpose. I then convolved the original image <img decoding="async" src="https://s0.wp.com/latex.php?latex=I&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="I" class="latex"> with <img decoding="async" src="https://s0.wp.com/latex.php?latex=G&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="G" class="latex"> to blur the image, and apply the finite difference filters:</p>
+
+
+
+<p class="wp-block-paragraph">$$ I_G = I * G, \quad<br>\frac{\partial I}{\partial x} \approx I_G * D_x, \quad<br>\frac{\partial I}{\partial y} \approx I_G * D_y<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">Then I calculated the gradient magnitude and binary edge image with the same method as Part 1.2.</p>
+
+
+
+<h4 class="wp-block-heading has-text-align-center">Derivative of gaussian (DoG) filters</h4>
+
+
+
+<p class="wp-block-paragraph">Instead of performing two convolutions, here combines them into a single convolution by first computing the derivative of Gaussian filters:</p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj2/"}' class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-6 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large" style="margin-right:300px;margin-left:300px"><img data-recalc-dims="1" loading="lazy" decoding="async" width="571" height="299" data-attachment-id="716" data-permalink="/?attachment_id=716" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-13.png?fit=571%2C299&amp;ssl=1" data-orig-size="571,299" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="1-13" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-13.png?fit=571%2C299&amp;ssl=1" data-id="716" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-13.png?resize=571%2C299&amp;ssl=1" alt="" class="wp-image-716" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-13.png?w=571&amp;ssl=1 571w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-13.png?resize=300%2C157&amp;ssl=1 300w" sizes="auto, (max-width: 571px) 100vw, 571px"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">$$<br>DoG_x = G * D_x, \quad DoG_y = G * D_y<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">Then, I convolved the image directly with these DoG filters:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\frac{\partial I}{\partial x} \approx I * DoG_x, \quad<br>\frac{\partial I}{\partial y} \approx I * DoG_y<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">Finally, I calculated the gradient magnitude and binary edge image with the same method as Part 1.2.</p>
+
+
+
+<h4 class="wp-block-heading has-text-align-center">Observations</h4>
+
+
+
+<p class="wp-block-paragraph">Both methods (Gaussian blurring + Finite difference operators&#8203; &amp; DoG filters) produce very similar edge maps. The main difference is that DoG combines the two steps into one convolution, making it more efficient. Moreover, the Gaussian smoothing helps reduce noise, so the edge maps are much more cleaner than when using the raw difference operator alone!</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading">Bells &amp; Whistles</h2>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj2/"}' class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-7 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-full" style="margin-right:var(--wp--preset--spacing--80);margin-left:var(--wp--preset--spacing--80)"><img data-recalc-dims="1" loading="lazy" decoding="async" width="794" height="393" data-attachment-id="702" data-permalink="/?attachment_id=702" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-14.png?fit=794%2C393&amp;ssl=1" data-orig-size="794,393" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="1-14" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-14.png?fit=794%2C393&amp;ssl=1" data-id="702" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-14.png?resize=794%2C393&amp;ssl=1" alt="" class="wp-image-702" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-14.png?w=794&amp;ssl=1 794w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-14.png?resize=300%2C148&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/1-14.png?resize=768%2C380&amp;ssl=1 768w" sizes="auto, (max-width: 794px) 100vw, 794px"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">In this part, I computed both the gradient magnitude and the gradient orientation of the image. The partial derivatives in the x and y directions were obtained using the finite difference filters, and the orientation at each pixel was calculated with the arctangent function:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\theta(x,y) = \arctan2\left( \frac{\partial I}{\partial y}, \frac{\partial I}{\partial x} \right)<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">Visualizing all gradient orientations is a mess (left)! To better display the orientations, I mapped the results into the HSV color space with:</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Hue (H):</strong> encodes the gradient orientation (mapped from [&minus;&pi;,&pi;] to [0,1])</li>
+
+
+
+<li><strong>Saturation (S): </strong>set to 1 for full color</li>
+
+
+
+<li><strong>Value (V):</strong> set to the normalized gradient magnitude</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">The result is shown as the right image. This way, edges in different directions appear in different colors, and the brightness reflects the edge strength.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h1 class="wp-block-heading has-text-align-left"><strong>Part 2: Fun with Frequencies!</strong></h1>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading">Part 2.1: Image &ldquo;Sharpening&rdquo;</h2>
+
+
+
+<h4 class="wp-block-heading has-text-align-center">Process</h4>
+
+
+
+<p class="wp-block-paragraph">The unsharp masking technique sharpens an image by enhancing its high-frequency components.</p>
+
+
+
+<p class="wp-block-paragraph">The first step is to perform low-pass filtering (Gaussian smoothing). Here I use kernel size = 7 and sigma = 1.</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>I_{\text{smooth}} = I * G<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">Then subtract the blurred image from the original to isolate details:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>I_{\text{details}} = I &ndash; I_{\text{smooth}}<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">Next, add details back with scaling and use a factor &alpha; to control the sharping strength. </p>
+
+
+
+<p class="wp-block-paragraph">$$<br>I_{\text{sharp}} = I + \alpha \cdot I_{\text{details}}<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">I also tried to operate the images with a single convolution kernel:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>H = (1+\alpha)\delta &ndash; \alpha G<br>$$</p>
+
+
+<div class="wp-block-code">
+	<div class="cm-editor">
+		<div class="cm-scroller">
+			
+<pre><code><div class="cm-line">def unsharp_mask_single_conv(image, alpha=1):</div><div class="cm-line">    # create gaussian filter</div><div class="cm-line">    g_1d = cv2.getGaussianKernel(7, 1)</div><div class="cm-line">    g_2d = np.outer(g_1d, g_1d.T)</div><div class="cm-line">    g_2d = g_2d / g_2d.sum()  # normalize</div><div class="cm-line"></div><div class="cm-line">    # create identity kernel delta</div><div class="cm-line">    delta = np.zeros_like(g_2d)</div><div class="cm-line">    center = (g_2d.shape[0]//2, g_2d.shape[1]//2)</div><div class="cm-line">    delta[center] = 1.0</div><div class="cm-line"></div><div class="cm-line">    # build unsharp mask filter kernel</div><div class="cm-line">    single_kernel = (1 + alpha) * delta - alpha * g_2d</div><div class="cm-line"></div><div class="cm-line">    # apply filter to each channel</div><div class="cm-line">    sharpened = np.zeros_like(image)</div><div class="cm-line">    for i in range(3):</div><div class="cm-line">        sharpened[:,:,i] = scipy.signal.convolve2d(image[:,:,i], single_kernel, mode='same')</div><div class="cm-line"></div><div class="cm-line">    return np.clip(sharpened, 0, 1)</div></code></pre>
+		</div>
+	</div>
+</div>
+
+
+<h4 class="wp-block-heading has-text-align-center">Results</h4>
+
+
+
+<p class="wp-block-paragraph">Here I operated the function on the Taj image and a concrete house image. I compare the results of &alpha; = 1 and &alpha; = 3.</p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj2/"}' class="wp-block-gallery has-nested-images columns-1 is-cropped wp-block-gallery-8 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1024" height="246" data-attachment-id="726" data-permalink="/?attachment_id=726" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-1.png?fit=1570%2C377&amp;ssl=1" data-orig-size="1570,377" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-1" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-1.png?fit=1024%2C246&amp;ssl=1" data-id="726" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-1.png?resize=1024%2C246&amp;ssl=1" alt="" class="wp-image-726" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-1.png?resize=1024%2C246&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-1.png?resize=300%2C72&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-1.png?resize=768%2C184&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-1.png?resize=1536%2C369&amp;ssl=1 1536w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-1.png?resize=1200%2C288&amp;ssl=1 1200w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-1.png?w=1570&amp;ssl=1 1570w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1024" height="171" data-attachment-id="725" data-permalink="/?attachment_id=725" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-2.png?fit=1570%2C262&amp;ssl=1" data-orig-size="1570,262" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-2" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-2.png?fit=1024%2C171&amp;ssl=1" data-id="725" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-2.png?resize=1024%2C171&amp;ssl=1" alt="" class="wp-image-725" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-2.png?resize=1024%2C171&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-2.png?resize=300%2C50&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-2.png?resize=768%2C128&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-2.png?resize=1536%2C256&amp;ssl=1 1536w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-2.png?resize=1200%2C200&amp;ssl=1 1200w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-2.png?w=1570&amp;ssl=1 1570w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">When sharpening with &alpha;=1, the edges become clearer and the overall sharpness improves without introducing strong artifacts. When increasing to &alpha;=3, the images look even sharper, but halos around strong edges, especially along high-contrast boundaries. This demonstrates that higher values of &alpha; enhance edge sharpness but can also lead to over-sharpening effects.</p>
+
+
+
+<h4 class="wp-block-heading has-text-align-center">Evaluation</h4>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1024" height="310" data-attachment-id="729" data-permalink="/?attachment_id=729" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-3.png?fit=1182%2C358&amp;ssl=1" data-orig-size="1182,358" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-3" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-3.png?fit=1024%2C310&amp;ssl=1" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-3.png?resize=1024%2C310&amp;ssl=1" alt="" class="wp-image-729" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-3.png?resize=1024%2C310&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-3.png?resize=300%2C91&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-3.png?resize=768%2C233&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-3.png?w=1182&amp;ssl=1 1182w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+
+
+
+<p class="wp-block-paragraph">I used my photo to show the effect of blurring and then resharpening the image. After sharpening, the image becomes clearer than the blurred version, but it still does not fully recover the fine details of the original. This is because blurring removes high-frequency information, and sharpening can only enhance what remains rather than restore the lost details.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading">Part 2.2: Hybrid Images</h2>
+
+
+
+<h4 class="wp-block-heading has-text-align-center">Process with frequency analysis</h4>
+
+
+
+<p class="wp-block-paragraph">I tried to create hybrid image of my parents to see how they look together! Here are the aligned version of the original high frequency image (my mom) and the original low frequency image (my dad). The right image is the final result of the hybrid operation.</p>
+
+
+
+<figure class="wp-block-image size-full"><img data-recalc-dims="1" loading="lazy" decoding="async" width="950" height="331" data-attachment-id="731" data-permalink="/?attachment_id=731" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-5.png?fit=950%2C331&amp;ssl=1" data-orig-size="950,331" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-5" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-5.png?fit=950%2C331&amp;ssl=1" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-5.png?resize=950%2C331&amp;ssl=1" alt="" class="wp-image-731" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-5.png?w=950&amp;ssl=1 950w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-5.png?resize=300%2C105&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-5.png?resize=768%2C268&amp;ssl=1 768w" sizes="auto, (max-width: 950px) 100vw, 950px"></figure>
+
+
+
+<p class="wp-block-paragraph">One image was processed with a <strong>high-pass filter</strong> (original minus Gaussian-blurred version) to retain the high-frequency details, while the other image was processed with a <strong>low-pass filter</strong> (2D Gaussian) to retain only the low-frequency components. These two filtered results were then added together to form the hybrid image.</p>
+
+
+
+<figure class="wp-block-image size-full"><img data-recalc-dims="1" loading="lazy" decoding="async" width="950" height="331" data-attachment-id="733" data-permalink="/?attachment_id=733" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-7.png?fit=950%2C331&amp;ssl=1" data-orig-size="950,331" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-7" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-7.png?fit=950%2C331&amp;ssl=1" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-7.png?resize=950%2C331&amp;ssl=1" alt="" class="wp-image-733" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-7.png?w=950&amp;ssl=1 950w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-7.png?resize=300%2C105&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-7.png?resize=768%2C268&amp;ssl=1 768w" sizes="auto, (max-width: 950px) 100vw, 950px"></figure>
+
+
+
+<p class="wp-block-paragraph">For the Gaussian smoothing, I used a kernel size of 35&times;35. The high-pass filter used a standard deviation of <mark style="background-color:rgba(0, 0, 0, 0);color:#cf2e2e" class="has-inline-color">&sigma;=8</mark>, while the low-pass filter was generated with <mark style="background-color:rgba(0, 0, 0, 0);color:#cf2e2e" class="has-inline-color">&sigma;=5</mark>. These cutoff frequencies were chosen experimentally to balance between clarity of the low-frequency structure and visibility of the high-frequency details.</p>
+
+
+
+<p class="wp-block-paragraph">The following image illustrates the entire pipeline: the Fourier transforms of the two input images, their filtered versions, and the final hybrid image in the frequency domain. The <strong>high-pass filtered image</strong> highlights the periphery of the spectrum (high frequencies, which looks very bright), while the <strong>low-pass filtered image</strong> retains only the middle of the spectrum (low frequencies, which looks dark at the corners). When combined, the hybrid image contains both types of information: when viewed up close, the high-frequency content dominates, and when viewed from farther away, the low-frequency structure becomes more apparent.</p>
+
+
+
+<figure class="wp-block-image size-full"><img data-recalc-dims="1" loading="lazy" decoding="async" width="990" height="765" data-attachment-id="736" data-permalink="/?attachment_id=736" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-8.png?fit=990%2C765&amp;ssl=1" data-orig-size="990,765" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-8" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-8.png?fit=990%2C765&amp;ssl=1" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-8.png?resize=990%2C765&amp;ssl=1" alt="" class="wp-image-736" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-8.png?w=990&amp;ssl=1 990w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-8.png?resize=300%2C232&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-8.png?resize=768%2C593&amp;ssl=1 768w" sizes="auto, (max-width: 990px) 100vw, 990px"></figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h4 class="wp-block-heading has-text-align-center">Other results</h4>
+
+
+
+<p class="wp-block-paragraph">Here are all the results that I created with the same pipeline (I also applied the automatic cropping function that I wrote in project 1 to cut off the edges with aligning!):</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Derek and cat Nutmeg:</strong></p>
+
+
+
+<figure class="wp-block-image size-full"><img data-recalc-dims="1" loading="lazy" decoding="async" width="950" height="410" data-attachment-id="743" data-permalink="/?attachment_id=743" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-4-1.png?fit=950%2C410&amp;ssl=1" data-orig-size="950,410" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-4" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-4-1.png?fit=950%2C410&amp;ssl=1" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-4-1.png?resize=950%2C410&amp;ssl=1" alt="" class="wp-image-743" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-4-1.png?w=950&amp;ssl=1 950w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-4-1.png?resize=300%2C129&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-4-1.png?resize=768%2C331&amp;ssl=1 768w" sizes="auto, (max-width: 950px) 100vw, 950px"></figure>
+
+
+
+<p class="wp-block-paragraph"><strong>Me smiling and not smiling:</strong></p>
+
+
+
+<figure class="wp-block-image size-full"><img data-recalc-dims="1" loading="lazy" decoding="async" width="938" height="425" data-attachment-id="744" data-permalink="/?attachment_id=744" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-6-1.png?fit=938%2C425&amp;ssl=1" data-orig-size="938,425" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-6" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-6-1.png?fit=938%2C425&amp;ssl=1" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-6-1.png?resize=938%2C425&amp;ssl=1" alt="" class="wp-image-744" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-6-1.png?w=938&amp;ssl=1 938w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-6-1.png?resize=300%2C136&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-6-1.png?resize=768%2C348&amp;ssl=1 768w" sizes="auto, (max-width: 938px) 100vw, 938px"></figure>
+
+
+
+<p class="wp-block-paragraph"><strong>Me and a game character:</strong></p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj2/"}' class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-9 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="950" height="244" data-attachment-id="746" data-permalink="/?attachment_id=746" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-9.png?fit=950%2C244&amp;ssl=1" data-orig-size="950,244" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-9" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-9.png?fit=950%2C244&amp;ssl=1" data-id="746" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-9.png?resize=950%2C244&amp;ssl=1" alt="" class="wp-image-746" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-9.png?w=950&amp;ssl=1 950w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-9.png?resize=300%2C77&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-9.png?resize=768%2C197&amp;ssl=1 768w" sizes="auto, (max-width: 950px) 100vw, 950px"></figure>
+</figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading">Bells &amp; Whistles</h2>
+
+
+
+<p class="wp-block-paragraph">To explore the effect of color in hybrid images, I compared four different cases: using grayscale for both inputs, adding color only to the low-frequency image, adding color only to the high-frequency image, and keeping both inputs in color.</p>
+
+
+
+<p class="wp-block-paragraph">From the results, adding color to the low-frequency image makes the hybrid look clearer and closer to a normal picture, especially when viewed from far away. Adding color only to the high-frequency image does not change much, since edges and fine details do not benefit a lot from color. When both images are in color, the result looks almost the same as when only the low-frequency one is in color. It works better to have the color in low frequencies!</p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj2/"}' class="wp-block-gallery has-nested-images columns-4 is-cropped wp-block-gallery-10 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="292" height="409" data-attachment-id="748" data-permalink="/?attachment_id=748" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-10-1.png?fit=292%2C409&amp;ssl=1" data-orig-size="292,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-10-1" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-10-1.png?fit=292%2C409&amp;ssl=1" data-id="748" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-10-1.png?resize=292%2C409&amp;ssl=1" alt="" class="wp-image-748" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-10-1.png?w=292&amp;ssl=1 292w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-10-1.png?resize=214%2C300&amp;ssl=1 214w" sizes="auto, (max-width: 292px) 100vw, 292px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="292" height="409" data-attachment-id="750" data-permalink="/?attachment_id=750" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-10-2.png?fit=292%2C409&amp;ssl=1" data-orig-size="292,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-10-2" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-10-2.png?fit=292%2C409&amp;ssl=1" data-id="750" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-10-2.png?resize=292%2C409&amp;ssl=1" alt="" class="wp-image-750" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-10-2.png?w=292&amp;ssl=1 292w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-10-2.png?resize=214%2C300&amp;ssl=1 214w" sizes="auto, (max-width: 292px) 100vw, 292px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="292" height="409" data-attachment-id="751" data-permalink="/?attachment_id=751" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-10-3.png?fit=292%2C409&amp;ssl=1" data-orig-size="292,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-10-3" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-10-3.png?fit=292%2C409&amp;ssl=1" data-id="751" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-10-3.png?resize=292%2C409&amp;ssl=1" alt="" class="wp-image-751" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-10-3.png?w=292&amp;ssl=1 292w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-10-3.png?resize=214%2C300&amp;ssl=1 214w" sizes="auto, (max-width: 292px) 100vw, 292px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="292" height="409" data-attachment-id="749" data-permalink="/?attachment_id=749" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-10-4.png?fit=292%2C409&amp;ssl=1" data-orig-size="292,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-10-4" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-10-4.png?fit=292%2C409&amp;ssl=1" data-id="749" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-10-4.png?resize=292%2C409&amp;ssl=1" alt="" class="wp-image-749" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-10-4.png?w=292&amp;ssl=1 292w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-10-4.png?resize=214%2C300&amp;ssl=1 214w" sizes="auto, (max-width: 292px) 100vw, 292px"></figure>
+</figure>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj2/"}' class="wp-block-gallery has-nested-images columns-4 is-cropped wp-block-gallery-11 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="367" height="409" data-attachment-id="769" data-permalink="/?attachment_id=769" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-11-1-1.png?fit=367%2C409&amp;ssl=1" data-orig-size="367,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-11-1" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-11-1-1.png?fit=367%2C409&amp;ssl=1" data-id="769" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-11-1-1.png?resize=367%2C409&amp;ssl=1" alt="" class="wp-image-769" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-11-1-1.png?w=367&amp;ssl=1 367w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-11-1-1.png?resize=269%2C300&amp;ssl=1 269w" sizes="auto, (max-width: 367px) 100vw, 367px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="367" height="409" data-attachment-id="770" data-permalink="/?attachment_id=770" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-11-2-1.png?fit=367%2C409&amp;ssl=1" data-orig-size="367,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-11-2" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-11-2-1.png?fit=367%2C409&amp;ssl=1" data-id="770" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-11-2-1.png?resize=367%2C409&amp;ssl=1" alt="" class="wp-image-770" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-11-2-1.png?w=367&amp;ssl=1 367w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-11-2-1.png?resize=269%2C300&amp;ssl=1 269w" sizes="auto, (max-width: 367px) 100vw, 367px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="367" height="409" data-attachment-id="771" data-permalink="/?attachment_id=771" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-11-3-1.png?fit=367%2C409&amp;ssl=1" data-orig-size="367,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-11-3" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-11-3-1.png?fit=367%2C409&amp;ssl=1" data-id="771" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-11-3-1.png?resize=367%2C409&amp;ssl=1" alt="" class="wp-image-771" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-11-3-1.png?w=367&amp;ssl=1 367w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-11-3-1.png?resize=269%2C300&amp;ssl=1 269w" sizes="auto, (max-width: 367px) 100vw, 367px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="367" height="409" data-attachment-id="772" data-permalink="/?attachment_id=772" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-11-4-1.png?fit=367%2C409&amp;ssl=1" data-orig-size="367,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-11-4" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-11-4-1.png?fit=367%2C409&amp;ssl=1" data-id="772" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-11-4-1.png?resize=367%2C409&amp;ssl=1" alt="" class="wp-image-772" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-11-4-1.png?w=367&amp;ssl=1 367w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-11-4-1.png?resize=269%2C300&amp;ssl=1 269w" sizes="auto, (max-width: 367px) 100vw, 367px"></figure>
+</figure>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj2/"}' class="wp-block-gallery has-nested-images columns-4 is-cropped wp-block-gallery-12 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="271" height="409" data-attachment-id="758" data-permalink="/?attachment_id=758" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-12-1.png?fit=271%2C409&amp;ssl=1" data-orig-size="271,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-12-1" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-12-1.png?fit=271%2C409&amp;ssl=1" data-id="758" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-12-1.png?resize=271%2C409&amp;ssl=1" alt="" class="wp-image-758" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-12-1.png?w=271&amp;ssl=1 271w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-12-1.png?resize=199%2C300&amp;ssl=1 199w" sizes="auto, (max-width: 271px) 100vw, 271px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="271" height="409" data-attachment-id="759" data-permalink="/?attachment_id=759" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-12-2.png?fit=271%2C409&amp;ssl=1" data-orig-size="271,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-12-2" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-12-2.png?fit=271%2C409&amp;ssl=1" data-id="759" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-12-2.png?resize=271%2C409&amp;ssl=1" alt="" class="wp-image-759" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-12-2.png?w=271&amp;ssl=1 271w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-12-2.png?resize=199%2C300&amp;ssl=1 199w" sizes="auto, (max-width: 271px) 100vw, 271px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="271" height="409" data-attachment-id="760" data-permalink="/?attachment_id=760" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-12-3.png?fit=271%2C409&amp;ssl=1" data-orig-size="271,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-12-3" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-12-3.png?fit=271%2C409&amp;ssl=1" data-id="760" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-12-3.png?resize=271%2C409&amp;ssl=1" alt="" class="wp-image-760" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-12-3.png?w=271&amp;ssl=1 271w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-12-3.png?resize=199%2C300&amp;ssl=1 199w" sizes="auto, (max-width: 271px) 100vw, 271px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="271" height="409" data-attachment-id="761" data-permalink="/?attachment_id=761" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-12-4-1.png?fit=271%2C409&amp;ssl=1" data-orig-size="271,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-12-4" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-12-4-1.png?fit=271%2C409&amp;ssl=1" data-id="761" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-12-4-1.png?resize=271%2C409&amp;ssl=1" alt="" class="wp-image-761" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-12-4-1.png?w=271&amp;ssl=1 271w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-12-4-1.png?resize=199%2C300&amp;ssl=1 199w" sizes="auto, (max-width: 271px) 100vw, 271px"></figure>
+</figure>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj2/"}' class="wp-block-gallery has-nested-images columns-4 is-cropped wp-block-gallery-13 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="515" height="409" data-attachment-id="762" data-permalink="/?attachment_id=762" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-13-1.png?fit=515%2C409&amp;ssl=1" data-orig-size="515,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-13-1" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-13-1.png?fit=515%2C409&amp;ssl=1" data-id="762" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-13-1.png?resize=515%2C409&amp;ssl=1" alt="" class="wp-image-762" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-13-1.png?w=515&amp;ssl=1 515w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-13-1.png?resize=300%2C238&amp;ssl=1 300w" sizes="auto, (max-width: 515px) 100vw, 515px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="515" height="409" data-attachment-id="763" data-permalink="/?attachment_id=763" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-13-2.png?fit=515%2C409&amp;ssl=1" data-orig-size="515,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-13-2" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-13-2.png?fit=515%2C409&amp;ssl=1" data-id="763" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-13-2.png?resize=515%2C409&amp;ssl=1" alt="" class="wp-image-763" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-13-2.png?w=515&amp;ssl=1 515w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-13-2.png?resize=300%2C238&amp;ssl=1 300w" sizes="auto, (max-width: 515px) 100vw, 515px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="515" height="409" data-attachment-id="764" data-permalink="/?attachment_id=764" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-13-3.png?fit=515%2C409&amp;ssl=1" data-orig-size="515,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-13-3" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-13-3.png?fit=515%2C409&amp;ssl=1" data-id="764" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-13-3.png?resize=515%2C409&amp;ssl=1" alt="" class="wp-image-764" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-13-3.png?w=515&amp;ssl=1 515w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-13-3.png?resize=300%2C238&amp;ssl=1 300w" sizes="auto, (max-width: 515px) 100vw, 515px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="515" height="409" data-attachment-id="765" data-permalink="/?attachment_id=765" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-13-4.png?fit=515%2C409&amp;ssl=1" data-orig-size="515,409" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-13-4" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-13-4.png?fit=515%2C409&amp;ssl=1" data-id="765" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-13-4.png?resize=515%2C409&amp;ssl=1" alt="" class="wp-image-765" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-13-4.png?w=515&amp;ssl=1 515w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-13-4.png?resize=300%2C238&amp;ssl=1 300w" sizes="auto, (max-width: 515px) 100vw, 515px"></figure>
+</figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading">Part 2.3: Gaussian and Laplacian Stacks</h2>
+
+
+
+<p class="wp-block-paragraph">To implement Gaussian and Laplacian stacks, I first wrote a function to build the Gaussian stack. The stack starts with the original grayscale image. For each higher level i, I applied a Gaussian filter with increasing standard deviation and filter size:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\sigma = 2i, n = 6\sigma + 1<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">This way, all levels in the stack have the same image dimensions, and the results can be stored in a single 3D matrix.</p>
+
+
+
+<p class="wp-block-paragraph">The Laplacian stack was then obtained by subtracting consecutive levels of the Gaussian stack. For each level i, the Laplacian image is defined as the difference between the Gaussian at level i and level i+1. The final level of the Laplacian stack stores the lowest frequency image, i.e., the last Gaussian image.</p>
+
+
+
+<p class="wp-block-paragraph">The Laplacian stack can be expressed as:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>L_i = G_i &ndash; G_{i+1}, \quad i = 0, 1, \dots, N-2,  \quad L_{N-1} = G_{N-1}<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">Below are the results of running the Laplacian stacks on the apple and orange images with level of 4:</p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj2/"}' class="wp-block-gallery has-nested-images columns-1 is-cropped wp-block-gallery-14 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1024" height="200" data-attachment-id="775" data-permalink="/?attachment_id=775" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-14.png?fit=1570%2C307&amp;ssl=1" data-orig-size="1570,307" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-14" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-14.png?fit=1024%2C200&amp;ssl=1" data-id="775" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-14.png?resize=1024%2C200&amp;ssl=1" alt="" class="wp-image-775" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-14.png?resize=1024%2C200&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-14.png?resize=300%2C59&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-14.png?resize=768%2C150&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-14.png?resize=1536%2C300&amp;ssl=1 1536w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-14.png?resize=1200%2C235&amp;ssl=1 1200w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-14.png?w=1570&amp;ssl=1 1570w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1024" height="200" data-attachment-id="776" data-permalink="/?attachment_id=776" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-16.png?fit=1570%2C307&amp;ssl=1" data-orig-size="1570,307" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-16" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-16.png?fit=1024%2C200&amp;ssl=1" data-id="776" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-16.png?resize=1024%2C200&amp;ssl=1" alt="" class="wp-image-776" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-16.png?resize=1024%2C200&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-16.png?resize=300%2C59&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-16.png?resize=768%2C150&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-16.png?resize=1536%2C300&amp;ssl=1 1536w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-16.png?resize=1200%2C235&amp;ssl=1 1200w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-16.png?w=1570&amp;ssl=1 1570w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">Here shows a colored version of the same operation (normalized for better visualization):</p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj2/"}' class="wp-block-gallery has-nested-images columns-1 is-cropped wp-block-gallery-15 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1024" height="200" data-attachment-id="777" data-permalink="/?attachment_id=777" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-15.png?fit=1570%2C307&amp;ssl=1" data-orig-size="1570,307" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-15" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-15.png?fit=1024%2C200&amp;ssl=1" data-id="777" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-15.png?resize=1024%2C200&amp;ssl=1" alt="" class="wp-image-777" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-15.png?resize=1024%2C200&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-15.png?resize=300%2C59&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-15.png?resize=768%2C150&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-15.png?resize=1536%2C300&amp;ssl=1 1536w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-15.png?resize=1200%2C235&amp;ssl=1 1200w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-15.png?w=1570&amp;ssl=1 1570w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1024" height="200" data-attachment-id="778" data-permalink="/?attachment_id=778" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-17.png?fit=1570%2C307&amp;ssl=1" data-orig-size="1570,307" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-17" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-17.png?fit=1024%2C200&amp;ssl=1" data-id="778" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-17.png?resize=1024%2C200&amp;ssl=1" alt="" class="wp-image-778" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-17.png?resize=1024%2C200&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-17.png?resize=300%2C59&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-17.png?resize=768%2C150&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-17.png?resize=1536%2C300&amp;ssl=1 1536w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-17.png?resize=1200%2C235&amp;ssl=1 1200w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-17.png?w=1570&amp;ssl=1 1570w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+</figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading">Part 2.4: Multiresolution Blending (a.k.a. the oraple!)</h2>
+
+
+
+<h4 class="wp-block-heading has-text-align-center">Gray Blending</h4>
+
+
+
+<p class="wp-block-paragraph">I first applied the same Gaussian filters that were used for the apple and orange images to blur the mask.</p>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1024" height="200" data-attachment-id="783" data-permalink="/?attachment_id=783" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-18-1.png?fit=1570%2C307&amp;ssl=1" data-orig-size="1570,307" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-18-1" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-18-1.png?fit=1024%2C200&amp;ssl=1" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-18-1.png?resize=1024%2C200&amp;ssl=1" alt="" class="wp-image-783" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-18-1.png?resize=1024%2C200&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-18-1.png?resize=300%2C59&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-18-1.png?resize=768%2C150&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-18-1.png?resize=1536%2C300&amp;ssl=1 1536w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-18-1.png?resize=1200%2C235&amp;ssl=1 1200w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-18-1.png?w=1570&amp;ssl=1 1570w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+
+
+
+<p class="wp-block-paragraph">By applying this blurred mask to each level of the Laplacian stack, I got the following results, which combine the two inputs into a smooth blend (the &ldquo;Oraple&rdquo;).</p>
+
+
+
+<figure class="wp-block-image aligncenter size-large is-resized"><img data-recalc-dims="1" loading="lazy" decoding="async" width="510" height="1024" data-attachment-id="781" data-permalink="/?attachment_id=781" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-18.png?fit=940%2C1888&amp;ssl=1" data-orig-size="940,1888" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-18" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-18.png?fit=510%2C1024&amp;ssl=1" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-18.png?resize=510%2C1024&amp;ssl=1" alt="" class="wp-image-781" style="width:536px;height:auto" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-18.png?resize=510%2C1024&amp;ssl=1 510w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-18.png?resize=149%2C300&amp;ssl=1 149w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-18.png?resize=768%2C1543&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-18.png?resize=765%2C1536&amp;ssl=1 765w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-18.png?w=940&amp;ssl=1 940w" sizes="auto, (max-width: 510px) 100vw, 510px"></figure>
+
+
+
+<p class="wp-block-paragraph">Here are some other blends in grayscale: a bread dog and crystal ball galaxy. They both used irregular masks to get the result!</p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj2/"}' class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-16 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="510" height="1024" data-attachment-id="786" data-permalink="/?attachment_id=786" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-20-1.png?fit=940%2C1888&amp;ssl=1" data-orig-size="940,1888" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-20-1" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-20-1.png?fit=510%2C1024&amp;ssl=1" data-id="786" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-20-1.png?resize=510%2C1024&amp;ssl=1" alt="" class="wp-image-786" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-20-1.png?resize=510%2C1024&amp;ssl=1 510w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-20-1.png?resize=149%2C300&amp;ssl=1 149w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-20-1.png?resize=768%2C1543&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-20-1.png?resize=765%2C1536&amp;ssl=1 765w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-20-1.png?w=940&amp;ssl=1 940w" sizes="auto, (max-width: 510px) 100vw, 510px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="510" height="1024" data-attachment-id="785" data-permalink="/?attachment_id=785" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-21-1.png?fit=940%2C1888&amp;ssl=1" data-orig-size="940,1888" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-21-1" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-21-1.png?fit=510%2C1024&amp;ssl=1" data-id="785" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-21-1.png?resize=510%2C1024&amp;ssl=1" alt="" class="wp-image-785" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-21-1.png?resize=510%2C1024&amp;ssl=1 510w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-21-1.png?resize=149%2C300&amp;ssl=1 149w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-21-1.png?resize=768%2C1543&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-21-1.png?resize=765%2C1536&amp;ssl=1 765w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-21-1.png?w=940&amp;ssl=1 940w" sizes="auto, (max-width: 510px) 100vw, 510px"></figure>
+</figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading">Bells &amp; Whistles</h2>
+
+
+
+<h4 class="wp-block-heading has-text-align-center">Colored Blending</h4>
+
+
+
+<p class="wp-block-paragraph">Here are the result blending images:</p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj2/"}' class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-17 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="526" height="520" data-attachment-id="791" data-permalink="/?attachment_id=791" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-24.png?fit=526%2C520&amp;ssl=1" data-orig-size="526,520" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-24" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-24.png?fit=526%2C520&amp;ssl=1" data-id="791" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-24.png?resize=526%2C520&amp;ssl=1" alt="" class="wp-image-791" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-24.png?w=526&amp;ssl=1 526w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-24.png?resize=300%2C297&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-24.png?resize=50%2C50&amp;ssl=1 50w" sizes="auto, (max-width: 526px) 100vw, 526px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="520" height="522" data-attachment-id="790" data-permalink="/?attachment_id=790" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-22.png?fit=520%2C522&amp;ssl=1" data-orig-size="520,522" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-22" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-22.png?fit=520%2C522&amp;ssl=1" data-id="790" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-22.png?resize=520%2C522&amp;ssl=1" alt="" class="wp-image-790" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-22.png?w=520&amp;ssl=1 520w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-22.png?resize=300%2C300&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-22.png?resize=150%2C150&amp;ssl=1 150w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-22.png?resize=200%2C200&amp;ssl=1 200w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-22.png?resize=50%2C50&amp;ssl=1 50w" sizes="auto, (max-width: 520px) 100vw, 520px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="522" height="518" data-attachment-id="789" data-permalink="/?attachment_id=789" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-23.png?fit=522%2C518&amp;ssl=1" data-orig-size="522,518" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-23" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-23.png?fit=522%2C518&amp;ssl=1" data-id="789" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-23.png?resize=522%2C518&amp;ssl=1" alt="" class="wp-image-789" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-23.png?w=522&amp;ssl=1 522w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-23.png?resize=300%2C298&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-23.png?resize=150%2C150&amp;ssl=1 150w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-23.png?resize=50%2C50&amp;ssl=1 50w" sizes="auto, (max-width: 522px) 100vw, 522px"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">Here are the general process:</p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj2/"}' class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-18 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="510" height="1024" data-attachment-id="793" data-permalink="/?attachment_id=793" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-19.png?fit=940%2C1888&amp;ssl=1" data-orig-size="940,1888" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-19" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-19.png?fit=510%2C1024&amp;ssl=1" data-id="793" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-19.png?resize=510%2C1024&amp;ssl=1" alt="" class="wp-image-793" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-19.png?resize=510%2C1024&amp;ssl=1 510w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-19.png?resize=149%2C300&amp;ssl=1 149w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-19.png?resize=768%2C1543&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-19.png?resize=765%2C1536&amp;ssl=1 765w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-19.png?w=940&amp;ssl=1 940w" sizes="auto, (max-width: 510px) 100vw, 510px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="510" height="1024" data-attachment-id="794" data-permalink="/?attachment_id=794" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-20.png?fit=940%2C1888&amp;ssl=1" data-orig-size="940,1888" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-20" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-20.png?fit=510%2C1024&amp;ssl=1" data-id="794" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-20.png?resize=510%2C1024&amp;ssl=1" alt="" class="wp-image-794" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-20.png?resize=510%2C1024&amp;ssl=1 510w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-20.png?resize=149%2C300&amp;ssl=1 149w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-20.png?resize=768%2C1543&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-20.png?resize=765%2C1536&amp;ssl=1 765w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-20.png?w=940&amp;ssl=1 940w" sizes="auto, (max-width: 510px) 100vw, 510px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="510" height="1024" data-attachment-id="792" data-permalink="/?attachment_id=792" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-21.png?fit=940%2C1888&amp;ssl=1" data-orig-size="940,1888" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-21" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-21.png?fit=510%2C1024&amp;ssl=1" data-id="792" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-21.png?resize=510%2C1024&amp;ssl=1" alt="" class="wp-image-792" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-21.png?resize=510%2C1024&amp;ssl=1 510w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-21.png?resize=149%2C300&amp;ssl=1 149w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-21.png?resize=768%2C1543&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-21.png?resize=765%2C1536&amp;ssl=1 765w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/09/2-21.png?w=940&amp;ssl=1 940w" sizes="auto, (max-width: 510px) 100vw, 510px"></figure>
+</figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><em>END</em></p>
+
+
+
+<p class="wp-block-paragraph"></p>
+</div></div>
+
+
+
+<div class="wp-block-group has-global-padding is-layout-constrained wp-block-group-is-layout-constrained"></div>
+</main>
+
+
+<footer class="wp-block-template-part">
+<div class="wp-block-group alignfull has-global-padding is-layout-constrained wp-container-core-group-is-layout-41208af0 wp-block-group-is-layout-constrained" style="padding-top:80px;padding-right:40px;padding-bottom:80px;padding-left:40px">
+<div class="wp-block-group alignwide is-content-justification-space-between is-layout-flex wp-container-core-group-is-layout-bdaa8e54 wp-block-group-is-layout-flex">
+<div class="wp-block-group is-layout-flex wp-block-group-is-layout-flex"><nav class="wp-block-navigation is-layout-flex wp-block-navigation-is-layout-flex" aria-label="Navigation 2"><ul class="wp-block-navigation__container  wp-block-navigation"><li class=" wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="./about/"><span class="wp-block-navigation-item__label">  About  </span></a></li><li class=" wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="http://shaoyiwang.com"><span class="wp-block-navigation-item__label">  Projects  </span></a></li><li class=" wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="./publications/"><span class="wp-block-navigation-item__label">  Publications  </span></a></li><li class=" wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="./resume/"><span class="wp-block-navigation-item__label">  Resume  </span></a></li><li class=" wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="./coding/"><span class="wp-block-navigation-item__label">  Coding  </span></a></li><li class=" wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="./game-development-log/"><span class="wp-block-navigation-item__label">  Game  </span></a></li><li class=" wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="./contact/"><span class="wp-block-navigation-item__label">  Contact  </span></a></li></ul></nav></div>
+</div>
+</div>
+</footer></div>
+<!-- wpcom_wp_footer -->
+<script type="speculationrules">
+{"prefetch":[{"source":"document","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":["/wp-*.php","/wp-admin/*","/wp-content/uploads/*","/wp-content/*","/wp-content/plugins/*","/wp-content/themes/creatio-2/*","/*\\?(.+)"]}},{"not":{"selector_matches":"a[rel~=\"nofollow\"]"}},{"not":{"selector_matches":".no-prefetch, .no-prefetch a"}}]},"eagerness":"conservative"}]}
+</script>
+<meta id="bilmur" property="bilmur:data" content="" data-customproperties='{"woo_active":"0","logged_in":"0","wptheme":"creatio-2","wptheme_is_block":"1"}' data-provider="wordpress.com" data-service="atomic" data-site-tz="America/Los_Angeles">
+<script defer src="https://s0.wp.com/wp-content/js/bilmur.min.js?m=202615"></script>
+<script type="module" src="./js/view.min.js" id="@wordpress/block-library/navigation/view-js-module" fetchpriority="low" data-wp-router-options='{"loadOnClientNavigation":true}'></script>
+		<div id="jp-carousel-loading-overlay">
+			<div id="jp-carousel-loading-wrapper">
+				<span id="jp-carousel-library-loading">&nbsp;</span>
+			</div>
+		</div>
+		<div class="jp-carousel-overlay" style="display: none;">
+
+		<div class="jp-carousel-container">
+			<!-- The Carousel Swiper -->
+			<div class="jp-carousel-wrap swiper jp-carousel-swiper-container jp-carousel-transitions" itemscope itemtype="https://schema.org/ImageGallery">
+				<div class="jp-carousel swiper-wrapper"></div>
+				<div class="jp-swiper-button-prev swiper-button-prev">
+					<svg width="25" height="24" viewbox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<mask id="maskPrev" mask-type="alpha" maskunits="userSpaceOnUse" x="8" y="6" width="9" height="12">
+							<path d="M16.2072 16.59L11.6496 12L16.2072 7.41L14.8041 6L8.8335 12L14.8041 18L16.2072 16.59Z" fill="white"></path>
+						</mask>
+						<g mask="url(#maskPrev)">
+							<rect x="0.579102" width="23.8823" height="24" fill="#FFFFFF"></rect>
+						</g>
+					</svg>
+				</div>
+				<div class="jp-swiper-button-next swiper-button-next">
+					<svg width="25" height="24" viewbox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<mask id="maskNext" mask-type="alpha" maskunits="userSpaceOnUse" x="8" y="6" width="8" height="12">
+							<path d="M8.59814 16.59L13.1557 12L8.59814 7.41L10.0012 6L15.9718 12L10.0012 18L8.59814 16.59Z" fill="white"></path>
+						</mask>
+						<g mask="url(#maskNext)">
+							<rect x="0.34375" width="23.8822" height="24" fill="#FFFFFF"></rect>
+						</g>
+					</svg>
+				</div>
+			</div>
+			<!-- The main close buton -->
+			<div class="jp-carousel-close-hint">
+				<svg width="25" height="24" viewbox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<mask id="maskClose" mask-type="alpha" maskunits="userSpaceOnUse" x="5" y="5" width="15" height="14">
+						<path d="M19.3166 6.41L17.9135 5L12.3509 10.59L6.78834 5L5.38525 6.41L10.9478 12L5.38525 17.59L6.78834 19L12.3509 13.41L17.9135 19L19.3166 17.59L13.754 12L19.3166 6.41Z" fill="white"></path>
+					</mask>
+					<g mask="url(#maskClose)">
+						<rect x="0.409668" width="23.8823" height="24" fill="#FFFFFF"></rect>
+					</g>
+				</svg>
+			</div>
+			<!-- Image info, comments and meta -->
+			<div class="jp-carousel-info">
+				<div class="jp-carousel-info-footer">
+					<div class="jp-carousel-pagination-container">
+						<div class="jp-swiper-pagination swiper-pagination"></div>
+						<div class="jp-carousel-pagination"></div>
+					</div>
+					<div class="jp-carousel-photo-title-container">
+						<h2 class="jp-carousel-photo-caption"></h2>
+					</div>
+					<div class="jp-carousel-photo-icons-container">
+						<a href="#" class="jp-carousel-icon-btn jp-carousel-icon-info" aria-label="Toggle photo metadata visibility">
+							<span class="jp-carousel-icon">
+								<svg width="25" height="24" viewbox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<mask id="maskInfo" mask-type="alpha" maskunits="userSpaceOnUse" x="2" y="2" width="21" height="20">
+										<path fill-rule="evenodd" clip-rule="evenodd" d="M12.7537 2C7.26076 2 2.80273 6.48 2.80273 12C2.80273 17.52 7.26076 22 12.7537 22C18.2466 22 22.7046 17.52 22.7046 12C22.7046 6.48 18.2466 2 12.7537 2ZM11.7586 7V9H13.7488V7H11.7586ZM11.7586 11V17H13.7488V11H11.7586ZM4.79292 12C4.79292 16.41 8.36531 20 12.7537 20C17.142 20 20.7144 16.41 20.7144 12C20.7144 7.59 17.142 4 12.7537 4C8.36531 4 4.79292 7.59 4.79292 12Z" fill="white"></path>
+									</mask>
+									<g mask="url(#maskInfo)">
+										<rect x="0.8125" width="23.8823" height="24" fill="#FFFFFF"></rect>
+									</g>
+								</svg>
+							</span>
+						</a>
+												<a href="#" class="jp-carousel-icon-btn jp-carousel-icon-comments" aria-label="Toggle photo comments visibility">
+							<span class="jp-carousel-icon">
+								<svg width="25" height="24" viewbox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<mask id="maskComments" mask-type="alpha" maskunits="userSpaceOnUse" x="2" y="2" width="21" height="20">
+										<path fill-rule="evenodd" clip-rule="evenodd" d="M4.3271 2H20.2486C21.3432 2 22.2388 2.9 22.2388 4V16C22.2388 17.1 21.3432 18 20.2486 18H6.31729L2.33691 22V4C2.33691 2.9 3.2325 2 4.3271 2ZM6.31729 16H20.2486V4H4.3271V18L6.31729 16Z" fill="white"></path>
+									</mask>
+									<g mask="url(#maskComments)">
+										<rect x="0.34668" width="23.8823" height="24" fill="#FFFFFF"></rect>
+									</g>
+								</svg>
+
+								<span class="jp-carousel-has-comments-indicator" aria-label="This image has comments."></span>
+							</span>
+						</a>
+											</div>
+				</div>
+				<div class="jp-carousel-info-extra">
+					<div class="jp-carousel-info-content-wrapper">
+						<div class="jp-carousel-photo-title-container">
+							<h2 class="jp-carousel-photo-title"></h2>
+						</div>
+						<div class="jp-carousel-comments-wrapper">
+															<div id="jp-carousel-comments-loading">
+									<span>Loading Comments...</span>
+								</div>
+								<div class="jp-carousel-comments"></div>
+								<div id="jp-carousel-comment-form-container">
+									<span id="jp-carousel-comment-form-spinner">&nbsp;</span>
+									<div id="jp-carousel-comment-post-results"></div>
+																														<form id="jp-carousel-comment-form">
+												<label for="jp-carousel-comment-form-comment-field" class="screen-reader-text">Write a Comment...</label>
+												<textarea name="comment" class="jp-carousel-comment-form-field jp-carousel-comment-form-textarea" id="jp-carousel-comment-form-comment-field" placeholder="Write a Comment..."></textarea>
+												<div id="jp-carousel-comment-form-submit-and-info-wrapper">
+													<div id="jp-carousel-comment-form-commenting-as">
+																													<fieldset>
+																<label for="jp-carousel-comment-form-email-field">Email</label>
+																<input type="text" name="email" class="jp-carousel-comment-form-field jp-carousel-comment-form-text-field" id="jp-carousel-comment-form-email-field">
+															</fieldset>
+															<fieldset>
+																<label for="jp-carousel-comment-form-author-field">Name</label>
+																<input type="text" name="author" class="jp-carousel-comment-form-field jp-carousel-comment-form-text-field" id="jp-carousel-comment-form-author-field">
+															</fieldset>
+															<fieldset>
+																<label for="jp-carousel-comment-form-url-field">Website</label>
+																<input type="text" name="url" class="jp-carousel-comment-form-field jp-carousel-comment-form-text-field" id="jp-carousel-comment-form-url-field">
+															</fieldset>
+																											</div>
+													<input type="submit" name="submit" class="jp-carousel-comment-form-button" id="jp-carousel-comment-form-button-submit" value="Post Comment">
+												</div>
+											</form>
+																											</div>
+													</div>
+						<div class="jp-carousel-image-meta">
+							<div class="jp-carousel-title-and-caption">
+								<div class="jp-carousel-photo-info">
+									<h3 class="jp-carousel-caption" itemprop="caption description"></h3>
+								</div>
+
+								<div class="jp-carousel-photo-description"></div>
+							</div>
+							<ul class="jp-carousel-image-exif" style="display: none;"></ul>
+							<a class="jp-carousel-image-download" href="#" target="_blank" style="display: none;">
+								<svg width="25" height="24" viewbox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<mask id="mask0" mask-type="alpha" maskunits="userSpaceOnUse" x="3" y="3" width="19" height="18">
+										<path fill-rule="evenodd" clip-rule="evenodd" d="M5.84615 5V19H19.7775V12H21.7677V19C21.7677 20.1 20.8721 21 19.7775 21H5.84615C4.74159 21 3.85596 20.1 3.85596 19V5C3.85596 3.9 4.74159 3 5.84615 3H12.8118V5H5.84615ZM14.802 5V3H21.7677V10H19.7775V6.41L9.99569 16.24L8.59261 14.83L18.3744 5H14.802Z" fill="white"></path>
+									</mask>
+									<g mask="url(#mask0)">
+										<rect x="0.870605" width="23.8823" height="24" fill="#FFFFFF"></rect>
+									</g>
+								</svg>
+								<span class="jp-carousel-download-text"></span>
+							</a>
+							<div class="jp-carousel-image-map" style="display: none;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		</div>
+		<script id="jetpack-carousel-js-extra">
+var jetpackSwiperLibraryPath = {"url":"/wp-content/plugins/jetpack/_inc/blocks/swiper.js"};
+var jetpackCarouselStrings = {"widths":[370,700,1000,1200,1400,2000],"is_logged_in":"","lang":"en","ajaxurl":"/wp-admin/admin-ajax.php","nonce":"0261132e66","display_exif":"1","display_comments":"1","single_image_gallery":"1","single_image_gallery_media_file":"","background_color":"black","comment":"Comment","post_comment":"Post Comment","write_comment":"Write a Comment...","loading_comments":"Loading Comments...","image_label":"Open image in full-screen.","download_original":"View full size \u003Cspan class=\"photo-size\"\u003E{0}\u003Cspan class=\"photo-size-times\"\u003E\u00d7\u003C/span\u003E{1}\u003C/span\u003E","no_comment_text":"Please be sure to submit some text with your comment.","no_comment_email":"Please provide an email address to comment.","no_comment_author":"Please provide your name to comment.","comment_post_error":"Sorry, but there was an error posting your comment. Please try again later.","comment_approved":"Your comment was approved.","comment_unapproved":"Your comment is in moderation.","camera":"Camera","aperture":"Aperture","shutter_speed":"Shutter Speed","focal_length":"Focal Length","copyright":"Copyright","comment_registration":"0","require_name_email":"0","login_url":"/wp-login.php?redirect_to=https%3A%2F%2Fshaoyiwang.com%2Fcs280a-proj2%2F","blog_id":"1","meta_data":["camera","aperture","shutter_speed","focal_length","copyright"]};
+//# sourceURL=jetpack-carousel-js-extra
+</script>
+<script type="text/javascript" src="./js/jetpack-carousel.min.js"></script>
+<script id="wp-block-template-skip-link-js-after">
+	( function() {
+		var skipLinkTarget = document.querySelector( 'main' ),
+			sibling,
+			skipLinkTargetID,
+			skipLink;
+
+		// Early exit if a skip-link target can't be located.
+		if ( ! skipLinkTarget ) {
+			return;
+		}
+
+		/*
+		 * Get the site wrapper.
+		 * The skip-link will be injected in the beginning of it.
+		 */
+		sibling = document.querySelector( '.wp-site-blocks' );
+
+		// Early exit if the root element was not found.
+		if ( ! sibling ) {
+			return;
+		}
+
+		// Get the skip-link target's ID, and generate one if it doesn't exist.
+		skipLinkTargetID = skipLinkTarget.id;
+		if ( ! skipLinkTargetID ) {
+			skipLinkTargetID = 'wp--skip-link--target';
+			skipLinkTarget.id = skipLinkTargetID;
+		}
+
+		// Create the skip link.
+		skipLink = document.createElement( 'a' );
+		skipLink.classList.add( 'skip-link', 'screen-reader-text' );
+		skipLink.id = 'wp-skip-link';
+		skipLink.href = '#' + skipLinkTargetID;
+		skipLink.innerText = 'Skip to content';
+
+		// Inject the skip link.
+		sibling.parentElement.insertBefore( skipLink, sibling );
+	}() );
+	
+//# sourceURL=wp-block-template-skip-link-js-after
+</script>
+<script id="jetpack-stats-js-before">
+_stq = window._stq || [];
+_stq.push([ "view", {"v":"ext","blog":"247756207","post":"1335","tz":"-7","srv":"shaoyiwang.com","hp":"atomic","ac":"2","amp":"0","j":"1:15.7"} ]);
+_stq.push([ "clickTrackerInit", "247756207", "1335" ]);
+//# sourceURL=jetpack-stats-js-before
+</script>
+<script src="https://stats.wp.com/e-202615.js" id="jetpack-stats-js" defer data-wp-strategy="defer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=default&amp;ver=1.3.13" id="mathjax-js"></script>
+<script id="wp-emoji-settings" type="application/json">
+{"baseUrl":"https://s.w.org/images/core/emoji/17.0.2/72x72/","ext":".png","svgUrl":"https://s.w.org/images/core/emoji/17.0.2/svg/","svgExt":".svg","source":{"concatemoji":"/wp-includes/js/wp-emoji-release.min.js?ver=6.9.4"}}
+</script>
+<script type="module">
+/*! This file is auto-generated */
+const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(window._wpemojiSettings=a,"wpEmojiSettingsSupports"),s=["flag","emoji"];function i(e){try{var t={supportTests:e,timestamp:(new Date).valueOf()};sessionStorage.setItem(o,JSON.stringify(t))}catch(e){}}function c(e,t,n){e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(t,0,0);t=new Uint32Array(e.getImageData(0,0,e.canvas.width,e.canvas.height).data);e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(n,0,0);const a=new Uint32Array(e.getImageData(0,0,e.canvas.width,e.canvas.height).data);return t.every((e,t)=>e===a[t])}function p(e,t){e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(t,0,0);var n=e.getImageData(16,16,1,1);for(let e=0;e<n.data.length;e++)if(0!==n.data[e])return!1;return!0}function u(e,t,n,a){switch(t){case"flag":return n(e,"\ud83c\udff3\ufe0f\u200d\u26a7\ufe0f","\ud83c\udff3\ufe0f\u200b\u26a7\ufe0f")?!1:!n(e,"\ud83c\udde8\ud83c\uddf6","\ud83c\udde8\u200b\ud83c\uddf6")&&!n(e,"\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f","\ud83c\udff4\u200b\udb40\udc67\u200b\udb40\udc62\u200b\udb40\udc65\u200b\udb40\udc6e\u200b\udb40\udc67\u200b\udb40\udc7f");case"emoji":return!a(e,"\ud83e\u1fac8")}return!1}function f(e,t,n,a){let r;const o=(r="undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?new OffscreenCanvas(300,150):document.createElement("canvas")).getContext("2d",{willReadFrequently:!0}),s=(o.textBaseline="top",o.font="600 32px Arial",{});return e.forEach(e=>{s[e]=t(o,e,n,a)}),s}function r(e){var t=document.createElement("script");t.src=e,t.defer=!0,document.head.appendChild(t)}a.supports={everything:!0,everythingExceptFlag:!0},new Promise(t=>{let n=function(){try{var e=JSON.parse(sessionStorage.getItem(o));if("object"==typeof e&&"number"==typeof e.timestamp&&(new Date).valueOf()<e.timestamp+604800&&"object"==typeof e.supportTests)return e.supportTests}catch(e){}return null}();if(!n){if("undefined"!=typeof Worker&&"undefined"!=typeof OffscreenCanvas&&"undefined"!=typeof URL&&URL.createObjectURL&&"undefined"!=typeof Blob)try{var e="postMessage("+f.toString()+"("+[JSON.stringify(s),u.toString(),c.toString(),p.toString()].join(",")+"));",a=new Blob([e],{type:"text/javascript"});const r=new Worker(URL.createObjectURL(a),{name:"wpTestEmojiSupports"});return void(r.onmessage=e=>{i(n=e.data),r.terminate(),t(n)})}catch(e){}i(n=f(s,u,c,p))}t(n)}).then(e=>{for(const n in e)a.supports[n]=e[n],a.supports.everything=a.supports.everything&&a.supports[n],"flag"!==n&&(a.supports.everythingExceptFlag=a.supports.everythingExceptFlag&&a.supports[n]);var t;a.supports.everythingExceptFlag=a.supports.everythingExceptFlag&&!a.supports.flag,a.supports.everything||((t=a.source||{}).concatemoji?r(t.concatemoji):t.wpemoji&&t.twemoji&&(r(t.twemoj

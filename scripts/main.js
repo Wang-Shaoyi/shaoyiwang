@@ -1,153 +1,238 @@
 // ============================================================
-// MAIN — runs on every page
+// MAIN — runs on every page after components.js + data files
 // ============================================================
 
-// ----- Mobile nav toggle -----
-const navToggle = document.querySelector(".nav-toggle");
-const mainNav = document.querySelector(".main-nav");
-
-if (navToggle && mainNav) {
-  navToggle.addEventListener("click", () => {
-    mainNav.classList.toggle("open");
-  });
-}
-
-// ----- Active nav link -----
-const currentPath = window.location.pathname.split("/").pop() || "index.html";
-document.querySelectorAll(".main-nav a").forEach((link) => {
-  const href = link.getAttribute("href").split("/").pop();
-  if (href === currentPath) link.classList.add("active");
-});
+// Root path — explicit data-root on <body> takes precedence
+const _inPages = window.location.pathname.replace(/\\/g, '/').includes('/pages/');
+const _root = (document.body.getAttribute('data-root') !== null)
+  ? document.body.getAttribute('data-root')
+  : (_inPages ? '../' : '');
 
 // ============================================================
-// MODAL
+// Merge project arrays from whichever _index.js files were loaded
 // ============================================================
-function createModal() {
-  const overlay = document.createElement("div");
-  overlay.className = "modal-overlay";
-  overlay.innerHTML = `
-    <div class="modal" role="dialog" aria-modal="true">
-      <button class="modal-close" aria-label="Close">&times;</button>
-      <div class="modal-img"><img src="" alt="" /></div>
-      <div class="modal-content">
-        <div class="modal-meta">
-          <span class="modal-category"></span>
-        </div>
-        <h2 class="modal-title"></h2>
-        <p class="modal-desc"></p>
-        <div class="modal-tags card-tags"></div>
-        <div class="modal-actions"></div>
-      </div>
-    </div>`;
-
-  document.body.appendChild(overlay);
-
-  overlay.querySelector(".modal-close").addEventListener("click", closeModal);
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) closeModal();
-  });
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeModal();
-  });
-
-  return overlay;
-}
-
-let modalOverlay = null;
-
-function openModal(project) {
-  if (!modalOverlay) modalOverlay = createModal();
-
-  const imgPath = window.location.pathname.includes("/pages/")
-    ? "../" + project.image
-    : project.image;
-
-  modalOverlay.querySelector(".modal-img img").src = imgPath;
-  modalOverlay.querySelector(".modal-img img").alt = project.title;
-  modalOverlay.querySelector(".modal-category").textContent = project.category;
-  modalOverlay.querySelector(".modal-title").textContent = project.title;
-  modalOverlay.querySelector(".modal-desc").textContent = project.description;
-
-  const tagsEl = modalOverlay.querySelector(".modal-tags");
-  tagsEl.innerHTML = project.tags
-    .map((t) => `<span class="tag">${t}</span>`)
-    .join("");
-
-  const actionsEl = modalOverlay.querySelector(".modal-actions");
-  actionsEl.innerHTML = project.link && project.link !== "#"
-    ? `<a class="btn" href="${project.link}" target="_blank" rel="noopener">View Project</a>`
-    : `<span class="btn btn-outline" style="opacity:0.5;cursor:default;">Coming Soon</span>`;
-
-  requestAnimationFrame(() => modalOverlay.classList.add("open"));
-  document.body.style.overflow = "hidden";
-}
-
-function closeModal() {
-  if (!modalOverlay) return;
-  modalOverlay.classList.remove("open");
-  document.body.style.overflow = "";
-}
+const PROJECTS = [
+  ...(typeof RESEARCH_PROJECTS !== 'undefined'  ? RESEARCH_PROJECTS  : []),
+  ...(typeof DESIGN_PROJECTS   !== 'undefined'  ? DESIGN_PROJECTS    : []),
+  ...(typeof MAKING_PROJECTS   !== 'undefined'  ? MAKING_PROJECTS    : []),
+  ...(typeof APP_GAME_PROJECTS !== 'undefined'  ? APP_GAME_PROJECTS  : []),
+];
 
 // ============================================================
-// CARD RENDERER
+// CARD RENDERER  — clicking navigates to the project page
 // ============================================================
 function renderCards(projects, containerId) {
   const grid = document.getElementById(containerId);
   if (!grid) return;
-
-  if (projects.length === 0) {
-    grid.innerHTML = `<p style="color:var(--text-muted)">No projects yet — check back soon!</p>`;
+  if (!projects.length) {
+    grid.innerHTML = `<p style="color:var(--text-muted);padding:8px 0">No projects yet — check back soon!</p>`;
     return;
   }
-
-  grid.innerHTML = projects
-    .map(
-      (p) => `
-    <article class="card" data-id="${p.id}" tabindex="0" role="button" aria-label="View ${p.title}">
+  grid.innerHTML = projects.map((p) => `
+    <article class="card" data-id="${p.id}" tabindex="0" role="link" aria-label="${p.title}">
       <div class="card-thumb">
-        <img src="${resolveImagePath(p.image)}" alt="${p.title}" loading="lazy" />
+        <img src="${_root + p.image}" alt="${p.title}" loading="lazy" />
       </div>
       <div class="card-body">
         <div class="card-category">${p.category}</div>
         <h3 class="card-title">${p.title}</h3>
         <p class="card-desc">${p.description}</p>
-        <div class="card-tags">
-          ${p.tags.map((t) => `<span class="tag">${t}</span>`).join("")}
+        <div class="card-tags">${p.tags.map((t) => `<span class="tag">${t}</span>`).join('')}</div>
+      </div>
+    </article>`).join('');
+
+  grid.querySelectorAll('.card').forEach((card) => {
+    const project = PROJECTS.find((p) => p.id === card.dataset.id);
+    const go = () => { window.location.href = _root + project.page; };
+    card.addEventListener('click', go);
+    card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') go(); });
+  });
+}
+
+// ============================================================
+// LIST RENDERER  (shared by Notes tabs)
+// ============================================================
+function renderList(containerId, data) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  if (!data || !data.length) {
+    el.innerHTML = `<p style="color:var(--text-muted);padding:8px 0">Nothing here yet.</p>`;
+    return;
+  }
+  el.innerHTML = data.map((c) => `
+    <div class="code-item">
+      <span class="code-title">${c.title}</span>
+      <span class="code-dash">—</span>
+      <span class="code-desc">${c.description}</span>
+      <div class="code-links">
+        ${(c.links || []).map((l) =>
+          `<a class="pub-link${l.style === 'orange' ? ' orange' : ''}" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`
+        ).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// ============================================================
+// DEV LOG RENDERER
+// ============================================================
+function renderDevLog(containerId, data) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  if (!data || !data.length) {
+    el.innerHTML = `<p style="color:var(--text-muted);padding:8px 0">No entries yet.</p>`;
+    return;
+  }
+  el.innerHTML = data.map((entry) => {
+    const d = new Date(entry.date);
+    const dateStr = d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    const hasPage = entry.page && entry.page !== '#';
+    return `
+    <div class="devlog-item">
+      <div class="devlog-date">${dateStr}</div>
+      <div class="devlog-body">
+        <div class="devlog-title">${hasPage
+          ? `<a href="${_root + entry.page}">${entry.title}</a>`
+          : entry.title
+        }</div>
+        <p class="devlog-desc">${entry.description}</p>
+        <div class="card-tags">${(entry.tags || []).map((t) => `<span class="tag">${t}</span>`).join('')}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// PUBLICATION LIST RENDERER
+// ============================================================
+function renderPublications(containerId) {
+  if (typeof PUBLICATIONS === 'undefined') return;
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = PUBLICATIONS.map((p) => `
+    <div class="pub-item">
+      <div class="pub-year">${p.year}</div>
+      <div>
+        <div class="pub-title">${p.title}</div>
+        <div class="pub-meta">${p.authors} — ${p.venue}</div>
+        <div class="pub-links">
+          ${p.links.map((l) =>
+            `<a class="pub-link${l.style === 'orange' ? ' orange' : ''}" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`
+          ).join('')}
         </div>
       </div>
-    </article>`
-    )
-    .join("");
+    </div>`).join('');
+}
 
-  grid.querySelectorAll(".card").forEach((card) => {
-    const id = card.dataset.id;
-    const project = PROJECTS.find((p) => p.id === id);
-    card.addEventListener("click", () => openModal(project));
-    card.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") openModal(project);
+// ============================================================
+// GALLERY RENDERER
+// ============================================================
+function renderGallery(containerId, filterCat) {
+  if (typeof GALLERY === 'undefined') return;
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const items = (filterCat && filterCat !== 'all')
+    ? GALLERY.filter((g) => g.category === filterCat)
+    : GALLERY;
+  el.innerHTML = items.map((g) => `
+    <div class="gallery-item">
+      <img src="${_root + g.image}" alt="${g.title}" loading="lazy" />
+      <div class="gallery-caption">
+        <div class="gallery-caption-title">${g.title}</div>
+        <div class="gallery-caption-cat">${g.category}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ============================================================
+// TABS (Notes page)
+// ============================================================
+function initTabs() {
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  if (!tabBtns.length) return;
+
+  // Read tab from URL hash so links to a specific tab work
+  const hashTab = window.location.hash.replace('#tab-', '');
+
+  tabBtns.forEach((btn) => {
+    if (hashTab && btn.dataset.tab === hashTab) {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      const pane = document.getElementById('tab-' + btn.dataset.tab);
+      if (pane) pane.classList.add('active');
+    }
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      const pane = document.getElementById('tab-' + btn.dataset.tab);
+      if (pane) pane.classList.add('active');
+      window.location.hash = 'tab-' + btn.dataset.tab;
     });
   });
 }
 
-function resolveImagePath(imgPath) {
-  return window.location.pathname.includes("/pages/")
-    ? "../" + imgPath
-    : imgPath;
+// ============================================================
+// HOME PAGE — featured projects only
+// ============================================================
+if (document.getElementById('home-grid')) {
+  renderCards(PROJECTS.filter((p) => p.featured), 'home-grid');
 }
 
 // ============================================================
-// HOME — featured projects
+// PROJECTS PAGE — all card projects with filter bar
 // ============================================================
-if (document.getElementById("project-grid")) {
-  const featured = PROJECTS.filter((p) => p.featured);
-  renderCards(featured, "project-grid");
+if (document.getElementById('projects-grid')) {
+  const bar = document.getElementById('projects-filter');
+
+  function applyProjectFilter(slug) {
+    if (bar) bar.querySelectorAll('.filter-btn').forEach((b) =>
+      b.classList.toggle('active', b.dataset.filter === slug)
+    );
+    const url = new URL(window.location.href);
+    if (slug === 'all') url.searchParams.delete('filter');
+    else url.searchParams.set('filter', slug);
+    window.history.replaceState({}, '', url.toString());
+    renderCards(
+      slug === 'all' ? PROJECTS : PROJECTS.filter((p) => p.categorySlug === slug),
+      'projects-grid'
+    );
+  }
+
+  applyProjectFilter(new URLSearchParams(window.location.search).get('filter') || 'all');
+
+  if (bar) bar.querySelectorAll('.filter-btn').forEach((btn) => {
+    btn.addEventListener('click', () => applyProjectFilter(btn.dataset.filter));
+  });
 }
 
 // ============================================================
-// CATEGORY PAGES — filter by slug from <body data-category>
+// NOTES PAGE — render all tabs then init tab switching
 // ============================================================
-const categorySlug = document.body.dataset.category;
-if (categorySlug && document.getElementById("category-grid")) {
-  const filtered = PROJECTS.filter((p) => p.categorySlug === categorySlug);
-  renderCards(filtered, "category-grid");
+if (document.getElementById('tab-coding')) {
+  renderList('notes-coding',    typeof CODING_NOTES    !== 'undefined' ? CODING_NOTES    : []);
+  renderList('notes-math',      typeof MATH_NOTES      !== 'undefined' ? MATH_NOTES      : []);
+  renderList('notes-resources', typeof RESOURCES_NOTES !== 'undefined' ? RESOURCES_NOTES : []);
+  renderDevLog('notes-devlog',  typeof GAME_DEV_LOG    !== 'undefined' ? GAME_DEV_LOG    : []);
+  initTabs();
+}
+
+// ============================================================
+// PUBLICATIONS PAGE
+// ============================================================
+if (document.getElementById('pub-list')) renderPublications('pub-list');
+
+// ============================================================
+// GALLERY PAGE
+// ============================================================
+if (document.getElementById('gallery-grid')) {
+  renderGallery('gallery-grid', 'all');
+  const galleryBar = document.getElementById('gallery-filter');
+  if (galleryBar) galleryBar.querySelectorAll('.filter-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      galleryBar.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderGallery('gallery-grid', btn.dataset.filter);
+    });
+  });
 }

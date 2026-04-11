@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notes — Shaoyi Wang</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <header class="site-header"></header>
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1><span class="accent-orange">Notes</span></h1>
+        <p>Coding, math, resources, and game dev logs.</p>
+      </div>
+    </section>
+    <section class="section-tight">
+      <div class="container">
+
+        <!-- Tab buttons -->
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="coding">Coding</button>
+          <button class="tab-btn"        data-tab="math">Math</button>
+          <button class="tab-btn"        data-tab="resources">Resources</button>
+          <button class="tab-btn"        data-tab="game_develop">Game Dev Log</button>
+        </div>
+
+        <!-- Tab panes -->
+        <div class="tab-content active" id="tab-coding">
+          <div class="code-list" id="notes-coding"></div>
+        </div>
+        <div class="tab-content" id="tab-math">
+          <div class="code-list" id="notes-math"></div>
+        </div>
+        <div class="tab-content" id="tab-resources">
+          <div class="code-list" id="notes-resources"></div>
+        </div>
+        <div class="tab-content" id="tab-game_develop">
+          <div id="notes-devlog"></div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer"><p>&copy; 2026 Shaoyi Wang</p></footer>
+
+  <script src="../scripts/components.js"></script>
+  <script src="notes/coding/_index.js"></script>
+  <script src="notes/math/_index.js"></script>
+  <script src="notes/resources/_index.js"></script>
+  <script src="notes/game_develop/_index.js"></script>
+  <script src="../scripts/main.js"></script>
+</body>
+</html>

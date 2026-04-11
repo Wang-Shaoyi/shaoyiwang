@@ -1,0 +1,885 @@
+﻿<div class="entry-content wp-block-post-content has-global-padding is-layout-constrained wp-container-core-post-content-is-layout-f32baf6b wp-block-post-content-is-layout-constrained">
+<h1 class="wp-block-heading">Part 0: Calibrating Your Camera and Capturing a 3D Scan</h1>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Part 0.1: Calibrating My Camera</strong></h2>
+
+
+
+<p class="wp-block-paragraph">To estimate the intrinsic parameters of my phone camera, I first captured 50 images of printed ArUco tags (4&times;4 dictionary) from different viewpoints. The focal length was kept fixed (zoom = 1.0). </p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj4/"}' class="wp-block-gallery has-nested-images columns-7 is-cropped wp-block-gallery-2 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" fetchpriority="high" decoding="async" width="800" height="600" data-attachment-id="997" data-permalink="/?attachment_id=997" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5268.jpg?fit=800%2C600&amp;ssl=1" data-orig-size="800,600" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="IMG_5268" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5268.jpg?fit=800%2C600&amp;ssl=1" data-id="997" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5268.jpg?resize=800%2C600&amp;ssl=1" alt="" class="wp-image-997" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5268.jpg?w=800&amp;ssl=1 800w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5268.jpg?resize=300%2C225&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5268.jpg?resize=768%2C576&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5268.jpg?resize=600%2C450&amp;ssl=1 600w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5268.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5268.jpg?resize=200%2C150&amp;ssl=1 200w" sizes="(max-width: 800px) 100vw, 800px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" decoding="async" width="800" height="600" data-attachment-id="1003" data-permalink="/?attachment_id=1003" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5299.jpg?fit=800%2C600&amp;ssl=1" data-orig-size="800,600" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="IMG_5299" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5299.jpg?fit=800%2C600&amp;ssl=1" data-id="1003" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5299.jpg?resize=800%2C600&amp;ssl=1" alt="" class="wp-image-1003" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5299.jpg?w=800&amp;ssl=1 800w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5299.jpg?resize=300%2C225&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5299.jpg?resize=768%2C576&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5299.jpg?resize=600%2C450&amp;ssl=1 600w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5299.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5299.jpg?resize=200%2C150&amp;ssl=1 200w" sizes="(max-width: 800px) 100vw, 800px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" decoding="async" width="800" height="600" data-attachment-id="1002" data-permalink="/?attachment_id=1002" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5301.jpg?fit=800%2C600&amp;ssl=1" data-orig-size="800,600" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="IMG_5301" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5301.jpg?fit=800%2C600&amp;ssl=1" data-id="1002" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5301.jpg?resize=800%2C600&amp;ssl=1" alt="" class="wp-image-1002" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5301.jpg?w=800&amp;ssl=1 800w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5301.jpg?resize=300%2C225&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5301.jpg?resize=768%2C576&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5301.jpg?resize=600%2C450&amp;ssl=1 600w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5301.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5301.jpg?resize=200%2C150&amp;ssl=1 200w" sizes="(max-width: 800px) 100vw, 800px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="800" height="600" data-attachment-id="1001" data-permalink="/?attachment_id=1001" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5308.jpg?fit=800%2C600&amp;ssl=1" data-orig-size="800,600" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="IMG_5308" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5308.jpg?fit=800%2C600&amp;ssl=1" data-id="1001" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5308.jpg?resize=800%2C600&amp;ssl=1" alt="" class="wp-image-1001" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5308.jpg?w=800&amp;ssl=1 800w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5308.jpg?resize=300%2C225&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5308.jpg?resize=768%2C576&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5308.jpg?resize=600%2C450&amp;ssl=1 600w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5308.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5308.jpg?resize=200%2C150&amp;ssl=1 200w" sizes="auto, (max-width: 800px) 100vw, 800px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="800" height="600" data-attachment-id="1000" data-permalink="/?attachment_id=1000" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5311.jpg?fit=800%2C600&amp;ssl=1" data-orig-size="800,600" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="IMG_5311" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5311.jpg?fit=800%2C600&amp;ssl=1" data-id="1000" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5311.jpg?resize=800%2C600&amp;ssl=1" alt="" class="wp-image-1000" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5311.jpg?w=800&amp;ssl=1 800w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5311.jpg?resize=300%2C225&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5311.jpg?resize=768%2C576&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5311.jpg?resize=600%2C450&amp;ssl=1 600w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5311.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5311.jpg?resize=200%2C150&amp;ssl=1 200w" sizes="auto, (max-width: 800px) 100vw, 800px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="800" height="600" data-attachment-id="999" data-permalink="/?attachment_id=999" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5312.jpg?fit=800%2C600&amp;ssl=1" data-orig-size="800,600" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="IMG_5312" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5312.jpg?fit=800%2C600&amp;ssl=1" data-id="999" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5312.jpg?resize=800%2C600&amp;ssl=1" alt="" class="wp-image-999" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5312.jpg?w=800&amp;ssl=1 800w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5312.jpg?resize=300%2C225&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5312.jpg?resize=768%2C576&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5312.jpg?resize=600%2C450&amp;ssl=1 600w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5312.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5312.jpg?resize=200%2C150&amp;ssl=1 200w" sizes="auto, (max-width: 800px) 100vw, 800px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="800" height="600" data-attachment-id="998" data-permalink="/?attachment_id=998" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5315.jpg?fit=800%2C600&amp;ssl=1" data-orig-size="800,600" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="IMG_5315" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5315.jpg?fit=800%2C600&amp;ssl=1" data-id="998" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5315.jpg?resize=800%2C600&amp;ssl=1" alt="" class="wp-image-998" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5315.jpg?w=800&amp;ssl=1 800w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5315.jpg?resize=300%2C225&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5315.jpg?resize=768%2C576&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5315.jpg?resize=600%2C450&amp;ssl=1 600w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5315.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5315.jpg?resize=200%2C150&amp;ssl=1 200w" sizes="auto, (max-width: 800px) 100vw, 800px"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">For each tag, I defined a local 3D coordinate system on the tag plane to get the coordinates in the real world (<code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">objpoints</mark></code>). I iterated over all calibration images and uses OpenCV&rsquo;s ArUco detector, and found the 2D uv pixels (<code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">imgpoints</mark></code>) of all the detected ArUco tags.  Images where no markers are detected are skipped. Once the matching <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">objpoints </mark></code><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-primary-color">and</mark><code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color"> imgpoints</mark></code> are collected, I used <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">cv2.calibrateCamera()</mark></code> to calculate the intrinsics matrix <strong><em>K</em></strong> and the distortion coefficients <strong><em>d</em></strong>, calculated as:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>K =<br>\begin{bmatrix}<br>649.0065172 &amp; 0 &amp; 407.33495294 \\<br>0 &amp; 646.83469996 &amp; 290.66436024 \\<br>0 &amp; 0 &amp; 1<br>\end{bmatrix}<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\mathbf{d} =<br>\begin{bmatrix}<br>-0.16860768 &amp;<br>1.00162078 &amp;<br>-0.00521381 &amp;<br>0.006493 &amp;<br>-1.91354924<br>\end{bmatrix}<br>$$</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Part 0.2: Capturing a 3D Object Scan</strong></h2>
+
+
+
+<p class="wp-block-paragraph">I 50 took photos of my little friend (who was also in the <a href="./2025/09/02/becoming-friends-with-your-camera/" data-type="link" data-id="/2025/09/02/becoming-friends-with-your-camera/"><mark style="background-color:rgba(0, 0, 0, 0);color:#0693e3" class="has-inline-color">dolly zoom project</mark></a>) with an ArUco tag:</p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj4/"}' class="wp-block-gallery has-nested-images columns-7 is-cropped wp-block-gallery-3 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="800" height="600" data-attachment-id="1011" data-permalink="/?attachment_id=1011" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5342.jpg?fit=800%2C600&amp;ssl=1" data-orig-size="800,600" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="IMG_5342" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5342.jpg?fit=800%2C600&amp;ssl=1" data-id="1011" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5342.jpg?resize=800%2C600&amp;ssl=1" alt="" class="wp-image-1011" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5342.jpg?w=800&amp;ssl=1 800w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5342.jpg?resize=300%2C225&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5342.jpg?resize=768%2C576&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5342.jpg?resize=600%2C450&amp;ssl=1 600w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5342.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5342.jpg?resize=200%2C150&amp;ssl=1 200w" sizes="auto, (max-width: 800px) 100vw, 800px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="800" height="600" data-attachment-id="1012" data-permalink="/?attachment_id=1012" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5351.jpg?fit=800%2C600&amp;ssl=1" data-orig-size="800,600" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="IMG_5351" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5351.jpg?fit=800%2C600&amp;ssl=1" data-id="1012" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5351.jpg?resize=800%2C600&amp;ssl=1" alt="" class="wp-image-1012" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5351.jpg?w=800&amp;ssl=1 800w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5351.jpg?resize=300%2C225&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5351.jpg?resize=768%2C576&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5351.jpg?resize=600%2C450&amp;ssl=1 600w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5351.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5351.jpg?resize=200%2C150&amp;ssl=1 200w" sizes="auto, (max-width: 800px) 100vw, 800px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="800" height="600" data-attachment-id="1014" data-permalink="/?attachment_id=1014" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5359.jpg?fit=800%2C600&amp;ssl=1" data-orig-size="800,600" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="IMG_5359" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5359.jpg?fit=800%2C600&amp;ssl=1" data-id="1014" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5359.jpg?resize=800%2C600&amp;ssl=1" alt="" class="wp-image-1014" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5359.jpg?w=800&amp;ssl=1 800w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5359.jpg?resize=300%2C225&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5359.jpg?resize=768%2C576&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5359.jpg?resize=600%2C450&amp;ssl=1 600w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5359.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5359.jpg?resize=200%2C150&amp;ssl=1 200w" sizes="auto, (max-width: 800px) 100vw, 800px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="800" height="600" data-attachment-id="1013" data-permalink="/?attachment_id=1013" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5377.jpg?fit=800%2C600&amp;ssl=1" data-orig-size="800,600" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="IMG_5377" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5377.jpg?fit=800%2C600&amp;ssl=1" data-id="1013" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5377.jpg?resize=800%2C600&amp;ssl=1" alt="" class="wp-image-1013" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5377.jpg?w=800&amp;ssl=1 800w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5377.jpg?resize=300%2C225&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5377.jpg?resize=768%2C576&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5377.jpg?resize=600%2C450&amp;ssl=1 600w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5377.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5377.jpg?resize=200%2C150&amp;ssl=1 200w" sizes="auto, (max-width: 800px) 100vw, 800px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="800" height="600" data-attachment-id="1017" data-permalink="/?attachment_id=1017" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5381.jpg?fit=800%2C600&amp;ssl=1" data-orig-size="800,600" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="IMG_5381" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5381.jpg?fit=800%2C600&amp;ssl=1" data-id="1017" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5381.jpg?resize=800%2C600&amp;ssl=1" alt="" class="wp-image-1017" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5381.jpg?w=800&amp;ssl=1 800w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5381.jpg?resize=300%2C225&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5381.jpg?resize=768%2C576&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5381.jpg?resize=600%2C450&amp;ssl=1 600w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5381.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5381.jpg?resize=200%2C150&amp;ssl=1 200w" sizes="auto, (max-width: 800px) 100vw, 800px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="800" height="600" data-attachment-id="1016" data-permalink="/?attachment_id=1016" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5389.jpg?fit=800%2C600&amp;ssl=1" data-orig-size="800,600" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="IMG_5389" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5389.jpg?fit=800%2C600&amp;ssl=1" data-id="1016" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5389.jpg?resize=800%2C600&amp;ssl=1" alt="" class="wp-image-1016" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5389.jpg?w=800&amp;ssl=1 800w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5389.jpg?resize=300%2C225&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5389.jpg?resize=768%2C576&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5389.jpg?resize=600%2C450&amp;ssl=1 600w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5389.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5389.jpg?resize=200%2C150&amp;ssl=1 200w" sizes="auto, (max-width: 800px) 100vw, 800px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="800" height="600" data-attachment-id="1015" data-permalink="/?attachment_id=1015" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5391.jpg?fit=800%2C600&amp;ssl=1" data-orig-size="800,600" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="IMG_5391" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5391.jpg?fit=800%2C600&amp;ssl=1" data-id="1015" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5391.jpg?resize=800%2C600&amp;ssl=1" alt="" class="wp-image-1015" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5391.jpg?w=800&amp;ssl=1 800w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5391.jpg?resize=300%2C225&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5391.jpg?resize=768%2C576&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5391.jpg?resize=600%2C450&amp;ssl=1 600w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5391.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/IMG_5391.jpg?resize=200%2C150&amp;ssl=1 200w" sizes="auto, (max-width: 800px) 100vw, 800px"></figure>
+</figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Part 0.3: Estimating Camera Pose</strong></h2>
+
+
+
+<p class="wp-block-paragraph">I estimate the camera pose (rotation and translation) for each image of the scanned object using the ArUco tag and OpenCV&rsquo;s <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">cv2.solvePnP()</mark></code>. For each input image, I first detect the single ArUco tag; if a tag is found, I collect both the <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">objpoints</mark></code> and the <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">imgpoints</mark></code>, to serve as inputs along with <strong><em>K</em></strong> and <strong><em>d</em></strong> for the PnP function. After solving the extrinsics of all the images, the camera frustums&rsquo; poses and images are shown as follows:</p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj4/"}' class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-4 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1024" height="711" data-attachment-id="1020" data-permalink="/?attachment_id=1020" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-1.png?fit=1648%2C1145&amp;ssl=1" data-orig-size="1648,1145" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="0-3-1" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-1.png?fit=1024%2C711&amp;ssl=1" data-id="1020" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-1.png?resize=1024%2C711&amp;ssl=1" alt="" class="wp-image-1020" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-1.png?resize=1024%2C711&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-1.png?resize=300%2C208&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-1.png?resize=768%2C534&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-1.png?resize=1536%2C1067&amp;ssl=1 1536w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-1.png?resize=1200%2C834&amp;ssl=1 1200w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-1.png?w=1648&amp;ssl=1 1648w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1024" height="632" data-attachment-id="1021" data-permalink="/?attachment_id=1021" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-2.png?fit=1569%2C969&amp;ssl=1" data-orig-size="1569,969" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="0-3-2" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-2.png?fit=1024%2C632&amp;ssl=1" data-id="1021" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-2.png?resize=1024%2C632&amp;ssl=1" alt="" class="wp-image-1021" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-2.png?resize=1024%2C632&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-2.png?resize=300%2C185&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-2.png?resize=768%2C474&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-2.png?resize=1536%2C949&amp;ssl=1 1536w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-2.png?resize=1200%2C741&amp;ssl=1 1200w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-2.png?w=1569&amp;ssl=1 1569w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1024" height="661" data-attachment-id="1019" data-permalink="/?attachment_id=1019" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-3.png?fit=1819%2C1174&amp;ssl=1" data-orig-size="1819,1174" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="0-3-3" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-3.png?fit=1024%2C661&amp;ssl=1" data-id="1019" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-3.png?resize=1024%2C661&amp;ssl=1" alt="" class="wp-image-1019" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-3.png?resize=1024%2C661&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-3.png?resize=300%2C194&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-3.png?resize=768%2C496&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-3.png?resize=1536%2C991&amp;ssl=1 1536w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-3.png?resize=1200%2C774&amp;ssl=1 1200w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/0-3-3.png?w=1819&amp;ssl=1 1819w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+</figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Part 0.4: Undistorting images and creating a dataset</strong></h2>
+
+
+
+<p class="wp-block-paragraph">I randomly split the valid views into a training set (about <img decoding="async" src="https://s0.wp.com/latex.php?latex=N_%7B%5Ctext%7Btrain%7D%7D+%5Capprox+0.9N+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="N_{\text{train}} \approx 0.9N " class="latex">) and a validation set (the remaining <img decoding="async" src="https://s0.wp.com/latex.php?latex=N_%7B%5Ctext%7Bval%7D%7D+%3D+N+-+N_%7B%5Ctext%7Btrain%7D%7D+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="N_{\text{val}} = N - N_{\text{train}} " class="latex">&#8203;). For each selected image, I first undistort it using the calibrated intrinsics <strong><em>K</em></strong> and distortion coefficients <strong><em>d</em></strong>, then store the undistorted images and their corresponding camera-to-world matrices for late NeRF training.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h1 class="wp-block-heading">Part 1: Fit a Neural Field to a 2D Image</h1>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h4 class="wp-block-heading"><strong>Model Architecture &amp; Positional Encoding</strong></h4>
+
+
+
+<p class="wp-block-paragraph">I use a small MLP with sinusoidal positional encoding to map 2D pixel coordinates <img decoding="async" src="https://s0.wp.com/latex.php?latex=+x+%5Cin+%5Cmathbb%7BR%7D%5E2&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" x \in \mathbb{R}^2" class="latex"> to RGB colors. The positional encoding expands the input as:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\mathrm{PE}(x)<br>= \big[x,\, \sin(2^{0}\pi x),\, \cos(2^{0}\pi x),\, \ldots,\,<br>\sin(2^{L-1}\pi x),\, \cos(2^{L-1}\pi x)\big].<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">with L=10, giving a 42-D feature vector. This is then fed into a <strong>4-layer MLP with 256 hidden units</strong> and <strong>ReLU</strong> activations, followed by a <strong>final sigmoid layer</strong> to produce 3-channel RGB values in the range (0,1). </p>
+
+
+
+<figure class="wp-block-image aligncenter size-large is-resized"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1024" height="306" data-attachment-id="1029" data-permalink="/?attachment_id=1029" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/mlp_img.jpg?fit=2332%2C696&amp;ssl=1" data-orig-size="2332,696" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"1"}' data-image-title="mlp_img" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/mlp_img.jpg?fit=1024%2C306&amp;ssl=1" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/mlp_img.jpg?resize=1024%2C306&amp;ssl=1" alt="" class="wp-image-1029" style="aspect-ratio:3.3464287724432937;width:486px;height:auto" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/mlp_img.jpg?resize=1024%2C306&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/mlp_img.jpg?resize=300%2C90&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/mlp_img.jpg?resize=768%2C229&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/mlp_img.jpg?resize=1536%2C458&amp;ssl=1 1536w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/mlp_img.jpg?resize=2048%2C611&amp;ssl=1 2048w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/mlp_img.jpg?resize=1200%2C358&amp;ssl=1 1200w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+
+
+
+<p class="wp-block-paragraph">I train the 2D NeRF network using <strong>mean squared error (MSE) loss</strong> between the predicted and ground-truth RGB colors, optimized with <strong>Adam</strong> (learning rate <img decoding="async" src="https://s0.wp.com/latex.php?latex=1%5Ctimes10%5E%7B-2%7D&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="1\times10^{-2}" class="latex">). At each iteration, I sample <strong><em>N</em>=10,000</strong> pixels, run a forward pass, backpropagate the <strong>MSE loss</strong>, and update the MLP weights. To monitor reconstruction quality, I convert the MSE to the peak signal-to-noise ratio (PSNR):</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\mathrm{PSNR} = 10 \cdot \log_{10}\left(\frac{1}{\mathrm{MSE}}\right)<br>$$</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h4 class="wp-block-heading"><strong>Data Loader</strong></h4>
+
+
+
+<p class="wp-block-paragraph">To build each mini-batch, I conceptually flatten the <img decoding="async" src="https://s0.wp.com/latex.php?latex=H+%5Ctimes+W&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="H \times W" class="latex"> image into a 1D array of <img decoding="async" src="https://s0.wp.com/latex.php?latex=H%5C%21+%5Ccdot%5C%21+W+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="H\! \cdot\! W " class="latex"> pixels and randomly sample<em> N</em> indices from <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5C%7B0%2C%5Cdots%2CH%5C%21+%5Ccdot%5C%21+W-1%5C%7D&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\{0,\dots,H\! \cdot\! W-1\}" class="latex">. For each sampled index <code>idx</code>, I recover its 2D location (ys, xs) with the following code:</p>
+
+
+<div class="wp-block-code">
+	<div class="cm-editor">
+		<div class="cm-scroller">
+			
+<pre><code><div class="cm-line">def data_loader(img, N):</div><div class="cm-line">    h,w = img.shape[:2]</div><div class="cm-line"></div><div class="cm-line">    # generate random coords</div><div class="cm-line">    idx = np.random.choice(h * w, size=N, replace=True)</div><div class="cm-line">    ys = idx // w</div><div class="cm-line">    xs = idx %  w</div><div class="cm-line">    input_coords = np.stack([ys/h, xs/w], axis = 0).T </div><div class="cm-line"></div><div class="cm-line">    # find colors</div><div class="cm-line">    output_colors = img[ys, xs]</div><div class="cm-line"></div><div class="cm-line">    # turn to tensors</div><div class="cm-line">    input_coords = torch.from_numpy(input_coords).float()</div><div class="cm-line">    output_colors = torch.from_numpy(output_colors).float()</div><div class="cm-line"></div><div class="cm-line">    return input_coords, output_colors</div></code></pre>
+		</div>
+	</div>
+</div>
+
+
+<p class="wp-block-paragraph">The dataloader returns an input matrix <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cmathbf%7BX%7D+%5Cin+%5Cmathbb%7BR%7D%5E%7BN+%5Ctimes+2%7D&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\mathbf{X} \in \mathbb{R}^{N \times 2}" class="latex"> of normalized pixel coordinates, and a target matrix <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cmathbf%7BY%7D+%5Cin+%5Cmathbb%7BR%7D%5E%7BN+%5Ctimes+3%7D&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\mathbf{Y} \in \mathbb{R}^{N \times 3}" class="latex"> containing the corresponding RGB colors of those pixels.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h4 class="wp-block-heading"><strong>Training Results</strong></h4>
+
+
+
+<p class="wp-block-paragraph">I trained 1000 iterations for each image. As for both the fox image and the cat meme, at the very early iterations, the network only recovers a smooth, almost uniform color field with visible grid-like artifacts. By iteration ~50, the rough pattern of the animal starts to appear, and by iteration ~140 the face and background are clearly recognizable, though still blurry. As training continues to 1000 iterations, the model gradually sharpens edges and refines high-frequency details, producing a close reconstruction of the original image.</p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj4/"}' class="wp-block-gallery has-nested-images columns-1 is-cropped wp-block-gallery-5 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large" style="margin-right:var(--wp--preset--spacing--70);margin-left:var(--wp--preset--spacing--70)"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1024" height="366" data-attachment-id="1036" data-permalink="/?attachment_id=1036" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-2-1.png?fit=1182%2C422&amp;ssl=1" data-orig-size="1182,422" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="1-2-1" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-2-1.png?fit=1024%2C366&amp;ssl=1" data-id="1036" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-2-1.png?resize=1024%2C366&amp;ssl=1" alt="" class="wp-image-1036" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-2-1.png?resize=1024%2C366&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-2-1.png?resize=300%2C107&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-2-1.png?resize=768%2C274&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-2-1.png?w=1182&amp;ssl=1 1182w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+
+
+
+<figure class="wp-block-image size-large" style="margin-right:var(--wp--preset--spacing--70);margin-left:var(--wp--preset--spacing--70)"><img data-recalc-dims="1" loading="lazy" decoding="async" width="922" height="427" data-attachment-id="1037" data-permalink="/?attachment_id=1037" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-2-3.png?fit=922%2C427&amp;ssl=1" data-orig-size="922,427" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="1-2-3" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-2-3.png?fit=922%2C427&amp;ssl=1" data-id="1037" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-2-3.png?resize=922%2C427&amp;ssl=1" alt="" class="wp-image-1037" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-2-3.png?w=922&amp;ssl=1 922w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-2-3.png?resize=300%2C139&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-2-3.png?resize=768%2C356&amp;ssl=1 768w" sizes="auto, (max-width: 922px) 100vw, 922px"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">Below shows the PSNR curve for training on the cat meme. Although the curve fluctuates a lot during the training process, the final PSNR reached over 35, showing great image reconstruction results.</p>
+
+
+
+<figure class="wp-block-image aligncenter size-full is-resized"><img data-recalc-dims="1" loading="lazy" decoding="async" width="996" height="393" data-attachment-id="1043" data-permalink="/?attachment_id=1043" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-4-2.png?fit=996%2C393&amp;ssl=1" data-orig-size="996,393" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="1-4-2" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-4-2.png?fit=996%2C393&amp;ssl=1" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-4-2.png?resize=996%2C393&amp;ssl=1" alt="" class="wp-image-1043" style="aspect-ratio:2.5344121506103137;width:697px;height:auto" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-4-2.png?w=996&amp;ssl=1 996w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-4-2.png?resize=300%2C118&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-4-2.png?resize=768%2C303&amp;ssl=1 768w" sizes="auto, (max-width: 996px) 100vw, 996px"></figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h4 class="wp-block-heading"><strong>Hyperparameter Tuning</strong></h4>
+
+
+
+<p class="wp-block-paragraph">I vary both the maximum positional encoding frequency <strong><em>L</em></strong> and the <strong><em>MLP width</em></strong> (number of hidden channels). With a high frequency <strong>L = 10</strong> and wide network (<strong>width = 256</strong>), the model recovers sharp edges and fine textures. Reducing the <strong>width =</strong> <strong>32 </strong>with the same <strong>L = 10</strong> keeps most structures but introduces noise and blurring. When I lower the frequency to <strong>L = 2</strong>, the network can only represent very smooth, low-frequency content: the reconstructions become over-smoothed and almost piecewise planar, and this effect is even stronger when the <strong>width</strong> is also reduced to <strong>32</strong>. The same trend appears for both the fox and cat images.</p>
+
+
+
+<figure class="wp-block-image aligncenter size-full is-resized"><img data-recalc-dims="1" loading="lazy" decoding="async" width="790" height="583" data-attachment-id="1047" data-permalink="/?attachment_id=1047" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-3-1-1.png?fit=790%2C583&amp;ssl=1" data-orig-size="790,583" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="1-3-1" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-3-1-1.png?fit=790%2C583&amp;ssl=1" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-3-1-1.png?resize=790%2C583&amp;ssl=1" alt="" class="wp-image-1047" style="aspect-ratio:1.3550963522821688;width:505px;height:auto" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-3-1-1.png?w=790&amp;ssl=1 790w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-3-1-1.png?resize=300%2C221&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-3-1-1.png?resize=768%2C567&amp;ssl=1 768w" sizes="auto, (max-width: 790px) 100vw, 790px"></figure>
+
+
+
+<figure class="wp-block-image aligncenter size-full is-resized"><img data-recalc-dims="1" loading="lazy" decoding="async" width="631" height="590" data-attachment-id="1048" data-permalink="/?attachment_id=1048" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-3-2-1.png?fit=631%2C590&amp;ssl=1" data-orig-size="631,590" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="1-3-2" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-3-2-1.png?fit=631%2C590&amp;ssl=1" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-3-2-1.png?resize=631%2C590&amp;ssl=1" alt="" class="wp-image-1048" style="aspect-ratio:1.0694933658200694;width:511px;height:auto" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-3-2-1.png?w=631&amp;ssl=1 631w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/1-3-2-1.png?resize=300%2C281&amp;ssl=1 300w" sizes="auto, (max-width: 631px) 100vw, 631px"></figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h1 class="wp-block-heading">Part 2: Fit a Neural Radiance Field from Multi-view Images</h1>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Part 2.1: Create Rays from Cameras</strong></h2>
+
+
+
+<h4 class="wp-block-heading"><strong>Camera to World Coordinate Conversion</strong></h4>
+
+
+
+<p class="wp-block-paragraph">To convert 3D points from camera space to world space, I implement a <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">transform(c2w, x_c)</mark></code> function. For each camera-space point <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cmathbf%7Bx%7D_c+%5Cin+%5Cmathbb%7BR%7D%5E3&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\mathbf{x}_c \in \mathbb{R}^3" class="latex">, I first form the homogeneous vector <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Ctilde%7B%5Cmathbf%7Bx%7D%7D_c+%3D+%5B%5Cmathbf%7Bx%7D_c%5E%5Ctop%2C+1%5D%5E%5Ctop&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\tilde{\mathbf{x}}_c = [\mathbf{x}_c^\top, 1]^\top" class="latex"> and then apply the camera-to-world matrix <img decoding="async" src="https://s0.wp.com/latex.php?latex=+%5Cmathrm%7Bc2w%7D+%5Cin+%5Cmathbb%7BR%7D%5E%7B4%5Ctimes+4%7D&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" \mathrm{c2w} \in \mathbb{R}^{4\times 4}" class="latex">:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\tilde{\mathbf{x}}_w = \mathrm{c2w}\,\tilde{\mathbf{x}}_c,<br>\qquad<br>\mathbf{x}_w = \frac{\tilde{\mathbf{x}}_w[0:3]}{\tilde{\mathbf{x}}_w[3]}.<br>$$</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h4 class="wp-block-heading"><strong>Pixel to Camera Coordinate Conversion</strong></h4>
+
+
+
+<p class="wp-block-paragraph">To map pixel coordinates back to camera space, I invert the pinhole projection to create a function <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">pixel_to_camera(K, uv, s)</mark></code>. Given normalized pixel coordinates <img decoding="async" src="https://s0.wp.com/latex.php?latex=%28u%2C+v%29&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="(u, v)" class="latex">, depth <img decoding="async" src="https://s0.wp.com/latex.php?latex=s+%3D+z_c&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="s = z_c" class="latex">&#8203;, and the intrinsic matrix <strong><em>K</em></strong>, I first form the homogeneous pixel vector <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Ctilde%7B%5Cmathbf%7Bu%7D%7D+%3D+%5Bu%2C+v%2C+1%5D%5E%5Ctop&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\tilde{\mathbf{u}} = [u, v, 1]^\top" class="latex"> and solve:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\mathbf{x}_c = s K^{-1} \tilde{\mathbf{u}}<br>= s<br>\begin{bmatrix}<br>x_c \\<br>y_c \\<br>z_c<br>\end{bmatrix}.<br>$$</p>
+
+
+
+<h4 class="wp-block-heading"><strong>Pixel to Ray</strong></h4>
+
+
+
+<p class="wp-block-paragraph">Given the camera intrinsics <strong><em>K</em></strong>, a camera-to-world matrix <strong>c2w</strong>, and a set of pixel coordinates <code><strong>uv</strong></code>, I implemented the function <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">pixel_to_ray</mark></code> that converts each pixel into a 3D ray in world space. I first assume a unit depth s = 1 and use <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">pixel_to_camera</mark></code> to back-project each pixel (u, v) into camera coordinates, then apply <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">transform</mark></code> to map these points into world coordinates <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cmathbf%7BX%7D_w&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\mathbf{X}_w" class="latex">&#8203;. The ray origin <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cmathbf%7Br%7D_o&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\mathbf{r}_o" class="latex"> is taken from the translation part of <strong>c2w</strong> (the camera center), and the ray direction <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cmathbf%7Br%7D_d&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\mathbf{r}_d" class="latex"> is obtained by normalizing <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cmathbf%7BX%7D_w+-+%5Cmathbf%7Br%7D_o&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\mathbf{X}_w - \mathbf{r}_o" class="latex">&#8203;. </p>
+
+
+<div class="wp-block-code">
+	<div class="cm-editor">
+		<div class="cm-scroller">
+			
+<pre><code><div class="cm-line">def pixel_to_ray(K, c2w, uv):</div><div class="cm-line">    N = uv.shape[0]</div><div class="cm-line">    device, dtype = uv.device, uv.dtype</div><div class="cm-line"></div><div class="cm-line">    # s = 1 </div><div class="cm-line">    s = torch.ones((N, 1), device=device, dtype=dtype)</div><div class="cm-line"></div><div class="cm-line">    # camera coords to world coords</div><div class="cm-line">    x_c = pixel_to_camera(K, uv, s)   # (N,3)</div><div class="cm-line">    x_w = transform(c2w, x_c)  # (N,3)</div><div class="cm-line"></div><div class="cm-line">    # ray origin from c2w</div><div class="cm-line">    if c2w.dim() == 2:        # (4,4)</div><div class="cm-line">        ray_o = c2w[:3, 3].unsqueeze(0).expand(N, -1)   # (N,3)</div><div class="cm-line">    else:                  # (N,4,4)</div><div class="cm-line">        ray_o = c2w[:, :3, 3]                           # (N,3)</div><div class="cm-line"></div><div class="cm-line">    # normalized ray direction</div><div class="cm-line">    ray_d = F.normalize(x_w - ray_o, dim=-1)     # (N,3)</div><div class="cm-line">    return ray_o, ray_d</div></code></pre>
+		</div>
+	</div>
+</div>
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Part 2.2: Sampling</strong></h2>
+
+
+
+<h4 class="wp-block-heading"><strong>Sampling Rays from Images</strong></h4>
+
+
+
+<p class="wp-block-paragraph">To train the 3D NeRF, I sample rays directly from all training images. I first flatten the entire dataset of size <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">(num_images, H, W)</mark></code> into a 1D list of <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">total = num_images&middot;H&middot;W</mark></code> pixels, randomly pick <strong>N</strong> linear indices, and decode each index into an image id and a pixel location <code>(x, y)</code>. After shifting to pixel centers by adding <code>0.5</code> to the coordinates, I use the corresponding camera pose <strong>c2w</strong> and the shared intrinsics <strong>K</strong> in <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">pixel_to_ray</mark></code> to compute the ray origins and directions, and I use the RGB value at <code>(x, y)</code> as the supervision color for each ray.</p>
+
+
+
+<pre class="wp-block-code"><code>    def sample_rays(self, random=True, N=1000):
+        H, W, C = self.H, self.W, 3
+        total = self.count * H * W
+        device = self.images.device
+
+        # choose indices
+        idx = torch.randint(0, total, (N,), device=device)
+        img_ids = idx // (H * W)
+        pix_ids = idx %  (H * W)
+
+        ys = self.ys_flat[pix_ids]  # (N,)
+        xs = self.xs_flat[pix_ids]  # (N,)
+
+        # + 0.5 pixel center
+        uvs = torch.stack([xs.float() + 0.5, ys.float() + 0.5], dim=-1)  # (N,2)
+
+        c2w_curr = self.c2w[img_ids]  # (N,4,4)
+
+        ray_o, ray_d = pixel_to_ray(self.K, c2w_curr, uvs)               # (N,3),(N,3)
+        pixels = self.images[img_ids, ys, xs, :]                         # (N,3), in [0,1]
+
+        return ray_o, ray_d, pixels</code></pre>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h4 class="wp-block-heading"><strong>Sampling Points along Rays</strong></h4>
+
+
+
+<p class="wp-block-paragraph">For each ray, I discretize the continuous segment between a near and far bound (<img decoding="async" src="https://s0.wp.com/latex.php?latex=t+%5Cin+%5B2.0%2C+6.0%5D&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="t \in [2.0, 6.0]" class="latex">) into <mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color"><code>nsamples=64</code></mark> bins. I first build bin edges, then either take the midpoint of each bin (no perturbation) or add uniform random noise inside each bin during training (stratified sampling), so that different points along the ray are visited over time. The 3D sample positions are computed as </p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\mathbf{x}(t) = \mathbf{r}_o + t\,\mathbf{r}_d,<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">and I also keep the per-sample interval length <strong>&Delta;t</strong> (stored in <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">deltas</mark></code>) for volume rendering later.</p>
+
+
+<div class="wp-block-code">
+	<div class="cm-editor">
+		<div class="cm-scroller">
+			
+<pre><code><div class="cm-line">def sample_along_rays(ray_o,ray_d, perturb, n_samples = 64, near = 2.0, far = 6.0):</div><div class="cm-line">    device, dtype = ray_o.device, ray_o.dtype</div><div class="cm-line">    B = ray_o.shape[0]</div><div class="cm-line"></div><div class="cm-line">    ray_d = F.normalize(ray_d, dim=-1)    # normalize directions</div><div class="cm-line"></div><div class="cm-line">    # record delta</div><div class="cm-line">    t_edges = torch.linspace(near, far, n_samples + 1, device=device, dtype=dtype)     # (N+1,)</div><div class="cm-line">    deltas_1d = (t_edges[1:] - t_edges[:-1])     # (N,)</div><div class="cm-line"></div><div class="cm-line">    # get the points</div><div class="cm-line">    if perturb:</div><div class="cm-line">        t = t_edges[:-1][None, :] + torch.rand(B, n_samples, device=device, dtype=dtype) * deltas_1d[None, :]</div><div class="cm-line">    else:</div><div class="cm-line">        t = 0.5 * (t_edges[:-1] + t_edges[1:])[None, :].expand(B, n_samples)  # (B,N)</div><div class="cm-line"></div><div class="cm-line">    deltas = deltas_1d[None, :, None].expand(B, n_samples, 1)    # (B,N,1)</div><div class="cm-line">    points = ray_o[:, None, :] + t[:, :, None] * ray_d[:, None, :]    # (B,N,3)</div><div class="cm-line"></div><div class="cm-line">    return points, deltas</div></code></pre>
+		</div>
+	</div>
+</div>
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Part 2.3: Putting the Dataloading All Together</strong></h2>
+
+
+
+<p class="wp-block-paragraph">I wrap the multiview images and camera parameters in a <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">RaysData</mark></code> dataset. In the constructor, I move the RGB images, intrinsics <strong>K</strong>, and camera-to-world matrices <strong>c2w</strong> to a chosen device (&ldquo;cuda&rdquo; on google colab) and normalize all pixel values to [0, 1]. I then precompute the integer pixel grid (x, y) for each image using <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">torch.meshgrid</mark></code>, flatten it into a list of 2D coordinates <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">uvs</mark></code>, and flatten the images into a matching list of RGB colors <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">pixels</mark></code>. </p>
+
+
+
+<p class="wp-block-paragraph">Then I used viser to visualize the rays and sampled points. The first image randomly shows 100 rays, and the second &amp; third images show 100 rays coming from a single image.</p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj4/"}' class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-6 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1024" height="814" data-attachment-id="1069" data-permalink="/?attachment_id=1069" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-1.png?fit=1358%2C1079&amp;ssl=1" data-orig-size="1358,1079" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-3-1" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-1.png?fit=1024%2C814&amp;ssl=1" data-id="1069" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-1.png?resize=1024%2C814&amp;ssl=1" alt="" class="wp-image-1069" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-1.png?resize=1024%2C814&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-1.png?resize=300%2C238&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-1.png?resize=768%2C610&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-1.png?resize=1200%2C953&amp;ssl=1 1200w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-1.png?w=1358&amp;ssl=1 1358w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1024" height="797" data-attachment-id="1068" data-permalink="/?attachment_id=1068" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-2.png?fit=1304%2C1015&amp;ssl=1" data-orig-size="1304,1015" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-3-2" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-2.png?fit=1024%2C797&amp;ssl=1" data-id="1068" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-2.png?resize=1024%2C797&amp;ssl=1" alt="" class="wp-image-1068" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-2.png?resize=1024%2C797&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-2.png?resize=300%2C234&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-2.png?resize=768%2C598&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-2.png?resize=1200%2C934&amp;ssl=1 1200w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-2.png?w=1304&amp;ssl=1 1304w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1024" height="673" data-attachment-id="1070" data-permalink="/?attachment_id=1070" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-4.png?fit=1554%2C1021&amp;ssl=1" data-orig-size="1554,1021" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-3-4" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-4.png?fit=1024%2C673&amp;ssl=1" data-id="1070" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-4.png?resize=1024%2C673&amp;ssl=1" alt="" class="wp-image-1070" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-4.png?resize=1024%2C673&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-4.png?resize=300%2C197&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-4.png?resize=768%2C505&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-4.png?resize=1536%2C1009&amp;ssl=1 1536w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-4.png?resize=1200%2C788&amp;ssl=1 1200w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-3-4.png?w=1554&amp;ssl=1 1554w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+</figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Part 2.4: Neural Radiance Field</strong></h2>
+
+
+
+<p class="wp-block-paragraph">I implemented a 3D NeRF-style MLP that takes as input a 3D position <strong>x</strong> and a view direction <strong>d</strong>. Both are first encoded with sinusoidal positional encodings (with <img decoding="async" src="https://s0.wp.com/latex.php?latex=L_x+%3D+10&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="L_x = 10" class="latex"> for positions and <img decoding="async" src="https://s0.wp.com/latex.php?latex=L_d+%3D+4&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="L_d = 4" class="latex"> for directions). The encoded position passes through several ReLU layers, with a skip connection that concatenates the original encoding back into the middle of the network. I applied the given Neural Network Structure:</p>
+
+
+
+<figure class="wp-block-image aligncenter size-large is-resized"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1024" height="332" data-attachment-id="1075" data-permalink="/?attachment_id=1075" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/mlp_nerf.png?fit=4180%2C1356&amp;ssl=1" data-orig-size="4180,1356" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="mlp_nerf" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/mlp_nerf.png?fit=1024%2C332&amp;ssl=1" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/mlp_nerf.png?resize=1024%2C332&amp;ssl=1" alt="" class="wp-image-1075" style="aspect-ratio:3.082703145320553;width:809px;height:auto" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/mlp_nerf.png?resize=1024%2C332&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/mlp_nerf.png?resize=300%2C97&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/mlp_nerf.png?resize=768%2C249&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/mlp_nerf.png?resize=1536%2C498&amp;ssl=1 1536w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/mlp_nerf.png?resize=2048%2C664&amp;ssl=1 2048w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/mlp_nerf.png?resize=1200%2C389&amp;ssl=1 1200w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/mlp_nerf.png?w=3000&amp;ssl=1 3000w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+
+
+
+<p class="wp-block-paragraph">From this shared feature, one head predicts the <strong>density</strong> <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Csigma%28%5Cmathbf%7Bx%7D%29+%5Cge+0&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\sigma(\mathbf{x}) \ge 0" class="latex"> using a ReLU output, and another head conditions on the encoded view direction to predict the <strong>color</strong> <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cmathbf%7Bc%7D%28%5Cmathbf%7Bx%7D%2C%5Cmathbf%7Bd%7D%29+%5Cin+%280%2C1%29%5E3&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\mathbf{c}(\mathbf{x},\mathbf{d}) \in (0,1)^3" class="latex"> using a final sigmoid. Overall, the network realizes:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>F_\theta(\mathbf{x}, \mathbf{d}) = \big(\mathbf{c}(\mathbf{x},\mathbf{d}),\, \sigma(\mathbf{x})\big)<br>$$</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Part 2.5: Volume Rendering</strong></h2>
+
+
+
+<p class="wp-block-paragraph">Given per-sample density <img decoding="async" src="https://s0.wp.com/latex.php?latex=+%5Csigma_i+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" \sigma_i " class="latex">&#8203;, color <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cmathbf%7Bc%7D_i&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\mathbf{c}_i" class="latex">&#8203;, and interval length <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cdelta_i&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\delta_i" class="latex">&#8203; along each ray, the function <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">volrend</mark></code> first converts densities to opacities:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\alpha_i = 1 &ndash; \exp(-\sigma_i \delta_i)<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">then computes the accumulated transmittance <img decoding="async" src="https://s0.wp.com/latex.php?latex=T_i&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="T_i" class="latex"> by multiplying the &ldquo;not yet terminated&rdquo; probabilities along the ray. The final pixel color is obtained as a weighted sum:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\hat{\mathbf{C}}(\mathbf{r}) = \sum_{i=1}^N T_i\,\alpha_i\,\mathbf{c}_i<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">where the weights <img decoding="async" src="https://s0.wp.com/latex.php?latex=w_i+%3D+T_i+%5Calpha_i&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="w_i = T_i \alpha_i" class="latex"> are implemented in code as <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">weights = T * alpha</mark></code> before summing over all samples.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Training Results</strong></h2>
+
+
+
+<p class="wp-block-paragraph">I train the NeRF model using all training views wrapped in a <code>RaysData</code> dataset. </p>
+
+
+
+<p class="wp-block-paragraph">I use 4000 optimization iterations, sampling 10,000 rays per iteration and 64 points per ray between near and far bounds of 2.0 and 6.0. The NeRF network has width 256 with positional encoding levels 10 for 3D points and 4 for view directions. I optimize with Adam using a learning rate of 5&times;10<sup>&minus;4</sup>. </p>
+
+
+
+<p class="wp-block-paragraph">Below (left) shows the Validation PSNR Curve, which reaches ~26 after 4000 iterations. The training loss (right) curve goes down rapidly at the beginning and became stable in later stage of training.</p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj4/"}' class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-7 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="590" height="390" data-attachment-id="1082" data-permalink="/?attachment_id=1082" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-2.png?fit=590%2C390&amp;ssl=1" data-orig-size="590,390" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-5-2" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-2.png?fit=590%2C390&amp;ssl=1" data-id="1082" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-2.png?resize=590%2C390&amp;ssl=1" alt="" class="wp-image-1082" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-2.png?w=590&amp;ssl=1 590w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-2.png?resize=300%2C198&amp;ssl=1 300w" sizes="auto, (max-width: 590px) 100vw, 590px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="589" height="390" data-attachment-id="1081" data-permalink="/?attachment_id=1081" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-3.png?fit=589%2C390&amp;ssl=1" data-orig-size="589,390" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-5-3" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-3.png?fit=589%2C390&amp;ssl=1" data-id="1081" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-3.png?resize=589%2C390&amp;ssl=1" alt="" class="wp-image-1081" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-3.png?w=589&amp;ssl=1 589w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-3.png?resize=300%2C199&amp;ssl=1 300w" sizes="auto, (max-width: 589px) 100vw, 589px"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">Here is how it looks like during the training process. At iteration 100, the image is still blurry; when it reaches 500 iteration, the overall shape of the Lego appears; as the training continues, the model is learning more high-frequency details and returns a good reconstruction of the image.</p>
+
+
+
+<figure class="wp-block-image aligncenter size-full is-resized"><img data-recalc-dims="1" loading="lazy" decoding="async" width="950" height="651" data-attachment-id="1080" data-permalink="/?attachment_id=1080" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-1.png?fit=950%2C651&amp;ssl=1" data-orig-size="950,651" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-5-1" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-1.png?fit=950%2C651&amp;ssl=1" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-1.png?resize=950%2C651&amp;ssl=1" alt="" class="wp-image-1080" style="aspect-ratio:1.4593284209010393;width:640px;height:auto" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-1.png?w=950&amp;ssl=1 950w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-1.png?resize=300%2C206&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-1.png?resize=768%2C526&amp;ssl=1 768w" sizes="auto, (max-width: 950px) 100vw, 950px"></figure>
+
+
+
+<p class="wp-block-paragraph">Here are the spherical renderings video of the Lego. To prove that the model is working properly, I rendered around multiple rotational axis:</p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj4/"}' class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-8 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="200" height="200" data-attachment-id="1087" data-permalink="/?attachment_id=1087" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-5.gif?fit=200%2C200&amp;ssl=1" data-orig-size="200,200" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-5-5" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-5.gif?fit=200%2C200&amp;ssl=1" data-id="1087" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-5.gif?resize=200%2C200&amp;ssl=1" alt="" class="wp-image-1087"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="200" height="200" data-attachment-id="1085" data-permalink="/?attachment_id=1085" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-6.gif?fit=200%2C200&amp;ssl=1" data-orig-size="200,200" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-5-6" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-6.gif?fit=200%2C200&amp;ssl=1" data-id="1085" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-6.gif?resize=200%2C200&amp;ssl=1" alt="" class="wp-image-1085"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="200" height="200" data-attachment-id="1086" data-permalink="/?attachment_id=1086" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-4.gif?fit=200%2C200&amp;ssl=1" data-orig-size="200,200" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-5-4" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-4.gif?fit=200%2C200&amp;ssl=1" data-id="1086" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-5-4.gif?resize=200%2C200&amp;ssl=1" alt="" class="wp-image-1086"></figure>
+</figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Part 2.6: Training with your own data</strong></h2>
+
+
+
+<p class="wp-block-paragraph">Here is a GIF of camera circling my object showing novel views:</p>
+
+
+
+<figure class="wp-block-image aligncenter size-full"><img data-recalc-dims="1" loading="lazy" decoding="async" width="400" height="300" data-attachment-id="1090" data-permalink="/?attachment_id=1090" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-3-compress-1.gif?fit=400%2C300&amp;ssl=1" data-orig-size="400,300" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-6-3-compress" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-3-compress-1.gif?fit=400%2C300&amp;ssl=1" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-3-compress-1.gif?resize=400%2C300&amp;ssl=1" alt="" class="wp-image-1090"></figure>
+
+
+
+<p class="wp-block-paragraph">Here is the training loss and the train PSNR curve. The final loss gets very low, and the train PSNR curve reaches 23. However, the model have problems with over fitting, so it may produce some inaccurate effects in image reconstruction.</p>
+
+
+
+<figure data-carousel-extra='{"blog_id":1,"permalink":"/cs280a-proj4/"}' class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-9 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="589" height="390" data-attachment-id="1098" data-permalink="/?attachment_id=1098" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-6.png?fit=589%2C390&amp;ssl=1" data-orig-size="589,390" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-6-6" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-6.png?fit=589%2C390&amp;ssl=1" data-id="1098" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-6.png?resize=589%2C390&amp;ssl=1" alt="" class="wp-image-1098" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-6.png?w=589&amp;ssl=1 589w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-6.png?resize=300%2C199&amp;ssl=1 300w" sizes="auto, (max-width: 589px) 100vw, 589px"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img data-recalc-dims="1" loading="lazy" decoding="async" width="589" height="390" data-attachment-id="1097" data-permalink="/?attachment_id=1097" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-8.png?fit=589%2C390&amp;ssl=1" data-orig-size="589,390" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-6-8" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-8.png?fit=589%2C390&amp;ssl=1" data-id="1097" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-8.png?resize=589%2C390&amp;ssl=1" alt="" class="wp-image-1097" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-8.png?w=589&amp;ssl=1 589w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-8.png?resize=300%2C199&amp;ssl=1 300w" sizes="auto, (max-width: 589px) 100vw, 589px"></figure>
+</figure>
+
+
+
+<h4 class="wp-block-heading"><strong>Hyperparameter Changes</strong></h4>
+
+
+
+<p class="wp-block-paragraph">I experimented with different near&ndash;far bounds for volume rendering. Using near=2.0, far=6.0 produced very &ldquo;messy&rdquo; reconstructions with lots of floating artifacts in front of the object. </p>
+
+
+
+<figure class="wp-block-image aligncenter size-large is-resized"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1024" height="614" data-attachment-id="1093" data-permalink="/?attachment_id=1093" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-0.png?fit=1258%2C754&amp;ssl=1" data-orig-size="1258,754" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-6-0" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-0.png?fit=1024%2C614&amp;ssl=1" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-0.png?resize=1024%2C614&amp;ssl=1" alt="" class="wp-image-1093" style="width:470px;height:auto" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-0.png?resize=1024%2C614&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-0.png?resize=300%2C180&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-0.png?resize=768%2C460&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-0.png?resize=1200%2C719&amp;ssl=1 1200w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-0.png?w=1258&amp;ssl=1 1258w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+
+
+
+<p class="wp-block-paragraph">Expanding the range to near=0.04, far=6.0 removed some artifacts but made the result overly blurred, since many samples were wasted on empty space far from the object:</p>
+
+
+
+<figure class="wp-block-image aligncenter size-large is-resized"><img data-recalc-dims="1" loading="lazy" decoding="async" width="1024" height="628" data-attachment-id="1094" data-permalink="/?attachment_id=1094" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-1.png?fit=1140%2C699&amp;ssl=1" data-orig-size="1140,699" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-6-1" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-1.png?fit=1024%2C628&amp;ssl=1" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-1.png?resize=1024%2C628&amp;ssl=1" alt="" class="wp-image-1094" style="aspect-ratio:1.6305825445144073;width:453px;height:auto" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-1.png?resize=1024%2C628&amp;ssl=1 1024w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-1.png?resize=300%2C184&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-1.png?resize=768%2C471&amp;ssl=1 768w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-1.png?w=1140&amp;ssl=1 1140w" sizes="auto, (max-width: 1000px) 100vw, 1000px"></figure>
+
+
+
+<p class="wp-block-paragraph">I finally obtained the best trade-off with near=0.04, far=1.0, and increased the training schedule from 4000 to 6000 iterations to allow the model to fully converge under this tighter depth range. Here is the intermediate renders of the scene during training in the final model:</p>
+
+
+
+<figure class="wp-block-image aligncenter size-full is-resized"><img data-recalc-dims="1" loading="lazy" decoding="async" width="950" height="583" data-attachment-id="1096" data-permalink="/?attachment_id=1096" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-5.png?fit=950%2C583&amp;ssl=1" data-orig-size="950,583" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-6-5" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-5.png?fit=950%2C583&amp;ssl=1" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-5.png?resize=950%2C583&amp;ssl=1" alt="" class="wp-image-1096" style="aspect-ratio:1.6295462464152664;width:470px;height:auto" srcset="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-5.png?w=950&amp;ssl=1 950w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-5.png?resize=300%2C184&amp;ssl=1 300w, https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6-5.png?resize=768%2C471&amp;ssl=1 768w" sizes="auto, (max-width: 950px) 100vw, 950px"></figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Bells &amp; Whistles</strong></h2>
+
+
+
+<p class="wp-block-paragraph">To render a depth map from a given camera pose, I reuse the NeRF volume-rendering weights but replace colors with per-sample depths. For each pixel, I cast a ray, sample 3D points between the near and far bounds, and run the NeRF to obtain densities <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Csigma_i&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\sigma_i" class="latex">&#8203;. These are converted to opacities <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Calpha_i&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\alpha_i" class="latex">&#8203; and accumulated transmittance <img decoding="async" src="https://s0.wp.com/latex.php?latex=T_i&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="T_i" class="latex">&#8203;, giving weights <img decoding="async" src="https://s0.wp.com/latex.php?latex=w_i+%3D+T_i+%5Calpha_i&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="w_i = T_i \alpha_i" class="latex">&#8203;. Instead of compositing RGB, I compute the Euclidean depth <img decoding="async" src="https://s0.wp.com/latex.php?latex=d_i+%3D+%5ClVert+%5Cmathbf%7Bx%7D_i+-+%5Cmathbf%7Br%7D_o+%5CrVert_2&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="d_i = \lVert \mathbf{x}_i - \mathbf{r}_o \rVert_2" class="latex">&#8203; for each sample and take a weighted average:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\hat{D}(\mathbf{r}) =<br>\frac{\sum_{i=1}^{N} w_i d_i}<br>{\sum_{i=1}^{N} w_i + \varepsilon}<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">I rendered for each frame to create the Lego depth-map gif:</p>
+
+
+
+<figure class="wp-block-image aligncenter size-full is-resized"><img data-recalc-dims="1" loading="lazy" decoding="async" width="200" height="200" data-attachment-id="1113" data-permalink="/?attachment_id=1113" data-orig-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6.gif?fit=200%2C200&amp;ssl=1" data-orig-size="200,200" data-comments-opened="0" data-image-meta='{"aperture":"0","credit":"","camera":"","caption":"","created_timestamp":"0","copyright":"","focal_length":"0","iso":"0","shutter_speed":"0","title":"","orientation":"0"}' data-image-title="2-6" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6.gif?fit=200%2C200&amp;ssl=1" src="https://i0.wp.com/shaoyiwang.com/wp-content/uploads/2025/11/2-6.gif?resize=200%2C200&amp;ssl=1" alt="" class="wp-image-1113" style="width:280px;height:auto"></figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><em>END</em></p>
+</div></div>
+
+
+
+<div class="wp-block-group has-global-padding is-layout-constrained wp-block-group-is-layout-constrained"></div>
+</main>
+
+
+<footer class="wp-block-template-part">
+<div class="wp-block-group alignfull has-global-padding is-layout-constrained wp-container-core-group-is-layout-41208af0 wp-block-group-is-layout-constrained" style="padding-top:80px;padding-right:40px;padding-bottom:80px;padding-left:40px">
+<div class="wp-block-group alignwide is-content-justification-space-between is-layout-flex wp-container-core-group-is-layout-bdaa8e54 wp-block-group-is-layout-flex">
+<div class="wp-block-group is-layout-flex wp-block-group-is-layout-flex"><nav class="wp-block-navigation is-layout-flex wp-block-navigation-is-layout-flex" aria-label="Navigation 2"><ul class="wp-block-navigation__container  wp-block-navigation"><li class=" wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="./about/"><span class="wp-block-navigation-item__label">  About  </span></a></li><li class=" wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="http://shaoyiwang.com"><span class="wp-block-navigation-item__label">  Projects  </span></a></li><li class=" wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="./publications/"><span class="wp-block-navigation-item__label">  Publications  </span></a></li><li class=" wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="./resume/"><span class="wp-block-navigation-item__label">  Resume  </span></a></li><li class=" wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="./coding/"><span class="wp-block-navigation-item__label">  Coding  </span></a></li><li class=" wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="./game-development-log/"><span class="wp-block-navigation-item__label">  Game  </span></a></li><li class=" wp-block-navigation-item wp-block-navigation-link"><a class="wp-block-navigation-item__content" href="./contact/"><span class="wp-block-navigation-item__label">  Contact  </span></a></li></ul></nav></div>
+</div>
+</div>
+</footer></div>
+<!-- wpcom_wp_footer -->
+<script type="speculationrules">
+{"prefetch":[{"source":"document","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":["/wp-*.php","/wp-admin/*","/wp-content/uploads/*","/wp-content/*","/wp-content/plugins/*","/wp-content/themes/creatio-2/*","/*\\?(.+)"]}},{"not":{"selector_matches":"a[rel~=\"nofollow\"]"}},{"not":{"selector_matches":".no-prefetch, .no-prefetch a"}}]},"eagerness":"conservative"}]}
+</script>
+<meta id="bilmur" property="bilmur:data" content="" data-customproperties='{"woo_active":"0","logged_in":"0","wptheme":"creatio-2","wptheme_is_block":"1"}' data-provider="wordpress.com" data-service="atomic" data-site-tz="America/Los_Angeles">
+<script defer src="https://s0.wp.com/wp-content/js/bilmur.min.js?m=202615"></script>
+<script type="module" src="./js/view.min.js" id="@wordpress/block-library/navigation/view-js-module" fetchpriority="low" data-wp-router-options='{"loadOnClientNavigation":true}'></script>
+		<div id="jp-carousel-loading-overlay">
+			<div id="jp-carousel-loading-wrapper">
+				<span id="jp-carousel-library-loading">&nbsp;</span>
+			</div>
+		</div>
+		<div class="jp-carousel-overlay" style="display: none;">
+
+		<div class="jp-carousel-container">
+			<!-- The Carousel Swiper -->
+			<div class="jp-carousel-wrap swiper jp-carousel-swiper-container jp-carousel-transitions" itemscope itemtype="https://schema.org/ImageGallery">
+				<div class="jp-carousel swiper-wrapper"></div>
+				<div class="jp-swiper-button-prev swiper-button-prev">
+					<svg width="25" height="24" viewbox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<mask id="maskPrev" mask-type="alpha" maskunits="userSpaceOnUse" x="8" y="6" width="9" height="12">
+							<path d="M16.2072 16.59L11.6496 12L16.2072 7.41L14.8041 6L8.8335 12L14.8041 18L16.2072 16.59Z" fill="white"></path>
+						</mask>
+						<g mask="url(#maskPrev)">
+							<rect x="0.579102" width="23.8823" height="24" fill="#FFFFFF"></rect>
+						</g>
+					</svg>
+				</div>
+				<div class="jp-swiper-button-next swiper-button-next">
+					<svg width="25" height="24" viewbox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<mask id="maskNext" mask-type="alpha" maskunits="userSpaceOnUse" x="8" y="6" width="8" height="12">
+							<path d="M8.59814 16.59L13.1557 12L8.59814 7.41L10.0012 6L15.9718 12L10.0012 18L8.59814 16.59Z" fill="white"></path>
+						</mask>
+						<g mask="url(#maskNext)">
+							<rect x="0.34375" width="23.8822" height="24" fill="#FFFFFF"></rect>
+						</g>
+					</svg>
+				</div>
+			</div>
+			<!-- The main close buton -->
+			<div class="jp-carousel-close-hint">
+				<svg width="25" height="24" viewbox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<mask id="maskClose" mask-type="alpha" maskunits="userSpaceOnUse" x="5" y="5" width="15" height="14">
+						<path d="M19.3166 6.41L17.9135 5L12.3509 10.59L6.78834 5L5.38525 6.41L10.9478 12L5.38525 17.59L6.78834 19L12.3509 13.41L17.9135 19L19.3166 17.59L13.754 12L19.3166 6.41Z" fill="white"></path>
+					</mask>
+					<g mask="url(#maskClose)">
+						<rect x="0.409668" width="23.8823" height="24" fill="#FFFFFF"></rect>
+					</g>
+				</svg>
+			</div>
+			<!-- Image info, comments and meta -->
+			<div class="jp-carousel-info">
+				<div class="jp-carousel-info-footer">
+					<div class="jp-carousel-pagination-container">
+						<div class="jp-swiper-pagination swiper-pagination"></div>
+						<div class="jp-carousel-pagination"></div>
+					</div>
+					<div class="jp-carousel-photo-title-container">
+						<h2 class="jp-carousel-photo-caption"></h2>
+					</div>
+					<div class="jp-carousel-photo-icons-container">
+						<a href="#" class="jp-carousel-icon-btn jp-carousel-icon-info" aria-label="Toggle photo metadata visibility">
+							<span class="jp-carousel-icon">
+								<svg width="25" height="24" viewbox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<mask id="maskInfo" mask-type="alpha" maskunits="userSpaceOnUse" x="2" y="2" width="21" height="20">
+										<path fill-rule="evenodd" clip-rule="evenodd" d="M12.7537 2C7.26076 2 2.80273 6.48 2.80273 12C2.80273 17.52 7.26076 22 12.7537 22C18.2466 22 22.7046 17.52 22.7046 12C22.7046 6.48 18.2466 2 12.7537 2ZM11.7586 7V9H13.7488V7H11.7586ZM11.7586 11V17H13.7488V11H11.7586ZM4.79292 12C4.79292 16.41 8.36531 20 12.7537 20C17.142 20 20.7144 16.41 20.7144 12C20.7144 7.59 17.142 4 12.7537 4C8.36531 4 4.79292 7.59 4.79292 12Z" fill="white"></path>
+									</mask>
+									<g mask="url(#maskInfo)">
+										<rect x="0.8125" width="23.8823" height="24" fill="#FFFFFF"></rect>
+									</g>
+								</svg>
+							</span>
+						</a>
+												<a href="#" class="jp-carousel-icon-btn jp-carousel-icon-comments" aria-label="Toggle photo comments visibility">
+							<span class="jp-carousel-icon">
+								<svg width="25" height="24" viewbox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<mask id="maskComments" mask-type="alpha" maskunits="userSpaceOnUse" x="2" y="2" width="21" height="20">
+										<path fill-rule="evenodd" clip-rule="evenodd" d="M4.3271 2H20.2486C21.3432 2 22.2388 2.9 22.2388 4V16C22.2388 17.1 21.3432 18 20.2486 18H6.31729L2.33691 22V4C2.33691 2.9 3.2325 2 4.3271 2ZM6.31729 16H20.2486V4H4.3271V18L6.31729 16Z" fill="white"></path>
+									</mask>
+									<g mask="url(#maskComments)">
+										<rect x="0.34668" width="23.8823" height="24" fill="#FFFFFF"></rect>
+									</g>
+								</svg>
+
+								<span class="jp-carousel-has-comments-indicator" aria-label="This image has comments."></span>
+							</span>
+						</a>
+											</div>
+				</div>
+				<div class="jp-carousel-info-extra">
+					<div class="jp-carousel-info-content-wrapper">
+						<div class="jp-carousel-photo-title-container">
+							<h2 class="jp-carousel-photo-title"></h2>
+						</div>
+						<div class="jp-carousel-comments-wrapper">
+															<div id="jp-carousel-comments-loading">
+									<span>Loading Comments...</span>
+								</div>
+								<div class="jp-carousel-comments"></div>
+								<div id="jp-carousel-comment-form-container">
+									<span id="jp-carousel-comment-form-spinner">&nbsp;</span>
+									<div id="jp-carousel-comment-post-results"></div>
+																														<form id="jp-carousel-comment-form">
+												<label for="jp-carousel-comment-form-comment-field" class="screen-reader-text">Write a Comment...</label>
+												<textarea name="comment" class="jp-carousel-comment-form-field jp-carousel-comment-form-textarea" id="jp-carousel-comment-form-comment-field" placeholder="Write a Comment..."></textarea>
+												<div id="jp-carousel-comment-form-submit-and-info-wrapper">
+													<div id="jp-carousel-comment-form-commenting-as">
+																													<fieldset>
+																<label for="jp-carousel-comment-form-email-field">Email</label>
+																<input type="text" name="email" class="jp-carousel-comment-form-field jp-carousel-comment-form-text-field" id="jp-carousel-comment-form-email-field">
+															</fieldset>
+															<fieldset>
+																<label for="jp-carousel-comment-form-author-field">Name</label>
+																<input type="text" name="author" class="jp-carousel-comment-form-field jp-carousel-comment-form-text-field" id="jp-carousel-comment-form-author-field">
+															</fieldset>
+															<fieldset>
+																<label for="jp-carousel-comment-form-url-field">Website</label>
+																<input type="text" name="url" class="jp-carousel-comment-form-field jp-carousel-comment-form-text-field" id="jp-carousel-comment-form-url-field">
+															</fieldset>
+																											</div>
+													<input type="submit" name="submit" class="jp-carousel-comment-form-button" id="jp-carousel-comment-form-button-submit" value="Post Comment">
+												</div>
+											</form>
+																											</div>
+													</div>
+						<div class="jp-carousel-image-meta">
+							<div class="jp-carousel-title-and-caption">
+								<div class="jp-carousel-photo-info">
+									<h3 class="jp-carousel-caption" itemprop="caption description"></h3>
+								</div>
+
+								<div class="jp-carousel-photo-description"></div>
+							</div>
+							<ul class="jp-carousel-image-exif" style="display: none;"></ul>
+							<a class="jp-carousel-image-download" href="#" target="_blank" style="display: none;">
+								<svg width="25" height="24" viewbox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<mask id="mask0" mask-type="alpha" maskunits="userSpaceOnUse" x="3" y="3" width="19" height="18">
+										<path fill-rule="evenodd" clip-rule="evenodd" d="M5.84615 5V19H19.7775V12H21.7677V19C21.7677 20.1 20.8721 21 19.7775 21H5.84615C4.74159 21 3.85596 20.1 3.85596 19V5C3.85596 3.9 4.74159 3 5.84615 3H12.8118V5H5.84615ZM14.802 5V3H21.7677V10H19.7775V6.41L9.99569 16.24L8.59261 14.83L18.3744 5H14.802Z" fill="white"></path>
+									</mask>
+									<g mask="url(#mask0)">
+										<rect x="0.870605" width="23.8823" height="24" fill="#FFFFFF"></rect>
+									</g>
+								</svg>
+								<span class="jp-carousel-download-text"></span>
+							</a>
+							<div class="jp-carousel-image-map" style="display: none;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		</div>
+		<script id="jetpack-carousel-js-extra">
+var jetpackSwiperLibraryPath = {"url":"/wp-content/plugins/jetpack/_inc/blocks/swiper.js"};
+var jetpackCarouselStrings = {"widths":[370,700,1000,1200,1400,2000],"is_logged_in":"","lang":"en","ajaxurl":"/wp-admin/admin-ajax.php","nonce":"0261132e66","display_exif":"1","display_comments":"1","single_image_gallery":"1","single_image_gallery_media_file":"","background_color":"black","comment":"Comment","post_comment":"Post Comment","write_comment":"Write a Comment...","loading_comments":"Loading Comments...","image_label":"Open image in full-screen.","download_original":"View full size \u003Cspan class=\"photo-size\"\u003E{0}\u003Cspan class=\"photo-size-times\"\u003E\u00d7\u003C/span\u003E{1}\u003C/span\u003E","no_comment_text":"Please be sure to submit some text with your comment.","no_comment_email":"Please provide an email address to comment.","no_comment_author":"Please provide your name to comment.","comment_post_error":"Sorry, but there was an error posting your comment. Please try again later.","comment_approved":"Your comment was approved.","comment_unapproved":"Your comment is in moderation.","camera":"Camera","aperture":"Aperture","shutter_speed":"Shutter Speed","focal_length":"Focal Length","copyright":"Copyright","comment_registration":"0","require_name_email":"0","login_url":"/wp-login.php?redirect_to=https%3A%2F%2Fshaoyiwang.com%2Fcs280a-proj4%2F","blog_id":"1","meta_data":["camera","aperture","shutter_speed","focal_length","copyright"]};
+//# sourceURL=jetpack-carousel-js-extra
+</script>
+<script type="text/javascript" src="./js/jetpack-carousel.min.js"></script>
+<script id="wp-block-template-skip-link-js-after">
+	( function() {
+		var skipLinkTarget = document.querySelector( 'main' ),
+			sibling,
+			skipLinkTargetID,
+			skipLink;
+
+		// Early exit if a skip-link target can't be located.
+		if ( ! skipLinkTarget ) {
+			return;
+		}
+
+		/*
+		 * Get the site wrapper.
+		 * The skip-link will be injected in the beginning of it.
+		 */
+		sibling = document.querySelector( '.wp-site-blocks' );
+
+		// Early exit if the root element was not found.
+		if ( ! sibling ) {
+			return;
+		}
+
+		// Get the skip-link target's ID, and generate one if it doesn't exist.
+		skipLinkTargetID = skipLinkTarget.id;
+		if ( ! skipLinkTargetID ) {
+			skipLinkTargetID = 'wp--skip-link--target';
+			skipLinkTarget.id = skipLinkTargetID;
+		}
+
+		// Create the skip link.
+		skipLink = document.createElement( 'a' );
+		skipLink.classList.add( 'skip-link', 'screen-reader-text' );
+		skipLink.id = 'wp-skip-link';
+		skipLink.href = '#' + skipLinkTargetID;
+		skipLink.innerText = 'Skip to content';
+
+		// Inject the skip link.
+		sibling.parentElement.insertBefore( skipLink, sibling );
+	}() );
+	
+//# sourceURL=wp-block-template-skip-link-js-after
+</script>
+<script id="jetpack-stats-js-before">
+_stq = window._stq || [];
+_stq.push([ "view", {"v":"ext","blog":"247756207","post":"1326","tz":"-7","srv":"shaoyiwang.com","hp":"atomic","ac":"2","amp":"0","j":"1:15.7"} ]);
+_stq.push([ "clickTrackerInit", "247756207", "1326" ]);
+//# sourceURL=jetpack-stats-js-before
+</script>
+<script src="https://stats.wp.com/e-202615.js" id="jetpack-stats-js" defer data-wp-strategy="defer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=default&amp;ver=1.3.13" id="mathjax-js"></script>
+<script id="wp-emoji-settings" type="application/json">
+{"baseUrl":"https://s.w.org/images/core/emoji/17.0.2/72x72/","ext":".png","svgUrl":"https://s.w.org/images/core/emoji/17.0.2/svg/","svgExt":".svg","source":{"concatemoji":"/wp-includes/js/wp-emoji-release.min.js?ver=6.9.4"}}
+</script>
+<script type="module">
+/*! This file is auto-generated */
+const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(window._wpemojiSettings=a,"wpEmojiSettingsSupports"),s=["flag","emoji"];function i(e){try{var t={supportTests:e,timestamp:(new Date).valueOf()};sessionStorage.setItem(o,JSON.stringify(t))}catch(e){}}function c(e,t,n){e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(t,0,0);t=new Uint32Array(e.getImageData(0,0,e.canvas.width,e.canvas.height).data);e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(n,0,0);const a=new Uint32Array(e.getImageData(0,0,e.canvas.width,e.canvas.height).data);return t.every((e,t)=>e===a[t])}function p(e,t){e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(t,0,0);var n=e.getImageData(16,16,1,1);for(let e=0;e<n.data.length;e++)if(0!==n.data[e])return!1;return!0}function u(e,t,n,a){switch(t){case"flag":return n(e,"\ud83c\udff3\ufe0f\u200d\u26a7\ufe0f","\ud83c\udff3\ufe0f\u200b\u26a7\ufe0f")?!1:!n(e,"\ud83c\udde8\ud83c\uddf6","\ud83c\udde8\u200b\ud83c\uddf6")&&!n(e,"\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f","\ud83c\udff4\u200b\udb40\udc67\u200b\udb40\udc62\u200b\udb40\udc65\u200b\udb40\udc6e\u200b\udb40\udc67\u200b\udb40\udc7f");case"emoji":return!a(e,"\ud83e\u1fac8")}return!1}function f(e,t,n,a){let r;const o=(r="undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?new OffscreenCanvas(300,150):document.createElement("canvas")).getContext("2d",{willReadFrequently:!0}),s=(o.textBaseline="top",o.font="600 32px Arial",{});return e.forEach(e=>{s[e]=t(o,e,n,a)}),s}function r(e){var t=document.createElement("script");t.src=e,t.defer=!0,document.head.appendChild(t)}a.supports={everything:!0,everythingExceptFlag:!0},new Promise(t=>{let n=function(){try{var e=JSON.parse(sessionStorage.getItem(o));if("object"==typeof e&&"number"==typeof e.timestamp&&(new Date).valueOf()<e.timestamp+604800&&"object"==typeof e.supportTests)return e.supportTests}catch(e){}return null}();if(!n){if("undefined"!=typeof Worker&&"undefined"!=typeof OffscreenCanvas&&"undefined"!=typeof URL&&URL.createObjectURL&&"undefined"!=typeof Blob)try{var e="postMessage("+f.toString()+"("+[JSON.stringify(s),u.toString(),c.toString(),p.toString()].join(",")+"));",a=new Blob([e],{type:"text/javascript"});const r=new Worker(URL.createObjectURL(a),{name:"wpTestEmojiSupports"});return void(r.onmessage=e=>{i(n=e.data),r.terminate(),t(n)})}catch(e){}i(n=f(s,u,c,p))}t(n)}).then(e=>{for(const n in e)a.supports[n]=e[n],a.supports.everything=a.supports.everything&&a.supports[n],"flag"!==n&&(a.supports.everythingExceptFlag=a.supports.everythingExceptFlag&&a.supports[n]);var t;a.supports.everythingExceptFlag=a.supports.everythingExceptFlag&&!a.supports.flag,a.supports.everything||((t=a.source||{}).concatemoji?r(t.concatemoji):t.wpemoji&&t.twemoji&&(r(t.twemoj

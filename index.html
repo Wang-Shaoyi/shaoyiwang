@@ -7,60 +7,24 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-  <!-- ===== NAV ===== -->
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="logo" href="index.html">Shaoyi Wang</a>
-      <nav class="main-nav">
-        <ul>
-          <li><a href="pages/about.html">About</a></li>
-          <li class="has-dropdown">
-            <a href="pages/projects.html">Projects</a>
-            <ul class="dropdown">
-              <li><a href="pages/app-development.html">App Development</a></li>
-              <li><a href="pages/coding.html">Coding</a></li>
-              <li><a href="pages/game.html">Game</a></li>
-              <li><a href="pages/publication.html">Publication</a></li>
-            </ul>
-          </li>
-          <li><a href="pages/app-development.html">App Development</a></li>
-          <li><a href="pages/coding.html">Coding</a></li>
-          <li><a href="pages/game.html">Game</a></li>
-          <li><a href="pages/publication.html">Publication</a></li>
-        </ul>
-      </nav>
-      <button class="nav-toggle" aria-label="Toggle menu">&#9776;</button>
-    </div>
-  </header>
-
-  <!-- ===== HERO ===== -->
-  <section class="hero">
-    <div class="hero-inner">
-      <h1>Hi, I'm Shaoyi Wang</h1>
-      <p class="hero-sub">Developer · Designer · Creator</p>
-      <a class="btn" href="pages/about.html">Learn More</a>
-    </div>
-  </section>
-
-  <!-- ===== FEATURED PROJECTS ===== -->
+  <header class="site-header"></header>
   <main>
-    <section class="section" id="featured">
-      <div class="container">
-        <h2 class="section-title">Featured Projects</h2>
-        <div class="card-grid" id="project-grid">
-          <!-- cards injected by JS -->
-        </div>
+    <div class="container">
+      <div class="home-section-bar">
+        <span class="home-section-label">Featured</span>
+        <a class="home-section-link" href="pages/projects.html">All projects →</a>
       </div>
-    </section>
+      <div class="card-grid" id="home-grid"></div>
+    </div>
   </main>
+  <footer class="site-footer"><p>&copy; 2026 Shaoyi Wang</p></footer>
 
-  <!-- ===== FOOTER ===== -->
-  <footer class="site-footer">
-    <p>&copy; 2026 Shaoyi Wang</p>
-  </footer>
-
-  <script src="scripts/projects.js"></script>
+  <script src="scripts/components.js"></script>
+  <!-- load all project categories so featured filter works -->
+  <script src="pages/projects/research/_index.js"></script>
+  <script src="pages/projects/design/_index.js"></script>
+  <script src="pages/projects/making/_index.js"></script>
+  <script src="pages/projects/app_game/_index.js"></script>
   <script src="scripts/main.js"></script>
 </body>
 </html>

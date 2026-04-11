@@ -7,56 +7,34 @@
   <link rel="stylesheet" href="../style.css" />
 </head>
 <body>
-
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="logo" href="../index.html">Shaoyi Wang</a>
-      <nav class="main-nav">
-        <ul>
-          <li><a href="about.html">About</a></li>
-          <li class="has-dropdown">
-            <a href="projects.html">Projects</a>
-            <ul class="dropdown">
-              <li><a href="app-development.html">App Development</a></li>
-              <li><a href="coding.html">Coding</a></li>
-              <li><a href="game.html">Game</a></li>
-              <li><a href="publication.html">Publication</a></li>
-            </ul>
-          </li>
-          <li><a href="app-development.html">App Development</a></li>
-          <li><a href="coding.html">Coding</a></li>
-          <li><a href="game.html">Game</a></li>
-          <li><a href="publication.html">Publication</a></li>
-        </ul>
-      </nav>
-      <button class="nav-toggle" aria-label="Toggle menu">&#9776;</button>
-    </div>
-  </header>
-
-  <section class="page-hero">
-    <div class="container">
-      <h1>All Projects</h1>
-      <p>Everything I've built — apps, tools, games, and more.</p>
-    </div>
-  </section>
-
+  <header class="site-header"></header>
   <main>
-    <section class="section">
+    <section class="page-hero">
       <div class="container">
-        <div class="card-grid" id="category-grid"></div>
+        <h1><span class="accent-mint">Projects</span></h1>
+        <p>Research, design, making, apps &amp; games.</p>
+      </div>
+    </section>
+    <section class="section-tight">
+      <div class="container">
+        <div class="filter-bar" id="projects-filter">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="research">Research</button>
+          <button class="filter-btn" data-filter="design">Design</button>
+          <button class="filter-btn" data-filter="making">Making</button>
+          <button class="filter-btn" data-filter="app-game">App &amp; Game</button>
+        </div>
+        <div class="card-grid" id="projects-grid"></div>
       </div>
     </section>
   </main>
+  <footer class="site-footer"><p>&copy; 2026 Shaoyi Wang</p></footer>
 
-  <footer class="site-footer">
-    <p>&copy; 2026 Shaoyi Wang</p>
-  </footer>
-
-  <script src="../scripts/projects.js"></script>
+  <script src="../scripts/components.js"></script>
+  <script src="projects/research/_index.js"></script>
+  <script src="projects/design/_index.js"></script>
+  <script src="projects/making/_index.js"></script>
+  <script src="projects/app_game/_index.js"></script>
   <script src="../scripts/main.js"></script>
-  <script>
-    // Show all projects on this page
-    renderCards(PROJECTS, "category-grid");
-  </script>
 </body>
 </html>
