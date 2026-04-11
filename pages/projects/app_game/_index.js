@@ -16,7 +16,7 @@ const APP_GAME_PROJECTS = [
     description: 'AI rendering tool for rhino.',
     tags: ['Design tool development', 'AI-based rendering'],
     image: 'assets/images/projects/design/24_pseudorandom/pseudorandom-1.png',
-    page: 'pages/projects/app_game/pseudorandom.html',
+    page: 'pages/projects/app_game/Pseudorandom.html',
   },
   // ── Add new app & game projects below ────────────────────
 ];
