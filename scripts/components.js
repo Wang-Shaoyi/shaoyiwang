@@ -62,6 +62,7 @@
   header.innerHTML = `
     <div class="header-inner">
       <a class="logo" href="${root}index.html">Shaoyi Wang</a>
+      <span class="header-email">shaoyiwang@berkeley.edu</span>
       <nav class="main-nav"><ul>${linksHTML}</ul></nav>
       <button class="nav-toggle" aria-label="Toggle menu">&#9776;</button>
     </div>`;

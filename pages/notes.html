@@ -12,7 +12,6 @@
     <section class="page-hero">
       <div class="container">
         <h1><span class="accent-orange">Notes</span></h1>
-        <p>Coding, math, resources, and game dev logs.</p>
       </div>
     </section>
     <section class="section-tight">
@@ -28,15 +27,31 @@
 
         <!-- Tab panes -->
         <div class="tab-content active" id="tab-coding">
+          <div class="notes-filter-bar" id="notes-filter-bar-coding" style="display:none">
+            Filtering: <strong id="notes-filter-label-coding"></strong>
+            <button class="notes-filter-clear" data-tab="coding">× clear</button>
+          </div>
           <div class="code-list" id="notes-coding"></div>
         </div>
         <div class="tab-content" id="tab-math">
+          <div class="notes-filter-bar" id="notes-filter-bar-math" style="display:none">
+            Filtering: <strong id="notes-filter-label-math"></strong>
+            <button class="notes-filter-clear" data-tab="math">× clear</button>
+          </div>
           <div class="code-list" id="notes-math"></div>
         </div>
         <div class="tab-content" id="tab-resources">
+          <div class="notes-filter-bar" id="notes-filter-bar-resources" style="display:none">
+            Filtering: <strong id="notes-filter-label-resources"></strong>
+            <button class="notes-filter-clear" data-tab="resources">× clear</button>
+          </div>
           <div class="code-list" id="notes-resources"></div>
         </div>
         <div class="tab-content" id="tab-game_develop">
+          <div class="notes-filter-bar" id="notes-filter-bar-game_develop" style="display:none">
+            Filtering: <strong id="notes-filter-label-game_develop"></strong>
+            <button class="notes-filter-clear" data-tab="game_develop">× clear</button>
+          </div>
           <div id="notes-devlog"></div>
         </div>
 

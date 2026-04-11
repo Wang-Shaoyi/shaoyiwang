@@ -4,27 +4,45 @@
 // ============================================================
 
 const CODING_NOTES = [
+  // ── CS280A Computer Vision ────────────────────────────────
   {
-    title: 'Algorithm Visualiser',
-    description: 'Interactive browser tool to step through sorting and pathfinding algorithms.',
+    title: 'Colorizing the Prokudin-Gorskii Photo Collection',
+    description: 'Reconstruct full-color images from digitized glass plates using image alignment and pyramid search.',
+    page: 'pages/notes/coding/cs280a-proj1.html',
     links: [
-      { label: 'GitHub', url: '#' },
-      { label: 'Demo',   url: '#', style: 'orange' },
+      { label: 'CS280A Computer Vision', url: '#' },
     ],
   },
   {
-    title: 'CLI Dev Toolkit',
-    description: 'Collection of Python/Bash scripts automating repetitive dev tasks.',
+    title: 'Fun with Filters and Frequencies',
+    description: 'Convolutions from scratch, Gaussian/Laplacian stacks, hybrid images, and multiresolution blending.',
+    page: 'pages/notes/coding/cs280a-proj2.html',
     links: [
-      { label: 'GitHub', url: '#' },
+      { label: 'CS280A Computer Vision', url: '#' },
     ],
   },
   {
-    title: 'LLM Interview Coder',
-    description: 'Python script that uses GPT-4 to auto-code qualitative interview transcripts.',
+    title: 'Stitching Photo Mosaics',
+    description: 'Recover homographies, warp and blend images into seamless panoramas with automatic feature matching.',
+    page: 'pages/notes/coding/cs280a-proj3.html',
     links: [
-      { label: 'GitHub', url: '#' },
-      { label: 'Paper',  url: '#', style: 'orange' },
+      { label: 'CS280A Computer Vision', url: '#' },
+    ],
+  },
+  {
+    title: 'Neural Radiance Field',
+    description: 'Implement NeRF to represent 3D scenes as implicit functions and render novel views via volume rendering.',
+    page: 'pages/notes/coding/cs280a-proj4.html',
+    links: [
+      { label: 'CS280A Computer Vision', url: '#' },
+    ],
+  },
+  {
+    title: 'Fun With Diffusion Models!',
+    description: 'Explore DDPM-based diffusion: sampling, inpainting, image-to-image translation, and guided generation.',
+    page: 'pages/notes/coding/cs280a-proj5.html',
+    links: [
+      { label: 'CS280A Computer Vision', url: '#' },
     ],
   },
   // ── Add more entries below ────────────────────────────────

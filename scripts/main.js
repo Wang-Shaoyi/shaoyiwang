@@ -52,37 +52,50 @@ function renderCards(projects, containerId) {
 // ============================================================
 // LIST RENDERER  (shared by Notes tabs)
 // ============================================================
-function renderList(containerId, data) {
+function renderList(containerId, data, filterTag) {
   const el = document.getElementById(containerId);
   if (!el) return;
-  if (!data || !data.length) {
-    el.innerHTML = `<p style="color:var(--text-muted);padding:8px 0">Nothing here yet.</p>`;
+  const filtered = filterTag
+    ? data.filter((c) => c.tags && c.tags.includes(filterTag))
+    : data;
+  if (!filtered.length) {
+    el.innerHTML = `<p style="color:var(--text-muted);padding:8px 0">${filterTag ? 'No entries match this tag.' : 'Nothing here yet.'}</p>`;
     return;
   }
-  el.innerHTML = data.map((c) => `
+  el.innerHTML = filtered.map((c) => {
+    const hasPage = c.page && c.page !== '#';
+    const titleEl = hasPage
+      ? `<a class="code-title" href="${_root + c.page}">${c.title}</a>`
+      : `<span class="code-title">${c.title}</span>`;
+    return `
     <div class="code-item">
-      <span class="code-title">${c.title}</span>
+      ${titleEl}
       <span class="code-dash">—</span>
       <span class="code-desc">${c.description}</span>
+      ${c.tags && c.tags.length ? `<div class="card-tags" style="flex-basis:100%;margin-top:4px">${c.tags.map((t) => `<button class="tag${t === filterTag ? ' tag--active' : ''}" data-tag="${t}">${t}</button>`).join('')}</div>` : ''}
       <div class="code-links">
         ${(c.links || []).map((l) =>
           `<a class="pub-link${l.style === 'orange' ? ' orange' : ''}" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`
         ).join('')}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 // ============================================================
 // DEV LOG RENDERER
 // ============================================================
-function renderDevLog(containerId, data) {
+function renderDevLog(containerId, data, filterTag) {
   const el = document.getElementById(containerId);
   if (!el) return;
-  if (!data || !data.length) {
-    el.innerHTML = `<p style="color:var(--text-muted);padding:8px 0">No entries yet.</p>`;
+  const filtered = filterTag
+    ? data.filter((e) => e.tags && e.tags.includes(filterTag))
+    : data;
+  if (!filtered.length) {
+    el.innerHTML = `<p style="color:var(--text-muted);padding:8px 0">${filterTag ? 'No entries match this tag.' : 'No entries yet.'}</p>`;
     return;
   }
-  el.innerHTML = data.map((entry) => {
+  el.innerHTML = filtered.map((entry) => {
     const d = new Date(entry.date);
     const dateStr = d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
     const hasPage = entry.page && entry.page !== '#';
@@ -95,7 +108,7 @@ function renderDevLog(containerId, data) {
           : entry.title
         }</div>
         <p class="devlog-desc">${entry.description}</p>
-        <div class="card-tags">${(entry.tags || []).map((t) => `<span class="tag">${t}</span>`).join('')}</div>
+        <div class="card-tags">${(entry.tags || []).map((t) => `<button class="tag${t === filterTag ? ' tag--active' : ''}" data-tag="${t}">${t}</button>`).join('')}</div>
       </div>
     </div>`;
   }).join('');
@@ -207,14 +220,53 @@ if (document.getElementById('projects-grid')) {
 }
 
 // ============================================================
-// NOTES PAGE — render all tabs then init tab switching
+// NOTES PAGE — render all tabs then init tab switching + tag filter
 // ============================================================
 if (document.getElementById('tab-coding')) {
-  renderList('notes-coding',    typeof CODING_NOTES    !== 'undefined' ? CODING_NOTES    : []);
-  renderList('notes-math',      typeof MATH_NOTES      !== 'undefined' ? MATH_NOTES      : []);
-  renderList('notes-resources', typeof RESOURCES_NOTES !== 'undefined' ? RESOURCES_NOTES : []);
-  renderDevLog('notes-devlog',  typeof GAME_DEV_LOG    !== 'undefined' ? GAME_DEV_LOG    : []);
+  const _NOTES_DATA = {
+    coding:      () => typeof CODING_NOTES    !== 'undefined' ? CODING_NOTES    : [],
+    math:        () => typeof MATH_NOTES      !== 'undefined' ? MATH_NOTES      : [],
+    resources:   () => typeof RESOURCES_NOTES !== 'undefined' ? RESOURCES_NOTES : [],
+    game_develop:() => typeof GAME_DEV_LOG    !== 'undefined' ? GAME_DEV_LOG    : [],
+  };
+  const _notesFilter = { coding: null, math: null, resources: null, game_develop: null };
+
+  function _renderNotesTab(tabId) {
+    const tag = _notesFilter[tabId];
+    if (tabId === 'game_develop') renderDevLog('notes-devlog', _NOTES_DATA.game_develop(), tag);
+    else renderList('notes-' + tabId, _NOTES_DATA[tabId](), tag);
+
+    const bar = document.getElementById('notes-filter-bar-' + tabId);
+    const lbl = document.getElementById('notes-filter-label-' + tabId);
+    if (bar && lbl) {
+      if (tag) { lbl.textContent = tag; bar.style.display = 'flex'; }
+      else { bar.style.display = 'none'; }
+    }
+  }
+
+  // Initial render
+  Object.keys(_NOTES_DATA).forEach(_renderNotesTab);
   initTabs();
+
+  // Tag click → filter
+  document.querySelector('.tabs')?.closest('section').addEventListener('click', (e) => {
+    const btn = e.target.closest('button.tag[data-tag]');
+    if (!btn) return;
+    const tabPane = btn.closest('.tab-content');
+    if (!tabPane) return;
+    const tabId = tabPane.id.replace('tab-', '');
+    _notesFilter[tabId] = btn.dataset.tag;
+    _renderNotesTab(tabId);
+  });
+
+  // Clear filter button
+  document.querySelectorAll('.notes-filter-clear').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const tabId = btn.dataset.tab;
+      _notesFilter[tabId] = null;
+      _renderNotesTab(tabId);
+    });
+  });
 }
 
 // ============================================================
