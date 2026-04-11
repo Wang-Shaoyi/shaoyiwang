@@ -21,7 +21,7 @@ const CODING_NOTES = [
     title: 'Stitching Photo Mosaics',
     description: 'Recover homographies, warp and blend images into seamless panoramas with automatic feature matching.',
     page: 'pages/notes/coding/cs280a-proj3.html',
-    tags: ['CS280A', 'Computer Vision'],
+    tags: ['CS280A Computer Vision'],
   },
   {
     title: 'Neural Radiance Field',
