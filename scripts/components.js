@@ -12,6 +12,14 @@
       href: `${r}assets/lib/fonts/open-sans.css`,
     });
     document.head.append(font);
+
+    // ── Favicon ──────────────────────────────────────────────
+    if (!document.querySelector('link[rel~="icon"]')) {
+      document.head.append(Object.assign(document.createElement('link'), {
+        rel: 'icon', type: 'image/png',
+        href: `${r}assets/images/logo.png`,
+      }));
+    }
   }
 
   // ── Root path resolution ─────────────────────────────────
