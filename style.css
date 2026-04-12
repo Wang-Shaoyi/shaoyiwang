@@ -609,6 +609,13 @@ a.code-item--link:hover .code-desc { color: var(--text); }
   color: var(--mint-hover);
   font-size: 0.82rem;
   font-weight: 500;
+  text-decoration: none;
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+a.skill-badge:hover {
+  background: var(--mint);
+  border-color: var(--mint);
+  color: #fff;
 }
 
 .about-links {

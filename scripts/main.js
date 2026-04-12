@@ -304,14 +304,19 @@ if (document.getElementById('pub-list')) renderPublications('pub-list');
 // GALLERY PAGE
 // ============================================================
 if (document.getElementById('gallery-grid')) {
-  renderGallery('gallery-grid', 'all');
   const galleryBar = document.getElementById('gallery-filter');
+
+  function applyGalleryFilter(cat) {
+    if (galleryBar) galleryBar.querySelectorAll('.filter-btn').forEach((b) =>
+      b.classList.toggle('active', b.dataset.filter === cat)
+    );
+    renderGallery('gallery-grid', cat);
+  }
+
+  applyGalleryFilter(new URLSearchParams(window.location.search).get('cat') || 'all');
+
   if (galleryBar) galleryBar.querySelectorAll('.filter-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      galleryBar.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderGallery('gallery-grid', btn.dataset.filter);
-    });
+    btn.addEventListener('click', () => applyGalleryFilter(btn.dataset.filter));
   });
 }
 
