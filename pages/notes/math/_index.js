@@ -5,24 +5,10 @@
 
 const MATH_NOTES = [
   {
-    title: 'Linear Algebra Cheat Sheet',
-    description: 'Key identities, matrix operations, eigenvectors, and SVD — one-page reference.',
+    title: 'Coming soon',
+    description: 'Coming soon',
     links: [
-      { label: 'PDF', url: '#' },
-    ],
-  },
-  {
-    title: 'Probability & Statistics',
-    description: 'Distributions, hypothesis testing, Bayes theorem, and common estimators.',
-    links: [
-      { label: 'PDF', url: '#' },
-    ],
-  },
-  {
-    title: 'Calculus Notes',
-    description: 'Derivatives, integrals, multivariable calculus, and gradient intuitions.',
-    links: [
-      { label: 'PDF', url: '#' },
+      { label: 'Coming soon', url: '#' },
     ],
   },
   // ── Add more entries below ────────────────────────────────

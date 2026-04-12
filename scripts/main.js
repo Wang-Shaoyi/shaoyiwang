@@ -8,6 +8,41 @@ const _root = (document.body.getAttribute('data-root') !== null)
   ? document.body.getAttribute('data-root')
   : (_inPages ? '../' : '');
 
+// ← Back button: always set a real href (fixes hover), intercept only when history exists
+document.querySelectorAll('.project-back a').forEach((a) => {
+  a.href = _root + 'index.html';          // real URL → browser activates :hover immediately
+  if (document.referrer) {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.history.back();
+    });
+  }
+});
+
+// Sticky back bar — appears when .project-back scrolls out of view
+(function initStickyBack() {
+  const backEl = document.querySelector('.project-back');
+  if (!backEl) return;
+  const srcLink = backEl.querySelector('a');
+  if (!srcLink) return;
+
+  const bar = document.createElement('div');
+  bar.className = 'sticky-back';
+  const barLink = document.createElement('a');
+  barLink.textContent = srcLink.textContent;
+  barLink.href = srcLink.href;
+  barLink.addEventListener('click', (e) => {
+    if (document.referrer) { e.preventDefault(); window.history.back(); }
+  });
+  bar.appendChild(barLink);
+  document.body.appendChild(bar);
+
+  const obs = new IntersectionObserver(([entry]) => {
+    bar.classList.toggle('sticky-back--visible', !entry.isIntersecting);
+  }, { threshold: 0 });
+  obs.observe(backEl);
+})();
+
 // ============================================================
 // Merge project arrays from whichever _index.js files were loaded
 // ============================================================
@@ -16,7 +51,7 @@ const PROJECTS = [
   ...(typeof DESIGN_PROJECTS   !== 'undefined'  ? DESIGN_PROJECTS    : []),
   ...(typeof MAKING_PROJECTS   !== 'undefined'  ? MAKING_PROJECTS    : []),
   ...(typeof APP_GAME_PROJECTS !== 'undefined'  ? APP_GAME_PROJECTS  : []),
-];
+].sort((a, b) => (b.year || 0) - (a.year || 0));
 
 // ============================================================
 // CARD RENDERER  — clicking navigates to the project page
@@ -64,21 +99,16 @@ function renderList(containerId, data, filterTag) {
   }
   el.innerHTML = filtered.map((c) => {
     const hasPage = c.page && c.page !== '#';
-    const titleEl = hasPage
-      ? `<a class="code-title" href="${_root + c.page}">${c.title}</a>`
-      : `<span class="code-title">${c.title}</span>`;
-    return `
-    <div class="code-item">
-      ${titleEl}
-      <span class="code-dash">—</span>
-      <span class="code-desc">${c.description}</span>
-      ${c.tags && c.tags.length ? `<div class="card-tags" style="flex-basis:100%;margin-top:4px">${c.tags.map((t) => `<button class="tag${t === filterTag ? ' tag--active' : ''}" data-tag="${t}">${t}</button>`).join('')}</div>` : ''}
-      <div class="code-links">
-        ${(c.links || []).map((l) =>
-          `<a class="pub-link${l.style === 'orange' ? ' orange' : ''}" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`
-        ).join('')}
-      </div>
-    </div>`;
+    const tagsHtml = c.tags && c.tags.length
+      ? `<div class="card-tags" style="flex-basis:100%;margin-top:4px">${c.tags.map((t) => `<button class="tag${t === filterTag ? ' tag--active' : ''}" data-tag="${t}">${t}</button>`).join('')}</div>`
+      : '';
+    const linksHtml = `<div class="code-links">${(c.links || []).map((l) =>
+      `<a class="pub-link${l.style === 'orange' ? ' orange' : ''}" href="${l.url}"${/^https?:\/\//.test(l.url) ? ' target="_blank" rel="noopener"' : ''}>${l.label}</a>`
+    ).join('')}</div>`;
+    const rowEl = hasPage
+      ? `<a class="code-item--link" href="${_root + c.page}"><span class="code-title">${c.title}</span><span class="code-dash">—</span><span class="code-desc">${c.description}</span></a>`
+      : `<div class="code-item--static"><span class="code-title">${c.title}</span><span class="code-dash">—</span><span class="code-desc">${c.description}</span></div>`;
+    return `<div class="code-item">${rowEl}${tagsHtml}${linksHtml}</div>`;
   }).join('');
 }
 
@@ -129,7 +159,7 @@ function renderPublications(containerId) {
         <div class="pub-meta">${p.authors} — ${p.venue}</div>
         <div class="pub-links">
           ${p.links.map((l) =>
-            `<a class="pub-link${l.style === 'orange' ? ' orange' : ''}" href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`
+            `<a class="pub-link${l.style === 'orange' ? ' orange' : ''}" href="${l.url}"${/^https?:\/\//.test(l.url) ? ' target="_blank" rel="noopener"' : ''}>${l.label}</a>`
           ).join('')}
         </div>
       </div>
@@ -149,10 +179,6 @@ function renderGallery(containerId, filterCat) {
   el.innerHTML = items.map((g) => `
     <div class="gallery-item">
       <img src="${_root + g.image}" alt="${g.title}" loading="lazy" />
-      <div class="gallery-caption">
-        <div class="gallery-caption-title">${g.title}</div>
-        <div class="gallery-caption-cat">${g.category}</div>
-      </div>
     </div>`).join('');
 }
 
@@ -288,3 +314,94 @@ if (document.getElementById('gallery-grid')) {
     });
   });
 }
+
+// ============================================================
+// LIGHTBOX — project page images
+// ============================================================
+(function initLightbox() {
+  // Collect navigable images: all .project-figure img (grid, masonry, wide, standalone)
+  const navImgs = Array.from(document.querySelectorAll('.project-figure img'));
+  // Hero image is also clickable but navigated separately (index -1)
+  const heroImg = document.querySelector('.project-hero-img img');
+
+  if (!navImgs.length && !heroImg) return;
+
+  // Build overlay DOM
+  const overlay = document.createElement('div');
+  overlay.className = 'lb-overlay';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+  overlay.innerHTML = `
+    <div class="lb-box">
+      <img class="lb-img" src="" alt="" />
+      <div class="lb-caption"></div>
+    </div>
+    <button class="lb-close" aria-label="Close">\u2715</button>
+    <button class="lb-nav lb-prev" aria-label="Previous">\u2039</button>
+    <button class="lb-nav lb-next" aria-label="Next">\u203a</button>`;
+  document.body.appendChild(overlay);
+
+  const lbImg     = overlay.querySelector('.lb-img');
+  const lbCaption = overlay.querySelector('.lb-caption');
+  const lbClose   = overlay.querySelector('.lb-close');
+  const lbPrev    = overlay.querySelector('.lb-prev');
+  const lbNext    = overlay.querySelector('.lb-next');
+
+  let currentIdx = 0;   // index into navImgs; -1 = hero
+  let isHero     = false;
+
+  function setImage(img) {
+    lbImg.src = img.src;
+    lbImg.alt = img.alt || '';
+    const fig = img.closest('figure');
+    const cap = fig ? fig.querySelector('figcaption') : null;
+    lbCaption.textContent = cap ? cap.textContent.trim() : '';
+    lbCaption.style.display = lbCaption.textContent ? '' : 'none';
+  }
+
+  function open(idx, hero) {
+    isHero     = !!hero;
+    currentIdx = isHero ? 0 : idx;
+    setImage(isHero ? heroImg : navImgs[currentIdx]);
+    // Show nav only when multiple navigable images exist
+    const showNav = !isHero && navImgs.length > 1;
+    lbPrev.style.display = showNav ? '' : 'none';
+    lbNext.style.display = showNav ? '' : 'none';
+    overlay.style.display = 'flex';
+    requestAnimationFrame(() => overlay.classList.add('lb-visible'));
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close() {
+    overlay.classList.remove('lb-visible');
+    setTimeout(() => { overlay.style.display = 'none'; lbImg.src = ''; }, 200);
+    document.body.style.overflow = '';
+  }
+
+  function nav(dir) {
+    if (isHero) return;
+    currentIdx = (currentIdx + dir + navImgs.length) % navImgs.length;
+    setImage(navImgs[currentIdx]);
+  }
+
+  // Wire up images
+  navImgs.forEach((img, i) => {
+    img.addEventListener('click', (e) => { e.stopPropagation(); open(i, false); });
+  });
+  if (heroImg) {
+    heroImg.addEventListener('click', (e) => { e.stopPropagation(); open(0, true); });
+  }
+
+  // Controls
+  lbClose.addEventListener('click', close);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+  lbPrev.addEventListener('click',  (e) => { e.stopPropagation(); nav(-1); });
+  lbNext.addEventListener('click',  (e) => { e.stopPropagation(); nav(1); });
+
+  document.addEventListener('keydown', (e) => {
+    if (!overlay.classList.contains('lb-visible')) return;
+    if (e.key === 'Escape')     close();
+    if (e.key === 'ArrowLeft')  nav(-1);
+    if (e.key === 'ArrowRight') nav(1);
+  });
+})();

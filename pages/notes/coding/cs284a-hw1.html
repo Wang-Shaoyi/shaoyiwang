@@ -1,0 +1,448 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rasterizer - CS284A - Shaoyi Wang</title>
+  <link rel="stylesheet" href="../../../style.css"/>
+  <link rel="stylesheet" href="../../../assets/lib/katex/katex.min.css" />
+  <style>
+    .cs284a-body figure { text-align: center; margin: 1.5rem 0; }
+    .cs284a-body img { max-width: 100%; height: auto; border-radius: 6px; }
+    .cs284a-body table { width: 100%; border-collapse: collapse; margin: 1.2rem 0; font-size: .9rem; }
+    .cs284a-body td, .cs284a-body th { border: 1px solid var(--border); padding: .45rem .75rem; text-align: left; }
+    .cs284a-body th { background: var(--surface); font-weight: 600; }
+    .cs284a-body figcaption { font-size: .82rem; color: var(--text-muted); margin-top: 6px; }
+    .cs284a-body h2 { font-size: 1.25rem; font-weight: 600; margin: 2rem 0 .6rem; }
+    .cs284a-body h3 { font-size: 1.05rem; font-weight: 600; margin: 1.5rem 0 .5rem; }
+    .cs284a-body h4 { font-size: .95rem; font-weight: 600; margin: 1.2rem 0 .4rem; color: #555; }
+    .cs284a-body p  { margin: .7rem 0; line-height: 1.7; }
+    .cs284a-body code { background: var(--surface); border-radius: 3px; padding: .1em .35em; font-size: .88em; }
+    .cs284a-body ul, .cs284a-body ol { padding-left: 1.4rem; margin: .6rem 0; }
+    .cs284a-body li { margin-bottom: 4px; }
+    .cs284a-body .gallery { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin: 20px 0; }
+    .cs284a-body .gallery figure { margin: 0; flex: 1 1 280px; text-align: center; }
+    .cs284a-body .gallery.two-up figure { max-width: 480px; }
+    .cs284a-body .gallery.three-up figure { max-width: 320px; }
+  </style>
+</head>
+<body data-root="../../../">
+  <header class="site-header"></header>
+  <main><div class="container">
+    <div class="project-back"><a href="javascript:history.back()">&#8592; Back to Notes</a></div>
+
+
+    <div class="project-header" style="margin-top:28px">
+      <div class="card-category">Coding Notes</div>
+      <h1 class="project-title">Rasterizer</h1>
+      <div class="project-meta"><span>2026</span></div>
+      <p class="project-intro">Triangle rasterization, supersampling antialiasing, 2D transforms, barycentric coordinates, and texture mapping with mipmaps.</p>
+      <div class="card-tags"><span class="tag">CS284A Computer Graphics</span></div>
+    </div>
+
+    <div class="project-body cs284a-body">
+
+		
+
+		<h2>Overview</h2>
+		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+
+		<h2>Task 1: Drawing Single-Color Triangles</h2>
+		<h3>Explanation</h3>
+		<p>For Task 1, we rasterize a triangle by first computing its axis-aligned bounding box in screen space.
+		We take the minimum and maximum of the three vertex coordinates, convert them to an integer pixel range, and clamp the range to the framebuffer boundaries.</p>
+
+		<p>Next, we iterate over every pixel inside this <b>bounding box</b>. For each pixel, we test a single sample at
+		the <b>center</b> of the pixel. To check whether the sample lies inside the triangle,
+		we evaluate three <i>edge tests</i> (signed area / cross-product style tests) against the triangle's three
+		directed edges with \[ e = -(p_x - x_0)(y_1 - y_0) + (p_y - y_0)(x_1 - x_0) \] The sample is considered inside if all three test values are non-negative, or if all
+		three are non-positive. This makes the result independent of whether the input vertices are ordered
+		clockwise or counter-clockwise. If the sample is inside, we fill the triangle's color to that pixel; otherwise we leave the pixel unchanged.</p>
+
+		<h3>No worse than checking everything in the bounding box</h3>
+		This algorithm is <b>no worse</b> than one that checks every sample within the triangle's bounding box because
+		it does exactly that: it only visits pixels inside the smallest rectangle that fully contains the triangle,
+		and it performs a constant amount of work per visited pixel. It doesn't go over the entire framebuffer, and it does not do extra checks outside the bounding box, so its runtime matches the baseline bounding-box scanning approach up to constant factors.
+
+		<figure>
+			<img src="../../../assets/images/notes/coding/cs284a/hw1/sample1.png" alt="cover" style="width:70%"/>
+			<figcaption><b>Rasterizing with default parameters</b>: the left corner of the red triangle looks separated.</figcaption>
+		</figure>
+
+		<h3>Extra credit: optimization</h3>
+		We implement a <b>scanline fill</b> optimization: Instead of checking every pixel in the bounding box,
+		we process the triangle <b>one row at a time</b>. For each pixel row, we find where that horizontal line
+		intersects the triangle's three edges with the given raster_line method, which typically produces two intersection x-coordinates. We then fill only the pixels whose centers lie between the left and right intersection points. This reduces the
+		number of pixel checks significantly:
+		<br><br>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/before time.png" width="290px"/>
+				  <figcaption>Redering time for <em>test4.svg</em> before optimization.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/after time.png" width="300px"/>
+				  <figcaption>Redering time for <em>test4.svg</em> after optimization.</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+		
+		<h2>Task 2: Antialiasing by Supersampling</h2>
+		<h3>Algorithm walkthrough</h3>
+		<p>
+		For Task 2, we implemented supersampling by modifying an intermediate
+		<code>sample_buffer</code> that stores multiple color samples for each output pixel. Each pixel is subdivided into a uniform grid of sub-pixels, and we store one color value per sub-pixel sample. Concretely, we allocate the buffer with
+		<code>width * height * sample_rate</code>, and the samples for pixel <code>(x, y)</code> occupy a contiguous block.
+		<br><br>
+		After all primitives have been rasterized into <code>sample_buffer</code>, we resolve the samples into the final framebuffer by averaging. For each output pixel <code>(x, y)</code>, we sum its sub-sample colors in
+		<code>sample_buffer</code> and divide by <code>sample_rate</code> to get the average pixel color, and then write the result into
+		<code>rgb_framebuffer_target</code> as 8-bit RGB values. This averaging step is implemented in
+		<code>resolve_to_framebuffer()</code>.
+		</p>
+
+		<h3>Why is supersampling useful?</h3>
+		<p>
+		Supersampling is useful because it reduces <b>aliasing</b> caused by taking only one sample per pixel.
+		Near triangle boundaries, a pixel can be partially inside or outside the triangle. By taking multiple
+		sub-pixel samples and averaging them, boundary pixels can produce intermediate colors,
+		which smooths the edge.
+		</p>
+
+		<h3>Modifications</h3>
+		<p>
+			<ul>
+			<li>
+				Updated <code>set_sample_rate</code> and <code>set_framebuffer_target</code> so <code>sample_buffer</code> is reallocated whenever <code>sample_rate</code>, <code>width</code>, or <code>height</code> changes.
+			</li>
+			<li>
+				Updated <code>rasterize_triangle</code> to perform supersampling: for each pixel in the triangle’s bounding box, we evaluate point-in-triangle tests at multiple sub-pixel sample locations and write covered sub-samples directly into
+				<code>sample_buffer</code>.
+			</li>
+			<li>
+				Updated <code>fill_pixel</code> to keep points and lines working under supersampling by filling all sub-samples of a pixel with the same color.
+			</li>
+			<li>
+				Updated <code>resolve_to_framebuffer</code> to downsample: for each output pixel, we average its <code>sample_rate</code> stored samples and write the resulting 8-bit RGB values into <code>rgb_framebuffer_target</code>.
+			</li>
+			</ul>
+		</p>
+
+		<h3>Antialiasing</h3>
+		<p>
+		With the above method, we antialias triangle edges by taking multiple samples within each pixel and averaging them to produce the final pixel color.
+		Pixels fully covered by the triangle remain solid, while boundary pixels become a blend of triangle and background colors,
+		which smooths out jagged edges.
+		</p>
+
+		<p>
+		<em> Points and lines still uses the default fill_pixel process without supersampling.</em>
+		</p>
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/sample1.png" width="500px"/>
+				  <figcaption>Sample rate 1.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/sample4.png" width="500px"/>
+				  <figcaption>Sample rate 4.</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/sample9.png" width="500px"/>
+				  <figcaption>Sample rate 9.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/sample16.png" width="500px"/>
+				  <figcaption>Sample rate 16.</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<p><b>Explanation: </b>As the sample rate increases, the edges become smoother because more sub-pixel samples are averaged within each pixel. With more sub-samples, boundary pixels are only partially covered, so their averaged color becomes a blend of the shape and the background instead of a hard on/off step.</p>
+
+		<h3>Extra credit</h3>
+		<p>
+		We implemented <b>jittered supersampling</b> as an alternative antialiasing method.
+		Instead of sampling the <i>center</i> of each stratum, we sample a <i>randomly jittered</i> point inside it:
+		<code>(sx + rand())/r</code>, <code>(sy + rand())/r</code>. We use a simple hash-based RNG seeded by
+		<code>(x, y, sx, sy)</code> so the result is deterministic and reproducible.
+		</p>
+
+		<p>
+		With <b>sample rate = 1</b>, <b>center sampling</b> produces a visible gap, while <b>jittered sampling</b> varies the sample position within each pixel and appears more continuous. When we increase to <b>sample rate = 4</b>, <b>jittered sampling</b> tends to produce fuller coverage of the triangle because multiple randomized sub-samples better capture its area, but creates noise-like grain compared to center sampling.
+		</p>
+
+
+		<br><br>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/sample1.png" width="500px"/>
+				  <figcaption>Center sampling with sample rate 1.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/jittering.png" width="500px"/>
+				  <figcaption>Jittered sampling with sample rate 1.</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/sample4.png" width="500px"/>
+				  <figcaption>Center sampling with sample rate 4.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/jittering4.png" width="500px"/>
+				  <figcaption>Jittered sampling with sample rate 4.</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+		<br><br>
+
+		<h2>Task 3: Transforms</h2>
+		<figure>
+			<img src="../../../assets/images/notes/coding/cs284a/hw1/happywave.png" alt="cover" style="width:70%"/>
+			<figcaption>Happy waving robot through transforms.</figcaption>
+		</figure>
+		<p>
+		We implemented the core 2D transformation operators <b>translate</b>, <b>scale</b>, and <b>rotate</b> using 3&times;3 homogeneous
+		matrices. Using these transforms, we edited the robot SVG by adjusting the rotation of the <b>head</b>, <b>right arm</b>, and
+		<b>left leg</b> to create a “happy waving” robot. We also applied a <b>gradient fill</b> to the body.
+		</p>
+		<h3>Extra credit</h3>
+		<p>
+		We added two unused keys, <code>[</code> and <code>]</code>, to rotate the viewport interactively. Pressing these keys
+		updates a persistent rotation angle and triggers a redraw. To implement this feature, we modified the transform stack by
+		inserting an additional rotation into the NDC-to-screen mapping (while keeping the original SVG-to-NDC mapping unchanged).
+		Concretely, we compose the screen transform as a center-anchored rotation:
+		<code>T(screen_center) &middot; R(&theta;) &middot; S(min(w,h)) &middot; T(-0.5,-0.5)</code>, which rotates the rendered scene
+		about the viewport center without affecting the underlying SVG coordinates.
+		</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/happyrot1.png" width="500px"/>
+				</td>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/happyrot2.png" width="500px"/>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/happyrot3.png" width="500px"/>
+				</td>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/happyrot4.png" width="500px"/>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+				<br><br>
+
+		<h2>Task 4: Barycentric coordinates</h2>
+		<h3>Explanation</h3>
+		<p>
+		Barycentric coordinates express any point <b>P</b> inside a triangle as a weighted combination of the three vertices:
+		<code>P = w0*A + w1*B + w2*C</code>, where <code>w0 + w1 + w2 = 1</code> and the weights are non-negative inside the triangle.
+		Intuitively, each weight measures how close <b>P</b> is to the opposite edge: near vertex <code>A</code>, <code>w0</code> is large;
+		near edge <code>BC</code>, <code>w0</code> goes to zero. This makes barycentric coordinates a natural way to interpolate attributes across a triangle.
+		</p>
+		<figure>
+			<img src="../../../assets/images/notes/coding/cs284a/hw1/triangle.png" alt="cover" style="width:70%"/>
+			<figcaption>A single triangle with red, green, and blue vertex colors rendered using barycentric interpolation.</figcaption>
+		</figure>
+		<p>
+		Below is a result from <code>svg/basic/test7.svg</code> rendered with sample rate = 1,
+		showing the expected smoothly varying color wheel produced by barycentric color interpolation.
+		</p>
+
+		<figure>
+			<img src="../../../assets/images/notes/coding/cs284a/hw1/circle.png" alt="cover" style="width:70%"/>
+		</figure>
+
+		<br><br>
+		<h2>Task 5: "Pixel sampling" for texture mapping</h2>
+		<h3>Explanation</h3>
+		<p>
+		Pixel sampling determines how we compute a final color for a screen sample at <code>(x,y)</code> when rendering a textured triangle.
+		For each sub-sample point <code>(x,y)</code> that lies inside the triangle, we compute barycentric weights <code>(w0,w1,w2)</code>,
+		use them to interpolate the corresponding texture coordinate <code>(u,v) = w0(u0,v0) + w1(u1,v1) + w2(u2,v2)</code>, and then
+		fetch a color from the texture image at <code>(u,v)</code> (in the range <code>[0,1]</code>) to write into the sample buffer.
+		</p>
+		
+		<p>
+		 <b>Nearest-neighbor</b> maps <code>(u,v)</code> to the closest texel and returns that texel's
+		color, which is fast but can look blocky or show aliasing. <b>Bilinear</b> sampling fetches the four neighboring texels around
+		<code>(u,v)</code> and linearly blends them based on the fractional offsets, producing smoother results (especially under scaling) at the
+		cost of slightly more computation.
+		</p>
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/nn-1.png" width="500px"/>
+				  <figcaption>Nearest-neighbor with sample rate 1.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/bl-1.png" width="500px"/>
+				  <figcaption>Bilinear with sample rate 1.</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/nn-16.png" width="500px"/>
+				  <figcaption>Nearest-neighbor with sample rate 16.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/bl-16.png" width="500px"/>
+				  <figcaption>Bilinear with sample rate 16.</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<br>
+		<h3>Comments</h3>
+		<p>
+		In these comparisons, <b>nearest-neighbor</b> preserves hard texel boundaries, so magnified regions look more blocky and can show visible jagged transitions in the zoom inset. <b>Bilinear</b> produces a smoother, less pixelated appearance with softer transitions. Increasing the <b>sample rate</b> reduces geometric aliasing at triangle edges for both methods, while bilinear's averaging becomes a bit blurred as it continues to smooth high-contrast texel changes.
+		</p>
+		<p>
+		The difference between the two methods is largest when the <b>sample rate is low</b>, because each pixel uses fewer samples and nearest	sampling is more likely to miss or abruptly jump between texels. With a <b>higher sample
+		rate</b>, the overall image becomes more stable due to supersampling, so the visual gap between nearest
+		and bilinear is generally smaller. Moreover, the difference is larger for high-frequency textures. Nearest can alias and jump between texels, while bilinear averages neighbors to reduce aliasing.
+		</p>
+		<br><br>
+
+
+		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
+		<h3>Explanation</h3>
+		<p>
+		Level sampling determines which resolution level of a texture to sample from so that a screen pixel does not
+		capture more texture detail than it can represent. In the textured-triangle rasterizer, for each screen sample at <code>(x,y)</code>
+		we compute the corresponding <code>(u,v)</code> and also estimate how quickly <code>(u,v)</code> changes across the screen by evaluating
+		<code>(u,v)</code> at <code>P+(1,0)</code> and <code>P+(0,1)</code>. These give <code>p_dx_uv</code> and <code>p_dy_uv</code>, which
+		approximate the texture-space footprint of one screen pixel.
+		</p>
+		<p>
+		We convert these UV differentials into texel-space lengths and choose a mip level using
+		\(\text{level}=\log_2\!\left(\max\left(\left\|\frac{d\mathbf{UV}}{dx}\right\|,\ \left\|\frac{d\mathbf{UV}}{dy}\right\|\right)\right)\), clamped to the available range. We then implement three level sampling modes:
+		<b>L_ZERO</b> always samples level 0, <b>L_NEAREST</b> rounds to the nearest integer level, and <b>L_LINEAR</b> linearly interpolates
+		between the two nearest mip levels (trilinear in the level dimension). This reduces aliasing for high-frequency textures.
+		</p>
+
+		<br>
+		<h3>Tradeoffs</h3>
+		<table border="1" cellpadding="8" cellspacing="0">
+		<tr>
+			<th>Technique</th>
+			<th>Speed cost</th>
+			<th>Memory cost</th>
+			<th>Antialiasing quality</th>
+		</tr>
+		<tr>
+			<td><b>Samples per Pixel</b><br>(Supersampling)</td>
+			<td><b>High</b> when with high sample rate</td>
+			<td><b>High</b> (sample buffer scales with sample rate)</td>
+			<td><b>Very high</b> with high sample rate</td>
+		</tr>
+		<tr>
+			<td><b>Pixel Sampling</b><br>(Nearest vs Bilinear)</td>
+			<td><b>Low</b> (bilinear ≈ 4 texel reads vs nearest 1)</td>
+			<td><b>None</b> (no extra buffers/textures)</td>
+			<td><b>Moderate</b>: reduces blockiness</td>
+		</tr>
+
+		<tr>
+			<td><b>Level Sampling</b><br>(Mipmap selection)</td>
+			<td><b>Medium</b> (compute level + possibly sample 2 levels)</td>
+			<td><b>Medium</b> (stores mipmaps, ~1/3 extra texture memory)</td>
+			<td><b>High</b> for high-frequency: reduces aliasing</td>
+		</tr>
+
+		</table>
+		<br><br>
+		<p>
+		The below image looks at the paving pattern in a video game. Compared to <b>P_NEAREST</b>, <b>P_LINEAR</b> produces smoother, less blocky texture values in the zoomed region, but looks slightly
+		blurrier due to averaging neighboring texels. Switching from <b>L_ZERO</b> to <b>L_NEAREST</b> uses a more appropriate mip level for
+		minification, reducing high-frequency aliasing/striping in the zoom inset and making the texture appear more stable.
+		</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/l_zero_p_nearest.png" width="500px"/>
+				  <figcaption>L_ZERO + P_NEAREST.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/l_zero_p_linear.png" width="500px"/>
+				  <figcaption>L_ZERO + P_LINEAR.</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/l_nearest_p_nearest.png" width="500px"/>
+				  <figcaption>L_NEAREST + P_NEAREST.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/l_nearest_p_linear.png" width="500px"/>
+				  <figcaption>L_NEAREST + P_LINEAR.</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<br><br>
+		<h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
+		<p>
+		To create our procedural competition SVG, we converts a Berkeley campus photo into a low-poly mosaic. The script first resizes the input image to <b>800×800</b>, then generates roughly uniform sample points using Poisson-disk sampling (so points are well-spaced across the canvas). Next, it performs a Delaunay triangulation over these points to obtain a set of triangles that fully cover the image (we also add boundary points to avoid holes near the edges). For each triangle, we sample the photos RGB values at its three vertices and fill the triangle with the average of those three colors. Rendering the resulting SVG produces a
+		triangle-based approximation of the original Berkeley photo.
+		</p>
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/berkeley.jpg" width="200px"/>
+				  <figcaption>Original photo.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw1/competition.png" width="500px"/>
+				  <figcaption>Processed image.</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+    </div>
+  </div></main>
+  <footer class="site-footer"><p>&copy; 2026 Shaoyi Wang</p></footer>
+
+  <script src="../../../assets/lib/katex/katex.min.js"></script>
+  <script src="../../../assets/lib/katex/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$",  right: "$$",  display: true},
+          {left: "\\[", right: "\\]", display: true},
+          {left: "\\(", right: "\\)", display: false},
+          {left: "$",   right: "$",   display: false}
+        ]
+      });
+    });
+  </script>
+  <script src="../../../scripts/components.js"></script>
+  <script src="../../../scripts/main.js"></script>
+</body>
+</html>

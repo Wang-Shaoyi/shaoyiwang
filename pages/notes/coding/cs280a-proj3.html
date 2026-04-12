@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Stitching Photo Mosaics - Shaoyi Wang</title>
   <link rel="stylesheet" href="../../../style.css"/>
+  <link rel="stylesheet" href="../../../assets/lib/katex/katex.min.css" />
   <style>
     /* WP block rendering overrides */
     .wp-post-body figure.wp-block-image { margin: 1.5rem 0; }
@@ -32,8 +33,6 @@
     .wp-block-separator { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
     .sharedaddy, .sd-block-ui, #jp-post-flair { display: none !important; }
   </style>
-  <script>MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
 </head>
 <body data-root="../../../">
   <header class="site-header"></header>
@@ -43,8 +42,7 @@
       <div class="card-category">Coding Notes</div>
       <h1 class="project-title">Stitching Photo Mosaics</h1>
       <div class="card-tags">
-        <span class="tag">CS280A</span>
-        <span class="tag">Computer Vision</span>
+        <span class="tag">CS280A Computer Vision</span>
       </div>
     </div>
     <div class="project-body wp-post-body">
@@ -262,7 +260,7 @@
 
 
 
-<p class="wp-block-paragraph">I first project the four image corners through <img decoding="async" src="https://s0.wp.com/latex.php?latex=H&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="H" class="latex"> to find the output image&rsquo;s bounding box <img decoding="async" src="https://s0.wp.com/latex.php?latex=x_%7B%5Cmin%7D%2C+x_%7B%5Cmax%7D%2C+y_%7B%5Cmin%7D%2C+y_%7B%5Cmax%7D&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="x_{\min}, x_{\max}, y_{\min}, y_{\max}" class="latex">. Then, a mesh grid of all integer coordinates (using <code><mark style="background-color:rgba(0, 0, 0, 0);color:#cf2e2e" class="has-inline-color">np.meshgrid</mark></code>) in this range is created to represent each target pixel location.</p>
+<p class="wp-block-paragraph">I first project the four image corners through \(H\) to find the output image&rsquo;s bounding box \(x_{\min}, x_{\max}, y_{\min}, y_{\max}\). Then, a mesh grid of all integer coordinates (using <code><mark style="background-color:rgba(0, 0, 0, 0);color:#cf2e2e" class="has-inline-color">np.meshgrid</mark></code>) in this range is created to represent each target pixel location.</p>
 
 
 
@@ -270,7 +268,7 @@
 
 
 
-<p class="wp-block-paragraph">The homography <img decoding="async" src="https://s0.wp.com/latex.php?latex=H&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="H" class="latex"> defines a transformation <img decoding="async" src="https://s0.wp.com/latex.php?latex=p%27+%3D+H+p&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="p' = H p" class="latex">. Therefore, I use the inverse homography <img decoding="async" src="https://s0.wp.com/latex.php?latex=H%5E%7B-1%7D&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="H^{-1}" class="latex"> to map each target pixel <img decoding="async" src="https://s0.wp.com/latex.php?latex=%28x%27%2C+y%27%29&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="(x', y')" class="latex"> back to its corresponding source coordinate <img decoding="async" src="https://s0.wp.com/latex.php?latex=%28x%2C+y%29&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="(x, y)" class="latex">.</p>
+<p class="wp-block-paragraph">The homography \(H\) defines a transformation \(p' = H p\). Therefore, I use the inverse homography \(H^{-1}\) to map each target pixel \((x', y')\) back to its corresponding source coordinate \((x, y)\).</p>
 
 
 
@@ -290,7 +288,7 @@
 
 
 
-<p class="wp-block-paragraph">When performing inverse warping, some of the mapped coordinates <img decoding="async" src="https://s0.wp.com/latex.php?latex=%28x%2C+y%29+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="(x, y) " class="latex"> may fall outside the valid range of the original image (e.g., negative indices or values greater than the image width/height). To address this, I create a binary mask <img decoding="async" src="https://s0.wp.com/latex.php?latex=+%5Calpha+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" \alpha " class="latex"> that marks which pixels in the warped image correspond to valid source coordinates.<br>Each pixel satisfies the following condition:</p>
+<p class="wp-block-paragraph">When performing inverse warping, some of the mapped coordinates \((x, y) \) may fall outside the valid range of the original image (e.g., negative indices or values greater than the image width/height). To address this, I create a binary mask \( \alpha \) that marks which pixels in the warped image correspond to valid source coordinates.<br>Each pixel satisfies the following condition:</p>
 
 
 
@@ -326,7 +324,7 @@
 
 
 
-<p class="wp-block-paragraph">In this step, instead of rounding the coordinates, I found all four neighbors by computing <img decoding="async" src="https://s0.wp.com/latex.php?latex=+x_%7B%5Ctext%7Bfloor%7D%7D%2C+x_%7B%5Ctext%7Bceil%7D%7D%2C++y_%7B%5Ctext%7Bfloor%7D%7D%2C+y_%7B%5Ctext%7Bceil%7D%7D+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" x_{\text{floor}}, x_{\text{ceil}},  y_{\text{floor}}, y_{\text{ceil}} " class="latex"> to get all the neighboring pixel values <img decoding="async" src="https://s0.wp.com/latex.php?latex=+I_%7B11%7D%2C+I_%7B12%7D%2C+I_%7B21%7D+%2CI_%7B22%7D&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" I_{11}, I_{12}, I_{21} ,I_{22}" class="latex">.</p>
+<p class="wp-block-paragraph">In this step, instead of rounding the coordinates, I found all four neighbors by computing \( x_{\text{floor}}, x_{\text{ceil}},  y_{\text{floor}}, y_{\text{ceil}} \) to get all the neighboring pixel values \( I_{11}, I_{12}, I_{21} ,I_{22}\).</p>
 
 
 
@@ -588,7 +586,7 @@
 
 
 
-<p class="wp-block-paragraph">Each pixel <img decoding="async" src="https://s0.wp.com/latex.php?latex=%28x%2C+y%29&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="(x, y)" class="latex"> is first expressed relative to the image center:</p>
+<p class="wp-block-paragraph">Each pixel \((x, y)\) is first expressed relative to the image center:</p>
 
 
 
@@ -612,7 +610,7 @@
 
 
 
-<p class="wp-block-paragraph">For each output pixel <img decoding="async" src="https://s0.wp.com/latex.php?latex=%28x_c%2C+y_c%29&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="(x_c, y_c)" class="latex">, the source coordinate in the original image is computed as:<br></p>
+<p class="wp-block-paragraph">For each output pixel \((x_c, y_c)\), the source coordinate in the original image is computed as:<br></p>
 
 
 
@@ -694,7 +692,7 @@
 
 
 
-<p class="wp-block-paragraph">and <img decoding="async" src="https://s0.wp.com/latex.php?latex=I_x&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="I_x" class="latex">&#8203; and <img decoding="async" src="https://s0.wp.com/latex.php?latex=I_y&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="I_y" class="latex">&#8203; are image gradients in the x and y directions, respectively.<br>Pixels with a large R are considered good corner candidates.</p>
+<p class="wp-block-paragraph">and \(I_x\)&#8203; and \(I_y\)&#8203; are image gradients in the x and y directions, respectively.<br>Pixels with a large R are considered good corner candidates.</p>
 
 
 
@@ -714,7 +712,7 @@
 
 
 
-<p class="wp-block-paragraph">The idea is to assign each corner a suppression radius <img decoding="async" src="https://s0.wp.com/latex.php?latex=r_i&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="r_i" class="latex">, defined as the minimum distance to any other corner <img decoding="async" src="https://s0.wp.com/latex.php?latex=j&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="j" class="latex"> that has a significantly higher Harris response:</p>
+<p class="wp-block-paragraph">The idea is to assign each corner a suppression radius \(r_i\), defined as the minimum distance to any other corner \(j\) that has a significantly higher Harris response:</p>
 
 
 
@@ -727,16 +725,16 @@
 
 
 <ul class="wp-block-list">
-<li><img decoding="async" src="https://s0.wp.com/latex.php?latex=h_i&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="h_i" class="latex">&#8203; is the Harris response of corner <img decoding="async" src="https://s0.wp.com/latex.php?latex=+i+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" i " class="latex">,</li>
+<li>\(h_i\)&#8203; is the Harris response of corner \( i \),</li>
 
 
 
-<li><img decoding="async" src="https://s0.wp.com/latex.php?latex=+c_%7B%5Ctext%7Brobust%7D%7D++&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" c_{\text{robust}}  " class="latex"> is a robustness factor (here used 0.9).</li>
+<li>\( c_{\text{robust}}  \) is a robustness factor (here used 0.9).</li>
 </ul>
 
 
 
-<p class="wp-block-paragraph">After computing all <img decoding="async" src="https://s0.wp.com/latex.php?latex=+r_i+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" r_i " class="latex">, the algorithm keeps the n corners with the largest radii,which are the most spatially distinctive keypoints. The below two images shows their ANMS corners (500 points for each image). Compared to the harris corners in the previous section, these images have points that are distributed more evenly.</p>
+<p class="wp-block-paragraph">After computing all \( r_i \), the algorithm keeps the n corners with the largest radii,which are the most spatially distinctive keypoints. The below two images shows their ANMS corners (500 points for each image). Compared to the harris corners in the previous section, these images have points that are distributed more evenly.</p>
 
 
 
@@ -766,7 +764,7 @@
 
 
 
-<p class="wp-block-paragraph">The steps for each corner coordinate <img decoding="async" src="https://s0.wp.com/latex.php?latex=+%28x_i%2C+y_i%29+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" (x_i, y_i) " class="latex">:</p>
+<p class="wp-block-paragraph">The steps for each corner coordinate \( (x_i, y_i) \):</p>
 
 
 
@@ -778,7 +776,7 @@
 
 
 
-<p class="wp-block-paragraph">where <img decoding="async" src="https://s0.wp.com/latex.php?latex=+G_%5Csigma+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" G_\sigma " class="latex">&#8203; is a Gaussian kernel with standard deviation <img decoding="async" src="https://s0.wp.com/latex.php?latex=+%5Csigma+%3D+1.0&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" \sigma = 1.0" class="latex"> as used as the pyramid sigma in the paper.</p>
+<p class="wp-block-paragraph">where \( G_\sigma \)&#8203; is a Gaussian kernel with standard deviation \( \sigma = 1.0\) as used as the pyramid sigma in the paper.</p>
 
 
 
@@ -824,7 +822,7 @@
 
 
 
-<p class="wp-block-paragraph">For each descriptor <img decoding="async" src="https://s0.wp.com/latex.php?latex=+d_i+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" d_i " class="latex"> in image 1, we find its two nearest neighbors <img decoding="async" src="https://s0.wp.com/latex.php?latex=+d_j+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" d_j " class="latex"> and <img decoding="async" src="https://s0.wp.com/latex.php?latex=+d_k+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" d_k " class="latex"> in image 2, based on <strong>Euclidean (L2) distance</strong>:</p>
+<p class="wp-block-paragraph">For each descriptor \( d_i \) in image 1, we find its two nearest neighbors \( d_j \) and \( d_k \) in image 2, based on <strong>Euclidean (L2) distance</strong>:</p>
 
 
 
@@ -898,11 +896,11 @@
 
 
 
-<p class="wp-block-paragraph"><strong>Step 2: </strong>Estimate a temporary homography <img decoding="async" src="https://s0.wp.com/latex.php?latex=+H_i+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" H_i " class="latex">&#8203; using these 4 pairs.</p>
+<p class="wp-block-paragraph"><strong>Step 2: </strong>Estimate a temporary homography \( H_i \)&#8203; using these 4 pairs.</p>
 
 
 
-<p class="wp-block-paragraph"><strong>Step 3:</strong> Project all points from image 1 using <img decoding="async" src="https://s0.wp.com/latex.php?latex=+H_i+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" H_i " class="latex">&#8203;:</p>
+<p class="wp-block-paragraph"><strong>Step 3:</strong> Project all points from image 1 using \( H_i \)&#8203;:</p>
 
 
 
@@ -1054,6 +1052,20 @@
     </div>
   </div></main>
   <footer class="site-footer"><p>&copy; 2026 Shaoyi Wang</p></footer>
+  <script src="../../../assets/lib/katex/katex.min.js"></script>
+  <script src="../../../assets/lib/katex/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "\\(", right: "\\)", display: false},
+          {left: "$",  right: "$",   display: false}
+        ]
+      });
+    });
+  </script>
+
   <script src="../../../scripts/components.js"></script>
   <script src="../../../scripts/main.js"></script>
 </body></html>

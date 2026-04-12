@@ -10,25 +10,29 @@
 const RESEARCH_PROJECTS = [
   {
     id: 'res-1',
-    title: 'AI-Assisted UX Research',
+    title: 'Conformal 3D printing on bending-active formwork',
     category: 'Research',
     categorySlug: 'research',
     featured: true,
-    description: 'Exploring how large language models can accelerate qualitative user research by auto-coding interview transcripts and surfacing themes.',
-    tags: ['LLM', 'UX Research', 'Python'],
-    image: 'assets/images/place_holder.png',
-    page: 'pages/projects/research/ai-ux-research.html',
+    description: 'Structural implications of toolpath strategies and interlayer timing.',
+    tags: ['Robotic fabrication'],
+    image: 'assets/images/projects/research/iass2025/shell_toolpath.png',
+    page: 'pages/projects/research/iass2025.html',
+    year: 2025
   },
   {
     id: 'res-2',
-    title: 'Embodied Cognition Study',
-    category: 'Research',
+    title: 'BarkBeetle',
+    category: ['Research'],
     categorySlug: 'research',
     featured: false,
-    description: 'A mixed-methods study on how physical gesture interfaces affect learning outcomes in children.',
-    tags: ['HCI', 'Education', 'Experiment'],
-    image: 'assets/images/place_holder.png',
-    page: 'pages/projects/research/embodied-cognition.html',
+    description: 'Generating Conformal 3D Printing Toolpaths with a Skeleton Graph Approach',
+    tags: ['Robotic fabrication', 'Design tool development'],
+    image: 'assets/images/projects/research/BarkBeetle/Fig7.png',
+    page: 'pages/projects/research/barkbeetle.html',
+    year: 2025
   },
+
+
   // ── Add new research projects below ──────────────────────
 ];

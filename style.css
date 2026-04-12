@@ -492,11 +492,23 @@ button.tag:hover { background: rgba(45,191,138,0.12); color: var(--mint); border
   font-weight: 700;
   color: var(--text);
 }
-a.code-title {
+
+a.code-item--link {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: nowrap;
+  flex-basis: 100%;
   text-decoration: none;
-  color: var(--text);
+  color: inherit;
+  border-radius: 4px;
+  margin: 0 -6px;
+  padding: 2px 6px;
+  transition: background 0.15s;
 }
-a.code-title:hover { color: var(--mint); }
+a.code-item--link:hover { background: var(--surface); }
+a.code-item--link:hover .code-title { color: var(--mint); }
+a.code-item--link:hover .code-desc { color: var(--text); }
 
 .code-dash { color: var(--border); flex-shrink: 0; }
 
@@ -525,22 +537,12 @@ a.code-title:hover { color: var(--mint); }
   border-radius: var(--radius);
   overflow: hidden;
   border: 1.5px solid var(--border);
-  cursor: pointer;
-  transition: transform var(--transition), box-shadow var(--transition);
-}
-
-.gallery-item:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
 }
 
 .gallery-item img {
   width: 100%;
   display: block;
-  transition: transform 0.4s ease;
 }
-
-.gallery-item:hover img { transform: scale(1.03); }
 
 .gallery-caption {
   padding: 10px 14px 12px;
@@ -782,11 +784,11 @@ a.code-title:hover { color: var(--mint); }
 
 .project-meta {
   display: flex;
-  gap: 20px;
+  flex-direction: column;
+  gap: 6px;
   font-size: 0.85rem;
   color: var(--text-muted);
   margin-bottom: 20px;
-  flex-wrap: wrap;
 }
 
 .project-meta span::before {
@@ -860,6 +862,7 @@ a.code-title:hover { color: var(--mint); }
 }
 
 /* Two-column image grid */
+/* Two-column image grid — uniform cells via aspect-ratio + object-fit */
 .project-img-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -869,7 +872,13 @@ a.code-title:hover { color: var(--mint); }
 
 .project-img-grid .project-figure { margin: 0; }
 
-/* Masonry-style image grid — for mixed portrait/landscape images */
+/* Force uniform height per cell — click lightbox shows full uncropped image */
+.project-img-grid .project-figure img {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+/* Masonry-style image grid — for mixed portrait/landscape images (no cropping) */
 .project-img-masonry {
   columns: 2;
   column-gap: 16px;
@@ -911,6 +920,147 @@ a.code-title:hover { color: var(--mint); }
 @media (max-width: 600px) {
   .project-img-grid { grid-template-columns: 1fr; }
 }
+
+/* hover scale on clickable project images */
+.project-figure,
+.project-hero-img {
+  overflow: hidden;
+}
+.project-figure img,
+.project-hero-img img {
+  cursor: pointer;
+  transition: transform 0.35s ease;
+}
+.project-figure img:hover,
+.project-hero-img img:hover {
+  transform: scale(1.04);
+}
+
+/* ============================================================
+   STICKY BACK BAR
+   ============================================================ */
+.sticky-back {
+  position: fixed;
+  top: var(--nav-h);
+  left: 0;
+  right: 0;
+  z-index: 90;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.sticky-back--visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.sticky-back a {
+  display: block;
+  width: 92%;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: color var(--transition);
+}
+.sticky-back a:hover { color: var(--mint); }
+
+/* ============================================================
+   LIGHTBOX
+   ============================================================ */
+.lb-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  cursor: default;
+}
+.lb-overlay.lb-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.lb-box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: min(92vw, 1200px);
+  cursor: default;
+}
+
+.lb-box img {
+  max-width: 100%;
+  max-height: 82vh;
+  object-fit: contain;
+  border-radius: var(--radius);
+  box-shadow: 0 12px 60px rgba(0, 0, 0, 0.6);
+  display: block;
+}
+
+.lb-caption {
+  color: rgba(255,255,255,0.72);
+  font-size: 0.82rem;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.lb-close {
+  position: fixed;
+  top: 14px;
+  right: 18px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.lb-close:hover { background: rgba(255,255,255,0.25); }
+
+.lb-nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 64px;
+  background: rgba(255,255,255,0.10);
+  border: none;
+  color: #fff;
+  font-size: 26px;
+  cursor: pointer;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.lb-nav:hover { background: rgba(255,255,255,0.22); }
+.lb-prev { left: 10px; }
+.lb-next { right: 10px; }
 
 /* ============================================================
    RESPONSIVE

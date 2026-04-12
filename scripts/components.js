@@ -3,15 +3,15 @@
 // ============================================================
 (function () {
 
-  // ── Open Sans font ───────────────────────────────────────
-  if (!document.querySelector('link[href*="fonts.googleapis"]')) {
-    const pc1 = Object.assign(document.createElement('link'), { rel: 'preconnect', href: 'https://fonts.googleapis.com' });
-    const pc2 = Object.assign(document.createElement('link'), { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: '' });
+  // ── Open Sans font (self-hosted) ─────────────────────────
+  if (!document.querySelector('link[href*="open-sans.css"]')) {
+    const explicit2 = document.body.getAttribute('data-root');
+    const r = explicit2 !== null ? explicit2 : (window.location.pathname.replace(/\\/g, '/').includes('/pages/') ? '../' : '');
     const font = Object.assign(document.createElement('link'), {
       rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap',
+      href: `${r}assets/lib/fonts/open-sans.css`,
     });
-    document.head.append(pc1, pc2, font);
+    document.head.append(font);
   }
 
   // ── Root path resolution ─────────────────────────────────

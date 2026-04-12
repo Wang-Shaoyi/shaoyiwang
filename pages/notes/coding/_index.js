@@ -35,5 +35,30 @@ const CODING_NOTES = [
     page: 'pages/notes/coding/cs280a-proj5.html',
     tags: ['CS280A Computer Vision'],
   },
+  // ── CS284A Computer Graphics ─────────────────────────────
+  {
+    title: 'Rasterizer',
+    description: 'Triangle rasterization, supersampling antialiasing, 2D transforms, barycentric coordinates, and texture mapping with mipmaps.',
+    page: 'pages/notes/coding/cs284a-hw1.html',
+    tags: ['CS284A Computer Graphics'],
+  },
+  {
+    title: 'Mesh Edit',
+    description: 'Bezier curves and surfaces via de Casteljau, half-edge data structure, edge flip and split, and Loop subdivision for mesh upsampling.',
+    page: 'pages/notes/coding/cs284a-hw2.html',
+    tags: ['CS284A Computer Graphics'],
+  },
+  {
+    title: 'Path Tracer',
+    description: 'Ray generation, BVH acceleration structure, direct and global illumination with importance sampling, and adaptive sampling.',
+    page: 'pages/notes/coding/cs284a-hw3.html',
+    tags: ['CS284A Computer Graphics'],
+  },
+  {
+    title: 'Cloth Simulation',
+    description: 'Spring-mass cloth simulation with numerical integration, collision handling with objects and self-collisions, and GLSL shaders.',
+    page: 'pages/notes/coding/cs284a-hw4.html',
+    tags: ['CS284A Computer Graphics'],
+  },
   // ── Add more entries below ────────────────────────────────
 ];

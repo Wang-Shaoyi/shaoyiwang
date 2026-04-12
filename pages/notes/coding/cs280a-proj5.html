@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Fun With Diffusion Models! - Shaoyi Wang</title>
   <link rel="stylesheet" href="../../../style.css"/>
+  <link rel="stylesheet" href="../../../assets/lib/katex/katex.min.css" />
   <style>
     /* WP block rendering overrides */
     .wp-post-body figure.wp-block-image { margin: 1.5rem 0; }
@@ -32,8 +33,6 @@
     .wp-block-separator { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
     .sharedaddy, .sd-block-ui, #jp-post-flair { display: none !important; }
   </style>
-  <script>MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
 </head>
 <body data-root="../../../">
   <header class="site-header"></header>
@@ -43,8 +42,7 @@
       <div class="card-category">Coding Notes</div>
       <h1 class="project-title">Fun With Diffusion Models!</h1>
       <div class="card-tags">
-        <span class="tag">CS280A</span>
-        <span class="tag">Computer Vision</span>
+        <span class="tag">CS280A Computer Vision</span>
       </div>
     </div>
     <div class="project-body wp-post-body">
@@ -1206,6 +1204,20 @@ z_i = \min\bigl(1,\; \max(0,\; x_i + \sigma \epsilon_i)\bigr).
     </div>
   </div></main>
   <footer class="site-footer"><p>&copy; 2026 Shaoyi Wang</p></footer>
+  <script src="../../../assets/lib/katex/katex.min.js"></script>
+  <script src="../../../assets/lib/katex/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "\\(", right: "\\)", display: false},
+          {left: "$",  right: "$",   display: false}
+        ]
+      });
+    });
+  </script>
+
   <script src="../../../scripts/components.js"></script>
   <script src="../../../scripts/main.js"></script>
 </body></html>

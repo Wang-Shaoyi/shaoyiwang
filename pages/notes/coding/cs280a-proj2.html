@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Fun with Filters and Frequencies - Shaoyi Wang</title>
   <link rel="stylesheet" href="../../../style.css"/>
+  <link rel="stylesheet" href="../../../assets/lib/katex/katex.min.css" />
   <style>
     /* WP block rendering overrides */
     .wp-post-body figure.wp-block-image { margin: 1.5rem 0; }
@@ -32,8 +33,6 @@
     .wp-block-separator { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
     .sharedaddy, .sd-block-ui, #jp-post-flair { display: none !important; }
   </style>
-  <script>MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
 </head>
 <body data-root="../../../">
   <header class="site-header"></header>
@@ -43,8 +42,7 @@
       <div class="card-category">Coding Notes</div>
       <h1 class="project-title">Fun with Filters and Frequencies</h1>
       <div class="card-tags">
-        <span class="tag">CS280A</span>
-        <span class="tag">Computer Vision</span>
+        <span class="tag">CS280A Computer Vision</span>
       </div>
     </div>
     <div class="project-body wp-post-body">
@@ -186,7 +184,7 @@
 
 
 
-<p class="wp-block-paragraph">Using the same&nbsp;finite difference operators&nbsp;<img decoding="async" src="https://s0.wp.com/latex.php?latex=D_x&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="D_x" class="latex"> and <img decoding="async" src="https://s0.wp.com/latex.php?latex=D_y&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="D_y" class="latex"> as the previous section, I performed partial derivatives of the cameraman image.</p>
+<p class="wp-block-paragraph">Using the same&nbsp;finite difference operators&nbsp;\(D_x\) and \(D_y\) as the previous section, I performed partial derivatives of the cameraman image.</p>
 
 
 
@@ -204,7 +202,7 @@
 
 
 
-<p class="wp-block-paragraph">where <img decoding="async" src="https://s0.wp.com/latex.php?latex=G%28x%2Cy%29&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="G(x,y)" class="latex"> represents the gradient magnitude at pixel <img decoding="async" src="https://s0.wp.com/latex.php?latex=%28x%2Cy%29&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="(x,y)" class="latex">.</p>
+<p class="wp-block-paragraph">where \(G(x,y)\) represents the gradient magnitude at pixel \((x,y)\).</p>
 
 
 
@@ -218,7 +216,7 @@
 
 
 
-<p class="wp-block-paragraph">To convert the gradient magnitude image into a <strong>binary edge image</strong>, I used a threshold <img decoding="async" src="https://s0.wp.com/latex.php?latex=T+%3D+0.25+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="T = 0.25 " class="latex">. This threshold is selected because it keeps most edges of the human and the camera, including some background information (to keep the edges, some noise is also kept). Pixels with gradient magnitude larger than <img decoding="async" src="https://s0.wp.com/latex.php?latex=T&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="T" class="latex"> are marked as edges (1), otherwise suppressed (0):</p>
+<p class="wp-block-paragraph">To convert the gradient magnitude image into a <strong>binary edge image</strong>, I used a threshold \(T = 0.25 \). This threshold is selected because it keeps most edges of the human and the camera, including some background information (to keep the edges, some noise is also kept). Pixels with gradient magnitude larger than \(T\) are marked as edges (1), otherwise suppressed (0):</p>
 
 
 
@@ -242,7 +240,7 @@
 
 
 
-<p class="wp-block-paragraph">Since the raw difference operator <img decoding="async" src="https://s0.wp.com/latex.php?latex=D_x&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="D_x" class="latex">, <img decoding="async" src="https://s0.wp.com/latex.php?latex=D_y&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="D_y" class="latex"> is sensitive to noise, here are two methods to solve the issue. The first method uses a Gaussian filter to blur the image and then applies finite difference operators (the two left images), the second method takes the derivative of the Gaussian filter then uses the filter to convolve the image (the two right images). The threshold for the binary edge images are still set as <img decoding="async" src="https://s0.wp.com/latex.php?latex=T+%3D+0.25+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="T = 0.25 " class="latex">. The details of the process is as follows:</p>
+<p class="wp-block-paragraph">Since the raw difference operator \(D_x\), \(D_y\) is sensitive to noise, here are two methods to solve the issue. The first method uses a Gaussian filter to blur the image and then applies finite difference operators (the two left images), the second method takes the derivative of the Gaussian filter then uses the filter to convolve the image (the two right images). The threshold for the binary edge images are still set as \(T = 0.25 \). The details of the process is as follows:</p>
 
 
 
@@ -254,7 +252,7 @@
 
 
 
-<p class="wp-block-paragraph">The 2D Gaussian kernel is created from the outer product of a 1D Gaussian vector with its transpose. I then convolved the original image <img decoding="async" src="https://s0.wp.com/latex.php?latex=I&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="I" class="latex"> with <img decoding="async" src="https://s0.wp.com/latex.php?latex=G&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="G" class="latex"> to blur the image, and apply the finite difference filters:</p>
+<p class="wp-block-paragraph">The 2D Gaussian kernel is created from the outer product of a 1D Gaussian vector with its transpose. I then convolved the original image \(I\) with \(G\) to blur the image, and apply the finite difference filters:</p>
 
 
 
@@ -795,6 +793,20 @@
     </div>
   </div></main>
   <footer class="site-footer"><p>&copy; 2026 Shaoyi Wang</p></footer>
+  <script src="../../../assets/lib/katex/katex.min.js"></script>
+  <script src="../../../assets/lib/katex/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "\\(", right: "\\)", display: false},
+          {left: "$",  right: "$",   display: false}
+        ]
+      });
+    });
+  </script>
+
   <script src="../../../scripts/components.js"></script>
   <script src="../../../scripts/main.js"></script>
 </body></html>

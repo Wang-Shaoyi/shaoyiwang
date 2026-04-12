@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Neural Radiance Field - Shaoyi Wang</title>
   <link rel="stylesheet" href="../../../style.css"/>
+  <link rel="stylesheet" href="../../../assets/lib/katex/katex.min.css" />
   <style>
     /* WP block rendering overrides */
     .wp-post-body figure.wp-block-image { margin: 1.5rem 0; }
@@ -32,8 +33,6 @@
     .wp-block-separator { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
     .sharedaddy, .sd-block-ui, #jp-post-flair { display: none !important; }
   </style>
-  <script>MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
 </head>
 <body data-root="../../../">
   <header class="site-header"></header>
@@ -43,8 +42,7 @@
       <div class="card-category">Coding Notes</div>
       <h1 class="project-title">Neural Radiance Field</h1>
       <div class="card-tags">
-        <span class="tag">CS280A</span>
-        <span class="tag">Computer Vision</span>
+        <span class="tag">CS280A Computer Vision</span>
       </div>
     </div>
     <div class="project-body wp-post-body">
@@ -194,7 +192,7 @@
 
 
 
-<p class="wp-block-paragraph">I randomly split the valid views into a training set (about <img decoding="async" src="https://s0.wp.com/latex.php?latex=N_%7B%5Ctext%7Btrain%7D%7D+%5Capprox+0.9N+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="N_{\text{train}} \approx 0.9N " class="latex">) and a validation set (the remaining <img decoding="async" src="https://s0.wp.com/latex.php?latex=N_%7B%5Ctext%7Bval%7D%7D+%3D+N+-+N_%7B%5Ctext%7Btrain%7D%7D+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="N_{\text{val}} = N - N_{\text{train}} " class="latex">&#8203;). For each selected image, I first undistort it using the calibrated intrinsics <strong><em>K</em></strong> and distortion coefficients <strong><em>d</em></strong>, then store the undistorted images and their corresponding camera-to-world matrices for late NeRF training.</p>
+<p class="wp-block-paragraph">I randomly split the valid views into a training set (about \(N_{\text{train}} \approx 0.9N \)) and a validation set (the remaining \(N_{\text{val}} = N - N_{\text{train}} \)&#8203;). For each selected image, I first undistort it using the calibrated intrinsics <strong><em>K</em></strong> and distortion coefficients <strong><em>d</em></strong>, then store the undistorted images and their corresponding camera-to-world matrices for late NeRF training.</p>
 
 
 
@@ -218,7 +216,7 @@
 
 
 
-<p class="wp-block-paragraph">I use a small MLP with sinusoidal positional encoding to map 2D pixel coordinates <img decoding="async" src="https://s0.wp.com/latex.php?latex=+x+%5Cin+%5Cmathbb%7BR%7D%5E2&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" x \in \mathbb{R}^2" class="latex"> to RGB colors. The positional encoding expands the input as:</p>
+<p class="wp-block-paragraph">I use a small MLP with sinusoidal positional encoding to map 2D pixel coordinates \( x \in \mathbb{R}^2\) to RGB colors. The positional encoding expands the input as:</p>
 
 
 
@@ -234,7 +232,7 @@
 
 
 
-<p class="wp-block-paragraph">I train the 2D NeRF network using <strong>mean squared error (MSE) loss</strong> between the predicted and ground-truth RGB colors, optimized with <strong>Adam</strong> (learning rate <img decoding="async" src="https://s0.wp.com/latex.php?latex=1%5Ctimes10%5E%7B-2%7D&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="1\times10^{-2}" class="latex">). At each iteration, I sample <strong><em>N</em>=10,000</strong> pixels, run a forward pass, backpropagate the <strong>MSE loss</strong>, and update the MLP weights. To monitor reconstruction quality, I convert the MSE to the peak signal-to-noise ratio (PSNR):</p>
+<p class="wp-block-paragraph">I train the 2D NeRF network using <strong>mean squared error (MSE) loss</strong> between the predicted and ground-truth RGB colors, optimized with <strong>Adam</strong> (learning rate \(1\times10^{-2}\)). At each iteration, I sample <strong><em>N</em>=10,000</strong> pixels, run a forward pass, backpropagate the <strong>MSE loss</strong>, and update the MLP weights. To monitor reconstruction quality, I convert the MSE to the peak signal-to-noise ratio (PSNR):</p>
 
 
 
@@ -250,7 +248,7 @@
 
 
 
-<p class="wp-block-paragraph">To build each mini-batch, I conceptually flatten the <img decoding="async" src="https://s0.wp.com/latex.php?latex=H+%5Ctimes+W&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="H \times W" class="latex"> image into a 1D array of <img decoding="async" src="https://s0.wp.com/latex.php?latex=H%5C%21+%5Ccdot%5C%21+W+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="H\! \cdot\! W " class="latex"> pixels and randomly sample<em> N</em> indices from <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5C%7B0%2C%5Cdots%2CH%5C%21+%5Ccdot%5C%21+W-1%5C%7D&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\{0,\dots,H\! \cdot\! W-1\}" class="latex">. For each sampled index <code>idx</code>, I recover its 2D location (ys, xs) with the following code:</p>
+<p class="wp-block-paragraph">To build each mini-batch, I conceptually flatten the \(H \times W\) image into a 1D array of \(H\! \cdot\! W \) pixels and randomly sample<em> N</em> indices from \(\{0,\dots,H\! \cdot\! W-1\}\). For each sampled index <code>idx</code>, I recover its 2D location (ys, xs) with the following code:</p>
 
 
 <div class="wp-block-code">
@@ -263,7 +261,7 @@
 </div>
 
 
-<p class="wp-block-paragraph">The dataloader returns an input matrix <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cmathbf%7BX%7D+%5Cin+%5Cmathbb%7BR%7D%5E%7BN+%5Ctimes+2%7D&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\mathbf{X} \in \mathbb{R}^{N \times 2}" class="latex"> of normalized pixel coordinates, and a target matrix <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cmathbf%7BY%7D+%5Cin+%5Cmathbb%7BR%7D%5E%7BN+%5Ctimes+3%7D&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\mathbf{Y} \in \mathbb{R}^{N \times 3}" class="latex"> containing the corresponding RGB colors of those pixels.</p>
+<p class="wp-block-paragraph">The dataloader returns an input matrix \(\mathbf{X} \in \mathbb{R}^{N \times 2}\) of normalized pixel coordinates, and a target matrix \(\mathbf{Y} \in \mathbb{R}^{N \times 3}\) containing the corresponding RGB colors of those pixels.</p>
 
 
 
@@ -341,7 +339,7 @@
 
 
 
-<p class="wp-block-paragraph">To convert 3D points from camera space to world space, I implement a <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">transform(c2w, x_c)</mark></code> function. For each camera-space point <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cmathbf%7Bx%7D_c+%5Cin+%5Cmathbb%7BR%7D%5E3&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\mathbf{x}_c \in \mathbb{R}^3" class="latex">, I first form the homogeneous vector <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Ctilde%7B%5Cmathbf%7Bx%7D%7D_c+%3D+%5B%5Cmathbf%7Bx%7D_c%5E%5Ctop%2C+1%5D%5E%5Ctop&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\tilde{\mathbf{x}}_c = [\mathbf{x}_c^\top, 1]^\top" class="latex"> and then apply the camera-to-world matrix <img decoding="async" src="https://s0.wp.com/latex.php?latex=+%5Cmathrm%7Bc2w%7D+%5Cin+%5Cmathbb%7BR%7D%5E%7B4%5Ctimes+4%7D&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" \mathrm{c2w} \in \mathbb{R}^{4\times 4}" class="latex">:</p>
+<p class="wp-block-paragraph">To convert 3D points from camera space to world space, I implement a <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">transform(c2w, x_c)</mark></code> function. For each camera-space point \(\mathbf{x}_c \in \mathbb{R}^3\), I first form the homogeneous vector \(\tilde{\mathbf{x}}_c = [\mathbf{x}_c^\top, 1]^\top\) and then apply the camera-to-world matrix \( \mathrm{c2w} \in \mathbb{R}^{4\times 4}\):</p>
 
 
 
@@ -357,7 +355,7 @@
 
 
 
-<p class="wp-block-paragraph">To map pixel coordinates back to camera space, I invert the pinhole projection to create a function <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">pixel_to_camera(K, uv, s)</mark></code>. Given normalized pixel coordinates <img decoding="async" src="https://s0.wp.com/latex.php?latex=%28u%2C+v%29&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="(u, v)" class="latex">, depth <img decoding="async" src="https://s0.wp.com/latex.php?latex=s+%3D+z_c&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="s = z_c" class="latex">&#8203;, and the intrinsic matrix <strong><em>K</em></strong>, I first form the homogeneous pixel vector <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Ctilde%7B%5Cmathbf%7Bu%7D%7D+%3D+%5Bu%2C+v%2C+1%5D%5E%5Ctop&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\tilde{\mathbf{u}} = [u, v, 1]^\top" class="latex"> and solve:</p>
+<p class="wp-block-paragraph">To map pixel coordinates back to camera space, I invert the pinhole projection to create a function <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">pixel_to_camera(K, uv, s)</mark></code>. Given normalized pixel coordinates \((u, v)\), depth \(s = z_c\)&#8203;, and the intrinsic matrix <strong><em>K</em></strong>, I first form the homogeneous pixel vector \(\tilde{\mathbf{u}} = [u, v, 1]^\top\) and solve:</p>
 
 
 
@@ -369,7 +367,7 @@
 
 
 
-<p class="wp-block-paragraph">Given the camera intrinsics <strong><em>K</em></strong>, a camera-to-world matrix <strong>c2w</strong>, and a set of pixel coordinates <code><strong>uv</strong></code>, I implemented the function <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">pixel_to_ray</mark></code> that converts each pixel into a 3D ray in world space. I first assume a unit depth s = 1 and use <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">pixel_to_camera</mark></code> to back-project each pixel (u, v) into camera coordinates, then apply <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">transform</mark></code> to map these points into world coordinates <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cmathbf%7BX%7D_w&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\mathbf{X}_w" class="latex">&#8203;. The ray origin <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cmathbf%7Br%7D_o&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\mathbf{r}_o" class="latex"> is taken from the translation part of <strong>c2w</strong> (the camera center), and the ray direction <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cmathbf%7Br%7D_d&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\mathbf{r}_d" class="latex"> is obtained by normalizing <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cmathbf%7BX%7D_w+-+%5Cmathbf%7Br%7D_o&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\mathbf{X}_w - \mathbf{r}_o" class="latex">&#8203;. </p>
+<p class="wp-block-paragraph">Given the camera intrinsics <strong><em>K</em></strong>, a camera-to-world matrix <strong>c2w</strong>, and a set of pixel coordinates <code><strong>uv</strong></code>, I implemented the function <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">pixel_to_ray</mark></code> that converts each pixel into a 3D ray in world space. I first assume a unit depth s = 1 and use <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">pixel_to_camera</mark></code> to back-project each pixel (u, v) into camera coordinates, then apply <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">transform</mark></code> to map these points into world coordinates \(\mathbf{X}_w\)&#8203;. The ray origin \(\mathbf{r}_o\) is taken from the translation part of <strong>c2w</strong> (the camera center), and the ray direction \(\mathbf{r}_d\) is obtained by normalizing \(\mathbf{X}_w - \mathbf{r}_o\)&#8203;. </p>
 
 
 <div class="wp-block-code">
@@ -431,7 +429,7 @@
 
 
 
-<p class="wp-block-paragraph">For each ray, I discretize the continuous segment between a near and far bound (<img decoding="async" src="https://s0.wp.com/latex.php?latex=t+%5Cin+%5B2.0%2C+6.0%5D&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="t \in [2.0, 6.0]" class="latex">) into <mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color"><code>nsamples=64</code></mark> bins. I first build bin edges, then either take the midpoint of each bin (no perturbation) or add uniform random noise inside each bin during training (stratified sampling), so that different points along the ray are visited over time. The 3D sample positions are computed as </p>
+<p class="wp-block-paragraph">For each ray, I discretize the continuous segment between a near and far bound (\(t \in [2.0, 6.0]\)) into <mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color"><code>nsamples=64</code></mark> bins. I first build bin edges, then either take the midpoint of each bin (no perturbation) or add uniform random noise inside each bin during training (stratified sampling), so that different points along the ray are visited over time. The 3D sample positions are computed as </p>
 
 
 
@@ -494,7 +492,7 @@
 
 
 
-<p class="wp-block-paragraph">I implemented a 3D NeRF-style MLP that takes as input a 3D position <strong>x</strong> and a view direction <strong>d</strong>. Both are first encoded with sinusoidal positional encodings (with <img decoding="async" src="https://s0.wp.com/latex.php?latex=L_x+%3D+10&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="L_x = 10" class="latex"> for positions and <img decoding="async" src="https://s0.wp.com/latex.php?latex=L_d+%3D+4&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="L_d = 4" class="latex"> for directions). The encoded position passes through several ReLU layers, with a skip connection that concatenates the original encoding back into the middle of the network. I applied the given Neural Network Structure:</p>
+<p class="wp-block-paragraph">I implemented a 3D NeRF-style MLP that takes as input a 3D position <strong>x</strong> and a view direction <strong>d</strong>. Both are first encoded with sinusoidal positional encodings (with \(L_x = 10\) for positions and \(L_d = 4\) for directions). The encoded position passes through several ReLU layers, with a skip connection that concatenates the original encoding back into the middle of the network. I applied the given Neural Network Structure:</p>
 
 
 
@@ -502,7 +500,7 @@
 
 
 
-<p class="wp-block-paragraph">From this shared feature, one head predicts the <strong>density</strong> <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Csigma%28%5Cmathbf%7Bx%7D%29+%5Cge+0&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\sigma(\mathbf{x}) \ge 0" class="latex"> using a ReLU output, and another head conditions on the encoded view direction to predict the <strong>color</strong> <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cmathbf%7Bc%7D%28%5Cmathbf%7Bx%7D%2C%5Cmathbf%7Bd%7D%29+%5Cin+%280%2C1%29%5E3&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\mathbf{c}(\mathbf{x},\mathbf{d}) \in (0,1)^3" class="latex"> using a final sigmoid. Overall, the network realizes:</p>
+<p class="wp-block-paragraph">From this shared feature, one head predicts the <strong>density</strong> \(\sigma(\mathbf{x}) \ge 0\) using a ReLU output, and another head conditions on the encoded view direction to predict the <strong>color</strong> \(\mathbf{c}(\mathbf{x},\mathbf{d}) \in (0,1)^3\) using a final sigmoid. Overall, the network realizes:</p>
 
 
 
@@ -522,7 +520,7 @@
 
 
 
-<p class="wp-block-paragraph">Given per-sample density <img decoding="async" src="https://s0.wp.com/latex.php?latex=+%5Csigma_i+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" \sigma_i " class="latex">&#8203;, color <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cmathbf%7Bc%7D_i&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\mathbf{c}_i" class="latex">&#8203;, and interval length <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cdelta_i&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\delta_i" class="latex">&#8203; along each ray, the function <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">volrend</mark></code> first converts densities to opacities:</p>
+<p class="wp-block-paragraph">Given per-sample density \( \sigma_i \)&#8203;, color \(\mathbf{c}_i\)&#8203;, and interval length \(\delta_i\)&#8203; along each ray, the function <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">volrend</mark></code> first converts densities to opacities:</p>
 
 
 
@@ -530,7 +528,7 @@
 
 
 
-<p class="wp-block-paragraph">then computes the accumulated transmittance <img decoding="async" src="https://s0.wp.com/latex.php?latex=T_i&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="T_i" class="latex"> by multiplying the &ldquo;not yet terminated&rdquo; probabilities along the ray. The final pixel color is obtained as a weighted sum:</p>
+<p class="wp-block-paragraph">then computes the accumulated transmittance \(T_i\) by multiplying the &ldquo;not yet terminated&rdquo; probabilities along the ray. The final pixel color is obtained as a weighted sum:</p>
 
 
 
@@ -538,7 +536,7 @@
 
 
 
-<p class="wp-block-paragraph">where the weights <img decoding="async" src="https://s0.wp.com/latex.php?latex=w_i+%3D+T_i+%5Calpha_i&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="w_i = T_i \alpha_i" class="latex"> are implemented in code as <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">weights = T * alpha</mark></code> before summing over all samples.</p>
+<p class="wp-block-paragraph">where the weights \(w_i = T_i \alpha_i\) are implemented in code as <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">weights = T * alpha</mark></code> before summing over all samples.</p>
 
 
 
@@ -676,7 +674,7 @@
 
 
 
-<p class="wp-block-paragraph">To render a depth map from a given camera pose, I reuse the NeRF volume-rendering weights but replace colors with per-sample depths. For each pixel, I cast a ray, sample 3D points between the near and far bounds, and run the NeRF to obtain densities <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Csigma_i&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\sigma_i" class="latex">&#8203;. These are converted to opacities <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Calpha_i&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\alpha_i" class="latex">&#8203; and accumulated transmittance <img decoding="async" src="https://s0.wp.com/latex.php?latex=T_i&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="T_i" class="latex">&#8203;, giving weights <img decoding="async" src="https://s0.wp.com/latex.php?latex=w_i+%3D+T_i+%5Calpha_i&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="w_i = T_i \alpha_i" class="latex">&#8203;. Instead of compositing RGB, I compute the Euclidean depth <img decoding="async" src="https://s0.wp.com/latex.php?latex=d_i+%3D+%5ClVert+%5Cmathbf%7Bx%7D_i+-+%5Cmathbf%7Br%7D_o+%5CrVert_2&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="d_i = \lVert \mathbf{x}_i - \mathbf{r}_o \rVert_2" class="latex">&#8203; for each sample and take a weighted average:</p>
+<p class="wp-block-paragraph">To render a depth map from a given camera pose, I reuse the NeRF volume-rendering weights but replace colors with per-sample depths. For each pixel, I cast a ray, sample 3D points between the near and far bounds, and run the NeRF to obtain densities \(\sigma_i\)&#8203;. These are converted to opacities \(\alpha_i\)&#8203; and accumulated transmittance \(T_i\)&#8203;, giving weights \(w_i = T_i \alpha_i\)&#8203;. Instead of compositing RGB, I compute the Euclidean depth \(d_i = \lVert \mathbf{x}_i - \mathbf{r}_o \rVert_2\)&#8203; for each sample and take a weighted average:</p>
 
 
 
@@ -704,6 +702,20 @@
     </div>
   </div></main>
   <footer class="site-footer"><p>&copy; 2026 Shaoyi Wang</p></footer>
+  <script src="../../../assets/lib/katex/katex.min.js"></script>
+  <script src="../../../assets/lib/katex/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "\\(", right: "\\)", display: false},
+          {left: "$",  right: "$",   display: false}
+        ]
+      });
+    });
+  </script>
+
   <script src="../../../scripts/components.js"></script>
   <script src="../../../scripts/main.js"></script>
 </body></html>

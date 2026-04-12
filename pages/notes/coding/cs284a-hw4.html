@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cloth Simulation - CS284A - Shaoyi Wang</title>
+  <link rel="stylesheet" href="../../../style.css"/>
+  <link rel="stylesheet" href="../../../assets/lib/katex/katex.min.css" />
+  <style>
+    .cs284a-body figure { text-align: center; margin: 1.5rem 0; }
+    .cs284a-body img { max-width: 100%; height: auto; border-radius: 6px; }
+    .cs284a-body table { width: 100%; border-collapse: collapse; margin: 1.2rem 0; font-size: .9rem; }
+    .cs284a-body td, .cs284a-body th { border: 1px solid var(--border); padding: .45rem .75rem; text-align: left; }
+    .cs284a-body th { background: var(--surface); font-weight: 600; }
+    .cs284a-body figcaption { font-size: .82rem; color: var(--text-muted); margin-top: 6px; }
+    .cs284a-body h2 { font-size: 1.25rem; font-weight: 600; margin: 2rem 0 .6rem; }
+    .cs284a-body h3 { font-size: 1.05rem; font-weight: 600; margin: 1.5rem 0 .5rem; }
+    .cs284a-body h4 { font-size: .95rem; font-weight: 600; margin: 1.2rem 0 .4rem; color: #555; }
+    .cs284a-body p  { margin: .7rem 0; line-height: 1.7; }
+    .cs284a-body code { background: var(--surface); border-radius: 3px; padding: .1em .35em; font-size: .88em; }
+    .cs284a-body ul, .cs284a-body ol { padding-left: 1.4rem; margin: .6rem 0; }
+    .cs284a-body li { margin-bottom: 4px; }
+    .cs284a-body .gallery { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin: 20px 0; }
+    .cs284a-body .gallery figure { margin: 0; flex: 1 1 280px; text-align: center; }
+    .cs284a-body .gallery.two-up figure { max-width: 480px; }
+    .cs284a-body .gallery.three-up figure { max-width: 320px; }
+  </style>
+</head>
+<body data-root="../../../">
+  <header class="site-header"></header>
+  <main><div class="container">
+    <div class="project-back"><a href="javascript:history.back()">&#8592; Back to Notes</a></div>
+
+
+    <div class="project-header" style="margin-top:28px">
+      <div class="card-category">Coding Notes</div>
+      <h1 class="project-title">Cloth Simulation</h1>
+      <div class="project-meta"><span>2026</span></div>
+      <p class="project-intro">Spring-mass cloth simulation with numerical integration, collision handling with objects and self-collisions, and GLSL shaders.</p>
+      <div class="card-tags"><span class="tag">CS284A Computer Graphics</span></div>
+    </div>
+
+    <div class="project-body cs284a-body">
+<figure>
+			<img src="../../../assets/images/notes/coding/cs284a/hw4/clothsim.png" alt="Cloth draped over sphere" style="width:70%"/>
+			<figcaption>You can add images with captions!</figcaption>
+		</figure>
+
+		
+
+		<h2>Overview</h2>
+		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+
+		<h2>Part 1: Masses and springs</h2>
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw4/clothsim.png" width="400px"/>
+				  <figcaption>Caption goes here.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw4/clothsim.png" width="400px"/>
+				  <figcaption>Caption goes here.</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw4/clothsim.png" width="400px"/>
+				  <figcaption>Caption goes here.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw4/clothsim.png" width="400px"/>
+				  <figcaption>Caption goes here.</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<h2>Part 2: Simulation via numerical integration</h2>
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+		<h2>Part 3: Handling collisions with other objects</h2>
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+		<h2>Part 4: Handling self-collisions</h2>
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+		<h2>Part 5: Shaders</h2>
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+		<h2>(Optional) Part 6: Extra Credit - Additional cloth simulation features!</h2>
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		
+		<h2>Additional Notes (please remove)</h2>
+		<ul>
+			<li>You can also add code if you'd like as so: <code>code code code</code></li>
+			<li>If you'd like to add math equations, 
+				<ul>
+					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
+					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
+				</ul>
+			</li>
+		</ul>
+    </div>
+  </div></main>
+  <footer class="site-footer"><p>&copy; 2026 Shaoyi Wang</p></footer>
+
+  <script src="../../../assets/lib/katex/katex.min.js"></script>
+  <script src="../../../assets/lib/katex/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$",  right: "$$",  display: true},
+          {left: "\\[", right: "\\]", display: true},
+          {left: "\\(", right: "\\)", display: false},
+          {left: "$",   right: "$",   display: false}
+        ]
+      });
+    });
+  </script>
+  <script src="../../../scripts/components.js"></script>
+  <script src="../../../scripts/main.js"></script>
+</body>
+</html>

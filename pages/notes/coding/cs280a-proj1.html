@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Colorizing the Prokudin-Gorskii Photo Collection - Shaoyi Wang</title>
   <link rel="stylesheet" href="../../../style.css"/>
+  <link rel="stylesheet" href="../../../assets/lib/katex/katex.min.css" />
   <style>
     /* WP block rendering overrides */
     .wp-post-body figure.wp-block-image { margin: 1.5rem 0; }
@@ -32,8 +33,6 @@
     .wp-block-separator { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
     .sharedaddy, .sd-block-ui, #jp-post-flair { display: none !important; }
   </style>
-  <script>MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']]}};</script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
 </head>
 <body data-root="../../../">
   <header class="site-header"></header>
@@ -43,8 +42,7 @@
       <div class="card-category">Coding Notes</div>
       <h1 class="project-title">Colorizing the Prokudin-Gorskii Photo Collection</h1>
       <div class="card-tags">
-        <span class="tag">CS280A</span>
-        <span class="tag">Computer Vision</span>
+        <span class="tag">CS280A Computer Vision</span>
       </div>
     </div>
     <div class="project-body wp-post-body">
@@ -77,7 +75,7 @@
 
 
 
-<p class="wp-block-paragraph">Here, <img decoding="async" src="https://s0.wp.com/latex.php?latex=I_1&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="I_1" class="latex"> is the reference image (the blue channel), and <img decoding="async" src="https://s0.wp.com/latex.php?latex=I_2&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="I_2" class="latex"> is the shifted image (green or red channel).</p>
+<p class="wp-block-paragraph">Here, \(I_1\) is the reference image (the blue channel), and \(I_2\) is the shifted image (green or red channel).</p>
 
 
 
@@ -141,7 +139,7 @@
 
 
 
-<p class="wp-block-paragraph">For each level of the pyramid, I downsample all input images with a factor <img decoding="async" src="https://s0.wp.com/latex.php?latex=f&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="f" class="latex"> to get lower-resolution images:</p>
+<p class="wp-block-paragraph">For each level of the pyramid, I downsample all input images with a factor \(f\) to get lower-resolution images:</p>
 
 
 
@@ -149,7 +147,7 @@
 
 
 
-<p class="wp-block-paragraph">where&nbsp;<img decoding="async" src="https://s0.wp.com/latex.php?latex=f+%3D+2%5Et&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="f = 2^t" class="latex">&nbsp;represents the downsampling factor at level&nbsp;<img decoding="async" src="https://s0.wp.com/latex.php?latex=t&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="t" class="latex">. This reduces the image size by a factor of&nbsp;<img decoding="async" src="https://s0.wp.com/latex.php?latex=f&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="f" class="latex">, making alignment significantly faster at coarser levels. To determine the initial level of the image pyramid, I set the value of <img decoding="async" src="https://s0.wp.com/latex.php?latex=t&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="t" class="latex"> dynamically based on the input image size, where <img decoding="async" src="https://s0.wp.com/latex.php?latex=h&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="h" class="latex"> is the height of the image:</p>
+<p class="wp-block-paragraph">where&nbsp;\(f = 2^t\)&nbsp;represents the downsampling factor at level&nbsp;\(t\). This reduces the image size by a factor of&nbsp;\(f\), making alignment significantly faster at coarser levels. To determine the initial level of the image pyramid, I set the value of \(t\) dynamically based on the input image size, where \(h\) is the height of the image:</p>
 
 
 
@@ -169,7 +167,7 @@
 
 
 
-<p class="wp-block-paragraph">where  <img decoding="async" src="https://s0.wp.com/latex.php?latex=+%5Ctext%7Bshift%7D_%7B%5Ctext%7Bnext%7D%7D+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" \text{shift}_{\text{next}} " class="latex"> is the updated cumulative shift to be used as the initial guess for the next (finer) level, <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Ctext%7Bshift%7D_%7B%5Ctext%7Bprev%7D%7D&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\text{shift}_{\text{prev}}" class="latex"> is the cumulative shift from the previous (coarser) level, and <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5CDelta+%5Ctext%7Bshift%7D+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\Delta \text{shift} " class="latex"> is the local optimal shift found at the current level. This helps ensure the final alignment is both globally accurate and locally refined.</p>
+<p class="wp-block-paragraph">where  \( \text{shift}_{\text{next}} \) is the updated cumulative shift to be used as the initial guess for the next (finer) level, \(\text{shift}_{\text{prev}}\) is the cumulative shift from the previous (coarser) level, and \(\Delta \text{shift} \) is the local optimal shift found at the current level. This helps ensure the final alignment is both globally accurate and locally refined.</p>
 
 
 
@@ -177,7 +175,7 @@
 
 
 
-<p class="wp-block-paragraph">For the coarsest levels (where <img decoding="async" src="https://s0.wp.com/latex.php?latex=f+%3E+3&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="f &gt; 3" class="latex">), I use a larger search window of &plusmn;15 pixels. For finer levels, I reduce the search range to &plusmn;5 pixels, since we are already quite close to the optimal shift.</p>
+<p class="wp-block-paragraph">For the coarsest levels (where \(f > 3\)), I use a larger search window of &plusmn;15 pixels. For finer levels, I reduce the search range to &plusmn;5 pixels, since we are already quite close to the optimal shift.</p>
 
 
 
@@ -279,7 +277,7 @@
 
 
 
-<p class="wp-block-paragraph">Let the image be <img decoding="async" src="https://s0.wp.com/latex.php?latex=I&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="I" class="latex">, and define the row-wise and column-wise standard deviation vectors as:</p>
+<p class="wp-block-paragraph">Let the image be \(I\), and define the row-wise and column-wise standard deviation vectors as:</p>
 
 
 
@@ -287,7 +285,7 @@
 
 
 
-<p class="wp-block-paragraph">To smooth out noise, I apply a moving average filter (with window size <img decoding="async" src="https://s0.wp.com/latex.php?latex=w+%3D+0.05+%2A+Width_%7Bimage%7D&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="w = 0.05 * Width_{image}" class="latex">):</p>
+<p class="wp-block-paragraph">To smooth out noise, I apply a moving average filter (with window size \(w = 0.05 * Width_{image}\)):</p>
 
 
 
@@ -311,7 +309,7 @@
 
 
 
-<p class="wp-block-paragraph">are kept, where <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cmu&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\mu" class="latex"> is the mean std in the central region (from 1/4 to 3/4 of the image).</p>
+<p class="wp-block-paragraph">are kept, where \(\mu\) is the mean std in the central region (from 1/4 to 3/4 of the image).</p>
 
 
 
@@ -617,7 +615,7 @@
 
 
 
-<p class="wp-block-paragraph">where <img decoding="async" src="https://s0.wp.com/latex.php?latex=+R_%7B%5Ctext%7Bavg%7D%7D+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" R_{\text{avg}} " class="latex">, <img decoding="async" src="https://s0.wp.com/latex.php?latex=+G_%7B%5Ctext%7Bavg%7D%7D&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" G_{\text{avg}}" class="latex">, and <img decoding="async" src="https://s0.wp.com/latex.php?latex=+B_%7B%5Ctext%7Bavg%7D%7D&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt=" B_{\text{avg}}" class="latex"> are the mean values of the red, green, and blue channels, and<img decoding="async" src="https://s0.wp.com/latex.php?latex=I_c%5E%7B%5Ctext%7Bavg%7D%7D+&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="I_c^{\text{avg}} " class="latex">is the mean of channel <img decoding="async" src="https://s0.wp.com/latex.php?latex=%5Cquad+c&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="\quad c" class="latex">.</p>
+<p class="wp-block-paragraph">where \( R_{\text{avg}} \), \( G_{\text{avg}}\), and \( B_{\text{avg}}\) are the mean values of the red, green, and blue channels, and\(I_c^{\text{avg}} \)is the mean of channel \(\quad c\).</p>
 
 
 
@@ -758,11 +756,11 @@
 
 
 
-<p class="wp-block-paragraph">After observing the results, I noticed that most of the images appeared bluish and somewhat dark. To address this, I designed a custom color mapping matrix <img decoding="async" src="https://s0.wp.com/latex.php?latex=M&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="M" class="latex"> that remaps the RGB values of each pixel. The goal of this mapping is to enhance the contribution of the green and red channels while slightly reducing the influence of blue.</p>
+<p class="wp-block-paragraph">After observing the results, I noticed that most of the images appeared bluish and somewhat dark. To address this, I designed a custom color mapping matrix \(M\) that remaps the RGB values of each pixel. The goal of this mapping is to enhance the contribution of the green and red channels while slightly reducing the influence of blue.</p>
 
 
 
-<p class="wp-block-paragraph">The transformation is applied by reshaping the image into a list of RGB vectors, multiplying each vector by <img decoding="async" src="https://s0.wp.com/latex.php?latex=M&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="M" class="latex">, and then reshaping it back to the original image dimensions:</p>
+<p class="wp-block-paragraph">The transformation is applied by reshaping the image into a list of RGB vectors, multiplying each vector by \(M\), and then reshaping it back to the original image dimensions:</p>
 
 
 
@@ -770,7 +768,7 @@
 
 
 
-<p class="wp-block-paragraph">where <img decoding="async" src="https://s0.wp.com/latex.php?latex=I&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="I" class="latex"> is the original RGB vector and <img decoding="async" src="https://s0.wp.com/latex.php?latex=I%27&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="I'" class="latex"> is the adjusted color vector. For <img decoding="async" src="https://s0.wp.com/latex.php?latex=M&amp;bg=ffffff&amp;fg=000&amp;s=0&amp;c=20201002" alt="M" class="latex">, I used the following matrix:</p>
+<p class="wp-block-paragraph">where \(I\) is the original RGB vector and \(I'\) is the adjusted color vector. For \(M\), I used the following matrix:</p>
 
 
 
@@ -1083,6 +1081,20 @@
     </div>
   </div></main>
   <footer class="site-footer"><p>&copy; 2026 Shaoyi Wang</p></footer>
+  <script src="../../../assets/lib/katex/katex.min.js"></script>
+  <script src="../../../assets/lib/katex/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "\\(", right: "\\)", display: false},
+          {left: "$",  right: "$",   display: false}
+        ]
+      });
+    });
+  </script>
+
   <script src="../../../scripts/components.js"></script>
   <script src="../../../scripts/main.js"></script>
 </body></html>

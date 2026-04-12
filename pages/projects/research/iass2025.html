@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  APP & GAME PROJECT TEMPLATE
+  ───────────────────────────
+  1. Copy this file, rename it  (e.g. my-app.html)
+  2. Fill in every ✏️ section
+  3. Add one entry to _index.js in this folder
+     page: 'pages/projects/app_game/my-app.html'
+-->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conformal 3D printing on bending-active formwork - structural implications of toolpath strategies and interlayer timing</title>
+  <link rel="stylesheet" href="../../../style.css" />
+</head>
+<body data-root="../../../">
+  <header class="site-header"></header>
+  <main>
+    <div class="container">
+      <div class="project-back"><a href="javascript:history.back()">← Back</a></div>
+
+      <div class="project-hero-img">
+        <img src="../../../assets/images/projects/research/iass2025/shell_toolpath.png" alt="✏️ Hero image" />
+      </div>
+
+      <div class="project-header">
+        <div class="card-category">Research</div>
+        <h1 class="project-title">Conformal 3D printing on bending-active formwork - structural implications of toolpath strategies and interlayer timing</h1>
+        <div class="project-meta">
+          <span>2025</span>
+        </div>
+        <p class="project-intro">This study investigates the structural behavior of conformal 3D printing on bending-active formwork  – a method aimed at enabling the construction of large-span concrete structures without conventional molds. We developed a voxel-based simulation framework to model the layered deposition of concrete over flexible timber formwork, incorporating time-dependent material properties. The study evaluates different toolpath strategies and interlayer time intervals on both linear strips and doubly curved gridshells to assess their impact on the printing process. Results show that toolpaths aligned with the global span of the structure help reduce formwork buckling during printing and promote more uniform stress distribution. In contrast, toolpaths oriented perpendicular to the span tend to cause greater deformation. Introducing a short interlayer time interval improves structural stability during printing, while previous studies suggest that longer delays may compromise interlayer bonding. This work lays the foundation for sustainable and material-efficient 3D printing methods for curved, long-span structures by providing practical guidance on toolpath design and process control.</p>
+        <div class="card-tags">
+          <span class="tag">Robotic fabrication</span>
+        </div>
+
+        <div class="project-meta">
+          <p><br><strong>Keyworkds</strong><br>
+          Toolpath generation, Conformal 3D printing, Bending-active formwork, Robotic fabrication, Continuous material deposition</p>
+
+          <p><strong>Authors</strong><br>
+          Shaoyi WANG* and Simon SCHLEICHER</p>
+
+          <p>
+          Wang, S., and Schleicher, S. (2025). "Conformal 3D Printing on Bending-Active Formwork: Structural Implications of Toolpath Strategies and Interlayer Timing." Proceedings of the IASS Annual Symposium 2025 "The Living Past as a Source of Innovation," México City, México, October 27-31.</p>
+
+        </div>
+        <div class="project-links">
+          <a class="btn btn-outline" href="https://escholarship.org/content/qt89q8z0cm/qt89q8z0cm.pdf" target="_blank" rel="noopener">Paper</a>
+        </div>
+      </div>
+
+      <div class="project-body">
+
+        <figure class="project-figure">
+          <img src="../../../assets/images/projects/research/iass2025/1.png"/>
+          <figcaption>Conformal 3D printing on bending-active gridshell formwork using a six-axis robotic system.</figcaption>
+        </figure>
+
+        <figure class="project-figure">
+          <img src="../../../assets/images/projects/research/iass2025/overview.png"/>
+          <figcaption>Overview of key simulation parameters (toolpath strategy and interlayer timing) across strip and gridshell configurations for structural analysis.</figcaption>
+        </figure>
+
+        <figure class="project-figure">
+          <img src="../../../assets/images/projects/research/iass2025/strip_illustration.png"/>
+          <figcaption>Mesh representation of the hybrid strip (left) and two printing sequence scenarios: mid-start (middle) and end-start (right).</figcaption>
+        </figure>
+
+        <figure class="project-figure">
+          <img src="../../../assets/images/projects/research/iass2025/strip_stress.png"/>
+          <figcaption>Structural response under different toolpath starting strategies when printing concrete on a wood strip.</figcaption>
+        </figure>
+        <figure class="project-figure">
+          <img src="../../../assets/images/projects/research/iass2025/strip_analysis.png"/>
+          <figcaption>Evolution of stress and displacement during printing with different toolpath starting strategies.</figcaption>
+        </figure>
+
+        <figure class="project-figure">
+          <img src="../../../assets/images/projects/research/iass2025/strip_interval.png"/>
+          <figcaption>Structural response during printing with different time intervals between layers (0 min, 10 min, 30 min). Left: mid-start toolpath; Right: end-start toolpath.</figcaption></figure>
+
+        <figure class="project-figure">
+          <img src="../../../assets/images/projects/research/iass2025/shell_mesh.png"/>
+          <figcaption>Geometry and support condition of the printed gridshell model.</figcaption>
+        </figure>
+        </figure>
+        <figure class="project-figure">
+          <img src="../../../assets/images/projects/research/iass2025/shell_toolpath.png"/>
+          <figcaption>Three toolpaths generated from different skeletons.</figcaption>
+        </figure>
+        
+        <figure class="project-figure">
+          <img src="../../../assets/images/projects/research/iass2025/shell_stress.png"/>
+          <figcaption>Comparison of structural response under three toolpath strategies: spiral, long snake, and short snake.</figcaption>
+        </figure>
+
+        <figure class="project-figure">
+          <img src="../../../assets/images/projects/research/iass2025/shell_interval.png"/>
+          <figcaption>Displacement of the hybrid structure under different toolpath strategies and interlayer time intervals.</figcaption>
+        </figure>
+        <h2>Tech &amp; Architecture</h2>
+        <p>✏️ Stack, tools, and interesting technical decisions.</p>
+      </div>
+    </div>
+  </main>
+  <footer class="site-footer"><p>&copy; 2026 Shaoyi Wang</p></footer>
+
+  <script src="../../../scripts/components.js"></script>
+  <script src="../../../scripts/main.js"></script>
+</body>
+</html>

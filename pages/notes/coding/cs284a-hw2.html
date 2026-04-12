@@ -1,0 +1,351 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mesh Edit - CS284A - Shaoyi Wang</title>
+  <link rel="stylesheet" href="../../../style.css"/>
+  <link rel="stylesheet" href="../../../assets/lib/katex/katex.min.css" />
+  <style>
+    .cs284a-body figure { text-align: center; margin: 1.5rem 0; }
+    .cs284a-body img { max-width: 100%; height: auto; border-radius: 6px; }
+    .cs284a-body table { width: 100%; border-collapse: collapse; margin: 1.2rem 0; font-size: .9rem; }
+    .cs284a-body td, .cs284a-body th { border: 1px solid var(--border); padding: .45rem .75rem; text-align: left; }
+    .cs284a-body th { background: var(--surface); font-weight: 600; }
+    .cs284a-body figcaption { font-size: .82rem; color: var(--text-muted); margin-top: 6px; }
+    .cs284a-body h2 { font-size: 1.25rem; font-weight: 600; margin: 2rem 0 .6rem; }
+    .cs284a-body h3 { font-size: 1.05rem; font-weight: 600; margin: 1.5rem 0 .5rem; }
+    .cs284a-body h4 { font-size: .95rem; font-weight: 600; margin: 1.2rem 0 .4rem; color: #555; }
+    .cs284a-body p  { margin: .7rem 0; line-height: 1.7; }
+    .cs284a-body code { background: var(--surface); border-radius: 3px; padding: .1em .35em; font-size: .88em; }
+    .cs284a-body ul, .cs284a-body ol { padding-left: 1.4rem; margin: .6rem 0; }
+    .cs284a-body li { margin-bottom: 4px; }
+    .cs284a-body .gallery { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin: 20px 0; }
+    .cs284a-body .gallery figure { margin: 0; flex: 1 1 280px; text-align: center; }
+    .cs284a-body .gallery.two-up figure { max-width: 480px; }
+    .cs284a-body .gallery.three-up figure { max-width: 320px; }
+  </style>
+</head>
+<body data-root="../../../">
+  <header class="site-header"></header>
+  <main><div class="container">
+    <div class="project-back"><a href="javascript:history.back()">&#8592; Back to Notes</a></div>
+
+    <div class="project-header" style="margin-top:28px">
+      <div class="card-category">Coding Notes</div>
+      <h1 class="project-title">Mesh Edit</h1>
+      <div class="project-meta"><span>2026</span></div>
+      <p class="project-intro">Bezier curves and surfaces via de Casteljau, half-edge data structure, edge flip and split, and Loop subdivision for mesh upsampling.</p>
+      <div class="card-tags"><span class="tag">CS284A Computer Graphics</span></div>
+    </div>
+
+    <div class="project-body cs284a-body">
+
+		
+
+		<h2>Overview</h2>
+		We worked through core geometric modeling techniques from lecture by constructing Bézier curves and surfaces with the de Casteljau procedure, editing triangle meshes using a half-edge representation, and implementing Loop subdivision for mesh refinement.
+
+		<h2>Section I: Bezier Curves and Surfaces</h2>
+
+		<h3>Part 1: Bezier curves with 1D de Casteljau subdivision</h3>
+		<p>We evaluate a Bézier curve using de Casteljau's algorithm by repeatedly performing linear interpolation between adjacent control points at a parameter <code>t</code> (where <code>t</code> is in (0,1)). In one subdivision step, we take points \(p_i\) and compute a new, shorter list of intermediate points \(p'_i\) using \(p'_i = (1 - t)p_i + t p_{i+1}\). Repeating this process until only one point remains gives the point on the curve at parameter <code>t</code>.</p> 
+		
+		<p>In our implementation, <code>evaluateStep</code> performs exactly one level of this procedure. We first initialized <code>std::vector&lt;Vector2D&gt; next</code>. We then loop over each adjacent pair <code>points[i]</code> and <code>points[i+1]</code>, compute the interpolated point as <code>p_prime = p0 * (1 - t) + p1 * t</code>, append it to <code>next</code> via <code>push_back</code>, and return <code>next</code> as the control points for the next subdivision level.</p>
+
+		<p>Below shows our implementation of each level of the evaluation on a Bezier curve with 6 control points:</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw2/1-1.png" width="400px"/>
+				  <figcaption>Control points.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw2/1-2.png" width="400px"/>
+				  <figcaption>Step 1.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw2/1-3.png" width="400px"/>
+				  <figcaption>Step 2.</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw2/1-4.png" width="400px"/>
+				  <figcaption>Step 3.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw2/1-5.png" width="400px"/>
+				  <figcaption>Step 4.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw2/1-6.png" width="400px"/>
+				  <figcaption>Step 5.</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<p>After adjusting the curve by slightly moving the control points, below shows the result with different t values:</p>
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<table style="width: 100%; text-align: center; border-collapse: collapse;">
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw2/1-8.png" width="400px"/>
+				  <figcaption>Control points.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw2/1-9.png" width="400px"/>
+				  <figcaption>Step 1.</figcaption>
+				</td>
+			  </tr>
+			  <tr>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw2/1-10.png" width="400px"/>
+				  <figcaption>Step 3.</figcaption>
+				</td>
+				<td style="text-align: center;">
+				  <img src="../../../assets/images/notes/coding/cs284a/hw2/1-11.png" width="400px"/>
+				  <figcaption>Step 4.</figcaption>
+				</td>
+			  </tr>
+			</table>
+		</div>
+
+		<h3>Part 2: Bezier surfaces with separable 1D de Casteljau</h3>
+		<p>We extend de Casteljau's algorithm from Bézier curves to Bézier surfaces by applying the same 1D interpolation procedure in two parametric directions. A Bézier patch is defined by an (n * n) grid of control points, and evaluating the surface at (u, v) can be done by first collapsing the grid along one direction using u, producing a single 3D point per row, and then collapsing those resulting points along the other direction using v. This two-stage reduction yields the final surface point at (u, v).</p>
+
+		<p>In our implementation, <code>evaluateStep</code> performs one de Casteljau level on a 1D list of 3D points by computing intermediate points \(p'_i = (1 - t)p_i + t p_{i+1}\) and returning the shorter list. <code>evaluate1D</code> repeatedly calls <code>evaluateStep</code> (with a fixed <code>t</code>) until only one point remains, which is the curve point at that parameter. Finally, <code>evaluate</code> evaluates the Bézier surface by running <code>evaluate1D</code> on each row of <code>controlPoints</code> with parameter <code>u</code> to form <code>v_points</code>, then running <code>evaluate1D</code> on <code>v_points</code> with parameter <code>v</code> to produce the final point on the patch.</p>
+
+		<p>Below shows our screenshot:</p>
+		<figure>
+			<img src="../../../assets/images/notes/coding/cs284a/hw2/2-1.png" alt="Teapot" style="width:70%"/>
+			<figcaption>Implementation on <code>bez/teapot.bez</code></figcaption>
+		</figure>
+
+
+		<h2>Section II: Triangle Meshes and Half-Edge Data Structure</h2>
+
+		<h3>Part 3: Area-weighted vertex normals</h3>
+		<p>For this part, we implemented <code>Vertex::normal()</code> by walking once around the one-ring of each vertex and accumulating the normals of all incident triangles. We move from one adjacent face to the next with the usual half-edge pattern <code>h = h->twin()->next()</code>, so the traversal stays local and visits every face touching that vertex exactly once.</p>
+
+		<p>At each step, we read the three triangle vertices from the current half-edge cycle and compute the cross product of two edge vectors. The nice part is that the magnitude of that cross product is already proportional to the triangle's area, so simply summing those face normals gives us an area-weighted average automatically. After the loop, we normalize the accumulated vector and return it as the final shading normal.</p>
+
+		<p>In practice, this makes the mesh look much smoother on curved surfaces while still letting larger triangles contribute more strongly to the final normal direction.</p>
+
+		<div class="gallery two-up">
+			<figure>
+				<img src="../../../assets/images/notes/coding/cs284a/hw2/P3_Before.png" alt="Flat shading before area-weighted normals"/>
+				<figcaption>Before: flat shading.</figcaption>
+			</figure>
+			<figure>
+				<img src="../../../assets/images/notes/coding/cs284a/hw2/P3_Before_Q.png" alt="Alternate flat shading view before area-weighted normals"/>
+				<figcaption>Before: alternate view.</figcaption>
+			</figure>
+		</div>
+
+		<figure>
+			<img src="../../../assets/images/notes/coding/cs284a/hw2/P3_After.png" alt="Smooth shading after area-weighted normals" style="width:70%"/>
+			<figcaption>After enabling area-weighted vertex normals.</figcaption>
+		</figure>
+
+		<h3>Part 4: Edge flip</h3>
+		<p>We implemented edge flip as a purely local rewiring pass in the half-edge structure, so no mesh elements are created or deleted. Starting from an interior edge shared by two triangles, we label the six surrounding halfedges, identify the opposite vertices <code>a</code> and <code>d</code>, and replace the old diagonal <code>(b, c)</code> with the new diagonal <code>(a, d)</code>.</p>
+
+		<p>Once the neighborhood is labeled, the rest is careful bookkeeping. We update the two halfedges on the flipped edge, rebuild the two triangular 3-cycles with fresh <code>next</code> pointers, and then refresh the affected <code>face->halfedge()</code>, <code>edge->halfedge()</code>, and <code>vertex->halfedge()</code> handles so every iterator still lands on a valid representative. Boundary edges are rejected immediately, since they do not have the two adjacent triangles required for a valid flip.</p>
+
+		<p>The most useful debugging checks were very local: each face should still satisfy <code>h->next()->next()->next() == h</code>, the twin relationship on the flipped edge should remain symmetric, and only the two halfedges on the flipped edge should keep pointing to that edge object. Our main bug came from attaching the reused edge to the wrong halfedge, which broke adjacency right away.</p>
+
+		<div class="gallery two-up">
+			<figure>
+				<img src="../../../assets/images/notes/coding/cs284a/hw2/P4_Before.png" alt="Mesh before edge flip"/>
+				<figcaption>Before the flip.</figcaption>
+			</figure>
+			<figure>
+				<img src="../../../assets/images/notes/coding/cs284a/hw2/P4_After.png" alt="Mesh after edge flip"/>
+				<figcaption>After the flip.</figcaption>
+			</figure>
+		</div>
+
+		<h3>Part 5: Edge split</h3>
+		<p>We treated edge split as a small local surgery on an interior edge. Starting from the original edge <code>e0</code> and its two incident triangles, we gather the six existing halfedges, insert a new midpoint vertex <code>m</code>, and rewire the local neighborhood so the original two triangles become four.</p>
+
+		<p>For the required implementation, we only split interior edges. If either side of <code>e0</code> is on the boundary, the function returns immediately and leaves the mesh unchanged.</p>
+
+		<p>The split creates one new vertex, three new edges, two new faces, and six new halfedges. We reuse the original edge object as the <code>b-m</code> edge, then explicitly call <code>setNeighbors(...)</code> so the final four triangles are <code>(a, b, m)</code>, <code>(a, m, c)</code>, <code>(d, c, m)</code>, and <code>(d, m, b)</code>. The new vertex's representative halfedge also matters: pointing <code>m->halfedge()</code> along the reused split edge, instead of one of the brand-new edges, made later traversals and flips much more reliable.</p>
+
+		<p>The main debugging issue here was a stale <code>face->halfedge()</code> pointer. In one early version, an original face still pointed to a halfedge that had been reassigned to a different triangle after the split, so traversal silently followed the wrong 3-cycle. Once we made sure every face representative was chosen from its final triangle, the operation became stable.</p>
+
+		<div class="gallery two-up">
+			<figure>
+				<img src="../../../assets/images/notes/coding/cs284a/hw2/5-1.png" alt="Edge split before view 1"/>
+				<figcaption>Mesh before edge splits.</figcaption>
+			</figure>
+			<figure>
+				<img src="../../../assets/images/notes/coding/cs284a/hw2/5-2.png" alt="Edge split before view 2"/>
+				<figcaption>Mesh after edge splits.</figcaption>
+			</figure>
+		</div>
+
+		<div class="gallery two-up">
+			<figure>
+				<img src="../../../assets/images/notes/coding/cs284a/hw2/5-1.png" alt="Edge split after view 1"/>
+				<figcaption>Mesh before edge splits and flips.</figcaption>
+			</figure>
+			<figure>
+				<img src="../../../assets/images/notes/coding/cs284a/hw2/5-3.png" alt="Edge split after view 2"/>
+				<figcaption>Mesh after edge splits and flips.</figcaption>
+			</figure>
+		</div>
+
+		<h3>Part 6: Loop subdivision for mesh upsampling</h3>
+		<p>We implemented Loop subdivision in <code>MeshResampler::upsample()</code> using the standard five-pass pipeline: first compute updated positions for the original vertices, then compute split positions for the original edges, split every original edge exactly once, flip the new edges that connect an old vertex to a new one, and only then commit all staged positions. Keeping those passes separate made the whole routine much easier to reason about.</p>
+
+		<h4>Position updates</h4>
+		<p>For an interior vertex with valence <code>n</code>, we used the usual Loop update rule:</p>
+		<p>\[
+			\mathbf{v}' = (1 - n u)\mathbf{v} + u\sum_{i=1}^{n}\mathbf{v}_i,\quad
+			u =
+			\begin{cases}
+				\frac{3}{16}, &amp; n = 3 \\
+				\frac{3}{8n}, &amp; \text{otherwise}
+			\end{cases}
+		\]</p>
+
+		<p>For boundary vertices, we also implemented the boundary rule so the surface stays stable near open edges:</p>
+		<p>\[
+			\mathbf{v}' = \frac{3}{4}\mathbf{v} + \frac{1}{8}(\mathbf{v}_1 + \mathbf{v}_2)
+		\]</p>
+
+		<p>For the new vertex inserted on an interior edge <code>(A, B)</code> with opposite vertices <code>(C, D)</code>, we precomputed the split point with:</p>
+		<p>\[
+			\mathbf{m} = \frac{3}{8}(A + B) + \frac{1}{8}(C + D)
+		\]</p>
+
+		<p>On boundary edges, we fall back to the midpoint rule:</p>
+		<p>\[
+			\mathbf{m} = \frac{1}{2}(A + B)
+		\]</p>
+
+		<h4>Connectivity updates and debugging</h4>
+		<p>Before splitting anything, we copy all original edges into a separate list. That guarantees each original edge is split exactly once, even though the mesh is changing during the pass. Every newly created vertex is marked with <code>isNew = true</code> and receives the <code>newPosition</code> that we already stored on its parent edge.</p>
+
+		<p>After the splits, we classify the edges touching each new vertex. The two edges that lie along the original split edge stay marked as old, while the side edges to the opposite old vertices are marked as new. We then flip only those new edges that connect one old vertex and one new vertex, which is the standard Loop connectivity cleanup step.</p>
+
+		<p>The biggest implementation rule here was keeping a strict two-buffer workflow: every computation reads from <code>position</code> and writes to <code>newPosition</code>, and we copy <code>newPosition</code> back into <code>position</code> only once at the very end. Whenever the mesh behaved strangely, the first thing we checked was whether a local half-edge invariant or that staging rule had been violated.</p>
+
+		<figure>
+			<img src="../../../assets/images/notes/coding/cs284a/hw2/P6_Before.png" alt="Mesh before Loop subdivision" style="width:80%"/>
+			<figcaption>Before subdivision.</figcaption>
+		</figure>
+
+		<div class="gallery two-up">
+			<figure>
+				<img src="../../../assets/images/notes/coding/cs284a/hw2/P6_After1.png" alt="Mesh after one Loop subdivision iteration"/>
+				<figcaption>After 1 iteration.</figcaption>
+			</figure>
+			<figure>
+				<img src="../../../assets/images/notes/coding/cs284a/hw2/P6_After2.png" alt="Mesh after two Loop subdivision iterations"/>
+				<figcaption>After 2 iterations.</figcaption>
+			</figure>
+		</div>
+
+		<h4>What we observed</h4>
+		<p>After a few iterations, sharp edges and corners round off quickly. That is exactly what Loop subdivision is supposed to do: repeated neighborhood averaging drives the mesh toward a smooth limit surface, so high-curvature features get spread out over nearby triangles.</p>
+
+		<p>If we want a sharp feature to hold up better, pre-splitting the nearby edges helps. Adding a little more local resolution gives the subdivided mesh more freedom to approximate that corner before the smoothing steps start blending everything together.</p>
+
+		<h4>Cube experiment</h4>
+		<p>On <code>dae/cube.dae</code>, repeated subdivision also makes the cube drift slightly away from perfect symmetry. The root cause is the initial triangulation: each quad already has a diagonal, and if those diagonals are not arranged symmetrically, the local neighborhoods are not symmetric either. Loop subdivision then keeps amplifying that small mismatch.</p>
+		<figure>
+			<img src="../../../assets/images/notes/coding/cs284a/hw2/P6b_1.png" alt="Cube before Loop subdivision" style="width:80%"/>
+			<figcaption>Cube before subdivision.</figcaption>
+		</figure>
+
+		<div class="gallery two-up">
+			<figure>
+				<img src="../../../assets/images/notes/coding/cs284a/hw2/P6b_2.png" alt="Cube after one Loop subdivision iteration"/>
+				<figcaption>After 1 iteration.</figcaption>
+			</figure>
+			<figure>
+				<img src="../../../assets/images/notes/coding/cs284a/hw2/P6b_3.png" alt="Cube after two Loop subdivision iterations"/>
+				<figcaption>After 2 iterations.</figcaption>
+			</figure>
+		</div>
+
+		<div class="gallery two-up">
+			<figure>
+				<img src="../../../assets/images/notes/coding/cs284a/hw2/P6b_4.png" alt="Cube after three Loop subdivision iterations"/>
+				<figcaption>After 3 iterations.</figcaption>
+			</figure>
+			<figure>
+				<img src="../../../assets/images/notes/coding/cs284a/hw2/P6b_5.png" alt="Cube after four Loop subdivision iterations"/>
+				<figcaption>After 4 iterations.</figcaption>
+			</figure>
+		</div>
+
+		<p>A simple fix is to preprocess the cube with edge flips, and optionally a few strategic edge splits, so corresponding faces share a more balanced triangulation pattern. Once the connectivity is symmetric, the repeated updates stay much more symmetric too.</p>
+
+
+		<div class="gallery two-up">
+			<figure>
+				<img src="../../../assets/images/notes/coding/cs284a/hw2/6-6.png" alt="Cube after one Loop subdivision iteration"/>
+				<figcaption>Cube after flipping edges to make symmetrical.</figcaption>
+			</figure>
+			<figure>
+				<img src="../../../assets/images/notes/coding/cs284a/hw2/6-7.png" alt="Cube after two Loop subdivision iterations"/>
+				<figcaption>After 1 iterations.</figcaption>
+			</figure>
+		</div>
+
+		<div class="gallery two-up">
+			<figure>
+				<img src="../../../assets/images/notes/coding/cs284a/hw2/6-8.png" alt="Cube after three Loop subdivision iterations"/>
+				<figcaption>After 2 iterations.</figcaption> 
+			</figure>
+			<figure>
+				<img src="../../../assets/images/notes/coding/cs284a/hw2/6-9.png" alt="Cube after four Loop subdivision iterations"/>
+				<figcaption>After 3 iterations.</figcaption>
+			</figure>
+		</div>
+
+		<h4>Boundary handling (extra credit)</h4>
+		<p>We also implemented the boundary version of Loop subdivision. Boundary vertices use the 1D boundary update rule, boundary edge points use simple midpoints, and the resulting surface stays stable near open borders instead of producing visible artifacts.</p>
+		
+		<div class="gallery two-up">
+			<figure>
+				<img src="../../../assets/images/notes/coding/cs284a/hw2/6-10.png" alt="Before subdivision on boundary" height="240px"/>
+				<figcaption>Before subdivision on boundary.</figcaption>
+			</figure>
+			<figure>
+				<img src="../../../assets/images/notes/coding/cs284a/hw2/6-11.png" alt="After subdivision on boundary" height="200px"/>
+				<figcaption>After subdivision on boundary.</figcaption>
+			</figure>
+		</div>
+
+
+		<h2>(Optional) Section III: Potential Extra Credit - Art Competition: Model something Creative</h2>
+		<p>We did not submit the art competition extra credit for this homework.</p>
+    </div>
+  </div></main>
+  <footer class="site-footer"><p>&copy; 2026 Shaoyi Wang</p></footer>
+
+  <script src="../../../assets/lib/katex/katex.min.js"></script>
+  <script src="../../../assets/lib/katex/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$",  right: "$$",  display: true},
+          {left: "\\[", right: "\\]", display: true},
+          {left: "\\(", right: "\\)", display: false},
+          {left: "$",   right: "$",   display: false}
+        ]
+      });
+    });
+  </script>
+  <script src="../../../scripts/components.js"></script>
+  <script src="../../../scripts/main.js"></script>
+</body>
+</html>

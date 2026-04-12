@@ -17,6 +17,22 @@ const APP_GAME_PROJECTS = [
     tags: ['Design tool development', 'AI-based rendering'],
     image: 'assets/images/projects/design/24_pseudorandom/pseudorandom-1.png',
     page: 'pages/projects/app_game/Pseudorandom.html',
+    year: 2024
+  },
+
+
+
+  {
+    id: 'app-2',
+    title: 'Inno-Render',
+    category: 'App & Game',
+    categorySlug: 'app-game',
+    featured: false,
+    description: 'Simple & fast AI rendering plugin for rhino.',
+    tags: ['Design tool development', 'AI-based rendering'],
+    image: 'assets/images/projects/design/24_innorender/inno.png',
+    page: 'pages/projects/app_game/innorender.html',
+    year: 2024
   },
   // ── Add new app & game projects below ────────────────────
 ];

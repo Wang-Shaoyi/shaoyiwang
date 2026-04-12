@@ -9,25 +9,27 @@
 const MAKING_PROJECTS = [
   {
     id: 'mak-1',
-    title: 'Arduino MIDI Controller',
+    title: 'Fiber-Winding Monohull',
     category: 'Making',
     categorySlug: 'making',
     featured: false,
-    description: 'A hand-built USB MIDI controller with custom knobs and pads, programmed with Arduino and a 3D-printed enclosure.',
-    tags: ['Arduino', 'Electronics', '3D Print'],
-    image: 'assets/images/place_holder.png',
-    page: 'pages/projects/making/arduino-midi.html',
+    description: 'Robotic fabrication on fiber-winding.',
+    tags: ['Robotic fabrication'],
+    image: 'assets/images/projects/design/24_monohull/1.png',
+    page: 'pages/projects/making/fiber-winding_monohull.html',
+    year: 2024
   },
-  {
+    {
     id: 'mak-2',
-    title: 'Laser-Cut Desk Organiser',
+    title: 'Self-Glowing Lamp',
     category: 'Making',
     categorySlug: 'making',
     featured: false,
-    description: 'Parametric design cut from birch ply. Dimensions driven by a Python script so it adapts to any desk layout.',
-    tags: ['Laser Cutting', 'Python', 'CAD'],
-    image: 'assets/images/place_holder.png',
-    page: 'pages/projects/making/laser-cut-desk.html',
+    description: 'Towards sustainable bioluminescence: parametric design and 3D printing.',
+    tags: ['3D printing', 'Computational design'],
+    image: 'assets/images/projects/design/23_lamp/1.png',
+    page: 'pages/projects/making/lamp.html',
+    year: 2022
   },
   // ── Add new making projects below ────────────────────────
 ];
