@@ -67,11 +67,11 @@
 
 
 
-<p class="wp-block-paragraph">The L2 score is calculated as follows::</p>
+<p class="wp-block-paragraph">The L2 score is calculated as follows:</p>
 
 
 
-<p class="wp-block-paragraph">$$<br>L_2 = \sum_{(i,j) \in \text{Overlap}} \left( I_1(i, j) &ndash; I_2(i, j) \right)^2<br>$$</p>
+<p class="wp-block-paragraph">\[<br>L_2 = \sum_{(i,j) \in \text{Overlap}} \left( I_1(i, j) &ndash; I_2(i, j) \right)^2<br>\]</p>
 
 
 
@@ -1085,9 +1085,27 @@
   <script src="../../../assets/lib/katex/auto-render.min.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function() {
+      // Display math broken by <br> elements — KaTeX can't match delimiters
+      // across DOM element boundaries, so normalise before rendering.
+      document.querySelectorAll('p').forEach(function(el) {
+        var html = el.innerHTML;
+        if (html.indexOf('$$') === -1 && html.indexOf('\\[') === -1) return;
+        // \[...\] containing <br> — strip the breaks
+        html = html.replace(/\\\[([\s\S]*?)\\\]/g, function(_, c) {
+          return '\\[' + c.replace(/<br\s*\/?>/g, '\n') + '\\]';
+        });
+        // $$...$$ containing <br> — strip breaks and switch to \[...\]
+        html = html.replace(/\$\$([\s\S]*?)\$\$/g, function(_, c) {
+          return c.indexOf('<') === -1
+            ? '$$' + c + '$$'
+            : '\\[' + c.replace(/<br\s*\/?>/g, '\n') + '\\]';
+        });
+        el.innerHTML = html;
+      });
       renderMathInElement(document.body, {
         delimiters: [
           {left: "$$", right: "$$", display: true},
+          {left: "\\[", right: "\\]", display: true},
           {left: "\\(", right: "\\)", display: false},
           {left: "$",  right: "$",   display: false}
         ]
