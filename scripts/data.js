@@ -36,30 +36,7 @@ const PUBLICATIONS = [
 ];
 
 // ============================================================
-// GALLERY  — add entries here for the Gallery page
+// GALLERY — auto-generated from assets/images/gallery/, see scripts/gallery-data.js
+// To add a photo album: create assets/images/gallery/<Category>/<album-name>/
+// with a cover.<ext> image (+ any other photos), then run scripts/build-gallery.ps1.
 // ============================================================
-const GALLERY = [
-  { id: 'gal-1', category: 'Crochet', image: 'assets/images/gallery/flower bag.jpg' },
-  { id: 'cook-12', category: 'Cooking', image: 'assets/images/gallery/12.jpg' },
-  { id: 'cook-1', category: 'Cooking', image: 'assets/images/gallery/1.jpg' },
-  { id: 'gal-2', category: 'Crochet', image: 'assets/images/gallery/flower.jpg' },
-  { id: 'cook-11', category: 'Cooking', image: 'assets/images/gallery/11.jpg' },
-  { id: 'cook-2', category: 'Cooking', image: 'assets/images/gallery/2.jpg' },
-  { id: 'gal-6', category: 'Crochet', image: 'assets/images/gallery/hat.jpg' },
-  { id: 'cook-3', category: 'Cooking', image: 'assets/images/gallery/3.jpg' },
-  { id: 'gal-3', category: 'Crochet', image: 'assets/images/gallery/scarf.jpg' },
-  { id: 'cook-4', category: 'Cooking', image: 'assets/images/gallery/4.jpg' },
-  { id: 'cook-5', category: 'Cooking', image: 'assets/images/gallery/5.jpg' },
-  { id: 'gal-4', category: 'Crochet', image: 'assets/images/gallery/hat2.jpg' },
-  { id: 'cook-6', category: 'Cooking', image: 'assets/images/gallery/6.jpg' },
-  { id: 'gal-5', category: 'Crochet', image: 'assets/images/gallery/iphone bag.jpg' },
-  { id: 'cook-10', category: 'Cooking', image: 'assets/images/gallery/10.jpg' },
-  { id: 'cook-8', category: 'Cooking', image: 'assets/images/gallery/8.jpg' },
-  { id: 'gal-7', category: 'Crochet', image: 'assets/images/gallery/market bag.jpg' },
-  { id: 'cook-9', category: 'Cooking', image: 'assets/images/gallery/9.jpg' },
-  { id: 'gal-8', category: 'Crochet', image: 'assets/images/gallery/small scarf.jpg' },
-  
-
-  { id: 'cook-7', category: 'Cooking', image: 'assets/images/gallery/7.jpg' },
-  // ── Add new gallery items below ───────────────────────────
-];

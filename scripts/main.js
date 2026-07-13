@@ -176,10 +176,12 @@ function renderGallery(containerId, filterCat) {
   const items = (filterCat && filterCat !== 'all')
     ? GALLERY.filter((g) => g.category === filterCat)
     : GALLERY;
-  el.innerHTML = items.map((g) => `
-    <div class="gallery-item">
-      <img src="${_root + g.image}" alt="${g.title}" loading="lazy" />
+  el.innerHTML = items.map((g, i) => `
+    <div class="gallery-item" data-index="${i}">
+      <img src="${_root + g.cover}" alt="${g.category}" loading="lazy" />
+      ${g.images.length > 1 ? `<span class="gallery-count">${g.images.length}</span>` : ''}
     </div>`).join('');
+  el._galleryItems = items;
 }
 
 // ============================================================
@@ -305,6 +307,7 @@ if (document.getElementById('pub-list')) renderPublications('pub-list');
 // ============================================================
 if (document.getElementById('gallery-grid')) {
   const galleryBar = document.getElementById('gallery-filter');
+  const galleryGrid = document.getElementById('gallery-grid');
 
   function applyGalleryFilter(cat) {
     if (galleryBar) galleryBar.querySelectorAll('.filter-btn').forEach((b) =>
@@ -317,6 +320,83 @@ if (document.getElementById('gallery-grid')) {
 
   if (galleryBar) galleryBar.querySelectorAll('.filter-btn').forEach((btn) => {
     btn.addEventListener('click', () => applyGalleryFilter(btn.dataset.filter));
+  });
+
+  // ── Album viewer (opens the photos inside a gallery item) ──
+  const overlay = document.createElement('div');
+  overlay.className = 'lb-overlay';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+  overlay.innerHTML = `
+    <div class="lb-box">
+      <img class="lb-img" src="" alt="" />
+      <div class="lb-caption"></div>
+    </div>
+    <button class="lb-close" aria-label="Close">✕</button>
+    <button class="lb-nav lb-prev" aria-label="Previous">‹</button>
+    <button class="lb-nav lb-next" aria-label="Next">›</button>`;
+  document.body.appendChild(overlay);
+
+  const lbImg     = overlay.querySelector('.lb-img');
+  const lbCaption = overlay.querySelector('.lb-caption');
+  const lbClose   = overlay.querySelector('.lb-close');
+  const lbPrev    = overlay.querySelector('.lb-prev');
+  const lbNext    = overlay.querySelector('.lb-next');
+
+  let album = null;
+  let photoIdx = 0;
+
+  function showPhoto() {
+    lbImg.src = _root + album.images[photoIdx];
+    lbImg.alt = '';
+    lbCaption.textContent = album.images.length > 1
+      ? `${photoIdx + 1} / ${album.images.length}`
+      : '';
+    lbCaption.style.display = lbCaption.textContent ? '' : 'none';
+    const showNav = album.images.length > 1;
+    lbPrev.style.display = showNav ? '' : 'none';
+    lbNext.style.display = showNav ? '' : 'none';
+  }
+
+  function openAlbum(a) {
+    album = a;
+    photoIdx = 0;
+    showPhoto();
+    overlay.style.display = 'flex';
+    requestAnimationFrame(() => overlay.classList.add('lb-visible'));
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close() {
+    overlay.classList.remove('lb-visible');
+    setTimeout(() => { overlay.style.display = 'none'; lbImg.src = ''; }, 200);
+    document.body.style.overflow = '';
+  }
+
+  function nav(dir) {
+    if (!album || album.images.length < 2) return;
+    photoIdx = (photoIdx + dir + album.images.length) % album.images.length;
+    showPhoto();
+  }
+
+  galleryGrid.addEventListener('click', (e) => {
+    const item = e.target.closest('.gallery-item');
+    if (!item) return;
+    const items = galleryGrid._galleryItems || [];
+    const a = items[Number(item.dataset.index)];
+    if (a) openAlbum(a);
+  });
+
+  lbClose.addEventListener('click', close);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+  lbPrev.addEventListener('click', (e) => { e.stopPropagation(); nav(-1); });
+  lbNext.addEventListener('click', (e) => { e.stopPropagation(); nav(1); });
+
+  document.addEventListener('keydown', (e) => {
+    if (!overlay.classList.contains('lb-visible')) return;
+    if (e.key === 'Escape')     close();
+    if (e.key === 'ArrowLeft')  nav(-1);
+    if (e.key === 'ArrowRight') nav(1);
   });
 }
 
