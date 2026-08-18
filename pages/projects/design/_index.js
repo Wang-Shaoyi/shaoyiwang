@@ -35,7 +35,7 @@ const DESIGN_PROJECTS = [
 
   {
     id: 'des-3',
-    title: 'Commercial Plaza Renovation Design — Media Architecture',
+    title: 'Commercial Plaza Renovation Design Media Architecture',
     category: 'Design',
     categorySlug: 'design',
     featured: false,
@@ -56,7 +56,7 @@ const DESIGN_PROJECTS = [
     tags: ['Architecture', 'Computational design'],
     image: 'assets/images/projects/design/22_kesi/kesi.png',
     page: 'pages/projects/design/kesi.html',
-    year: 2025
+    year: 2022
   },
 
   {

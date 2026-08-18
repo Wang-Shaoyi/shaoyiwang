@@ -8,14 +8,48 @@ const _root = (document.body.getAttribute('data-root') !== null)
   ? document.body.getAttribute('data-root')
   : (_inPages ? '../' : '');
 
-// ← Back button: always set a real href (fixes hover), intercept only when history exists
+// Keep visible copy free of em-dash separators across all pages.
+const _textWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+while (_textWalker.nextNode()) {
+  const textNode = _textWalker.currentNode;
+  if (!textNode.parentElement?.closest('script, style')) {
+    textNode.nodeValue = textNode.nodeValue.replace(/—/g, ' ');
+  }
+}
+
+// Project Back buttons preserve the page from which the visitor opened a card.
+// Explicit category/tab links remain the fallback for direct visits.
 document.querySelectorAll('.project-back a').forEach((a) => {
-  a.href = _root + 'index.html';          // real URL → browser activates :hover immediately
-  if (document.referrer) {
-    a.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.history.back();
-    });
+  const originalHref = a.getAttribute('href') || '';
+  const sourceParams = new URLSearchParams(window.location.search);
+  const sourcePage = sourceParams.get('from');
+
+  if (sourcePage === 'home') {
+    a.href = _root + 'index.html';
+    a.textContent = '← Back to Home';
+  } else if (sourcePage === 'projects') {
+    const sourceFilter = sourceParams.get('filter');
+    a.href = _root + 'pages/projects.html' +
+      (sourceFilter && sourceFilter !== 'all' ? `?filter=${encodeURIComponent(sourceFilter)}` : '');
+    a.textContent = '← Back to Projects';
+  } else if (!originalHref || originalHref.startsWith('javascript:')) {
+    if (window.location.pathname.includes('/pages/notes/coding/')) {
+      a.href = _root + 'pages/notes.html#tab-coding';
+    } else if (window.location.pathname.includes('/pages/notes/math/')) {
+      a.href = _root + 'pages/notes.html#tab-math';
+    } else if (window.location.pathname.includes('/pages/notes/game_develop/')) {
+      a.href = _root + 'pages/notes.html#tab-game_develop';
+    } else if (window.location.pathname.includes('/pages/projects/research/')) {
+      a.href = _root + 'pages/projects.html?filter=research';
+    } else if (window.location.pathname.includes('/pages/projects/design/')) {
+      a.href = _root + 'pages/projects.html?filter=design';
+    } else if (window.location.pathname.includes('/pages/projects/making/')) {
+      a.href = _root + 'pages/projects.html?filter=making';
+    } else if (window.location.pathname.includes('/pages/projects/app_game/')) {
+      a.href = _root + 'pages/projects.html?filter=app-game';
+    } else {
+      a.href = _root + 'index.html';
+    }
   }
 });
 
@@ -31,9 +65,6 @@ document.querySelectorAll('.project-back a').forEach((a) => {
   const barLink = document.createElement('a');
   barLink.textContent = srcLink.textContent;
   barLink.href = srcLink.href;
-  barLink.addEventListener('click', (e) => {
-    if (document.referrer) { e.preventDefault(); window.history.back(); }
-  });
   bar.appendChild(barLink);
   document.body.appendChild(bar);
 
@@ -60,7 +91,7 @@ function renderCards(projects, containerId) {
   const grid = document.getElementById(containerId);
   if (!grid) return;
   if (!projects.length) {
-    grid.innerHTML = `<p style="color:var(--text-muted);padding:8px 0">No projects yet — check back soon!</p>`;
+    grid.innerHTML = `<p style="color:var(--text-muted);padding:8px 0">No projects yet check back soon!</p>`;
     return;
   }
   grid.innerHTML = projects.map((p) => `
@@ -69,7 +100,10 @@ function renderCards(projects, containerId) {
         <img src="${_root + p.image}" alt="${p.title}" loading="lazy" />
       </div>
       <div class="card-body">
-        <div class="card-category">${p.category}</div>
+        <div class="card-eyebrow">
+          <div class="card-category">${p.category}</div>
+          <div class="card-year">${p.year}</div>
+        </div>
         <h3 class="card-title">${p.title}</h3>
         <p class="card-desc">${p.description}</p>
         <div class="card-tags">${p.tags.map((t) => `<span class="tag">${t}</span>`).join('')}</div>
@@ -78,7 +112,17 @@ function renderCards(projects, containerId) {
 
   grid.querySelectorAll('.card').forEach((card) => {
     const project = PROJECTS.find((p) => p.id === card.dataset.id);
-    const go = () => { window.location.href = _root + project.page; };
+    const go = () => {
+      const source = containerId === 'home-grid' ? 'home' : 'projects';
+      const destinationParams = new URLSearchParams({ from: source });
+      if (source === 'projects') {
+        destinationParams.set(
+          'filter',
+          new URLSearchParams(window.location.search).get('filter') || 'all'
+        );
+      }
+      window.location.href = `${_root + project.page}?${destinationParams.toString()}`;
+    };
     card.addEventListener('click', go);
     card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') go(); });
   });
@@ -106,8 +150,8 @@ function renderList(containerId, data, filterTag) {
       `<a class="pub-link${l.style === 'orange' ? ' orange' : ''}" href="${l.url}"${/^https?:\/\//.test(l.url) ? ' target="_blank" rel="noopener"' : ''}>${l.label}</a>`
     ).join('')}</div>`;
     const rowEl = hasPage
-      ? `<a class="code-item--link" href="${_root + c.page}"><span class="code-title">${c.title}</span><span class="code-dash">—</span><span class="code-desc">${c.description}</span></a>`
-      : `<div class="code-item--static"><span class="code-title">${c.title}</span><span class="code-dash">—</span><span class="code-desc">${c.description}</span></div>`;
+      ? `<a class="code-item--link" href="${_root + c.page}"><span class="code-title">${c.title}</span> <span class="code-desc">${c.description}</span></a>`
+      : `<div class="code-item--static"><span class="code-title">${c.title}</span> <span class="code-desc">${c.description}</span></div>`;
     return `<div class="code-item">${rowEl}${tagsHtml}${linksHtml}</div>`;
   }).join('');
 }
@@ -156,7 +200,9 @@ function renderPublications(containerId) {
       <div class="pub-year">${p.year}</div>
       <div>
         <div class="pub-title">${p.title}</div>
-        <div class="pub-meta">${p.authors} — ${p.venue}</div>
+        <div class="pub-meta">${p.citation}${p.doi
+          ? ` <a href="${p.doi}" target="_blank" rel="noopener">${p.doi}</a>`
+          : ''}</div>
         <div class="pub-links">
           ${p.links.map((l) =>
             `<a class="pub-link${l.style === 'orange' ? ' orange' : ''}" href="${l.url}"${/^https?:\/\//.test(l.url) ? ' target="_blank" rel="noopener"' : ''}>${l.label}</a>`

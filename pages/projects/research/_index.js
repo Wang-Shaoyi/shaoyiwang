@@ -9,6 +9,18 @@
 
 const RESEARCH_PROJECTS = [
   {
+    id: 'res-3',
+    title: 'Mechanics-Guided Member Grouping for Cross-Section Optimization with Heterogeneous Graphs',
+    category: 'Research',
+    categorySlug: 'research',
+    featured: true,
+    description: 'Learning structurally meaningful member groups for steel cross-section assignment.',
+    tags: ['Graph neural networks', 'Structural optimization'],
+    image: 'assets/images/projects/research/iass2026/graph.png',
+    page: 'pages/projects/research/iass2026.html',
+    year: 2026
+  },
+  {
     id: 'res-1',
     title: 'Conformal 3D printing on bending-active formwork',
     category: 'Research',

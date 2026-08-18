@@ -19,7 +19,7 @@
   --text:         #1a1a2e;
   --text-muted:   #6b7280;
 
-  --radius:       12px;
+  --radius:       4px;
   --nav-h:        60px;
   --transition:   0.22s ease;
   --shadow:       0 2px 16px rgba(0,0,0,0.08);
@@ -128,7 +128,7 @@ ul { list-style: none; }
 .main-nav a {
   display: block;
   padding: 5px 11px;
-  border-radius: 6px;
+  border-radius: 4px;
   font-size: 0.85rem;
   font-weight: 500;
   color: var(--text-muted);
@@ -156,7 +156,7 @@ ul { list-style: none; }
   cursor: pointer;
   margin-left: auto;
   padding: 4px 8px;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 /* ============================================================
@@ -200,7 +200,7 @@ ul { list-style: none; }
 
 .filter-btn {
   padding: 5px 14px;
-  border-radius: 20px;
+  border-radius: 4px;
   border: 1.5px solid var(--border);
   background: none;
   color: var(--text-muted);
@@ -252,7 +252,7 @@ ul { list-style: none; }
   padding: 10px 22px;
   background: var(--mint);
   color: #fff;
-  border-radius: 8px;
+  border-radius: 4px;
   font-size: 0.9rem;
   font-weight: 600;
   transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
@@ -325,13 +325,27 @@ ul { list-style: none; }
 
 .card-body { padding: 18px 20px 20px; }
 
+.card-eyebrow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 7px;
+}
+
 .card-category {
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--orange);
-  margin-bottom: 7px;
+}
+
+.card-year {
+  flex: 0 0 auto;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
 .card-title {
@@ -362,7 +376,7 @@ ul { list-style: none; }
 .tag {
   font-size: 0.72rem;
   padding: 3px 9px;
-  border-radius: 20px;
+  border-radius: 4px;
   background: var(--surface2);
   color: var(--text-muted);
   border: 1px solid var(--border);
@@ -401,7 +415,7 @@ button.tag:hover { background: rgba(45,191,138,0.12); color: var(--mint); border
   margin-left: auto;
   background: none;
   border: 1px solid var(--border);
-  border-radius: 20px;
+  border-radius: 4px;
   padding: 2px 10px;
   font-size: 0.78rem;
   color: var(--text-muted);
@@ -450,13 +464,19 @@ button.tag:hover { background: rgba(45,191,138,0.12); color: var(--mint); border
   font-style: italic;
 }
 
+.pub-meta a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .pub-links { display: flex; gap: 8px; flex-wrap: wrap; }
 
 .pub-link {
   font-size: 0.78rem;
   font-weight: 600;
   padding: 3px 10px;
-  border-radius: 5px;
+  border-radius: 4px;
   border: 1.5px solid var(--mint);
   color: var(--mint);
   transition: background var(--transition), color var(--transition);
@@ -556,7 +576,7 @@ a.code-item--link:hover .code-desc { color: var(--text); }
   right: 8px;
   min-width: 22px;
   padding: 2px 7px;
-  border-radius: 20px;
+  border-radius: 4px;
   background: rgba(0, 0, 0, 0.6);
   color: #fff;
   font-size: 0.72rem;
@@ -624,7 +644,7 @@ a.code-item--link:hover .code-desc { color: var(--text); }
 
 .skill-badge {
   padding: 5px 13px;
-  border-radius: 20px;
+  border-radius: 4px;
   background: var(--mint-soft);
   border: 1.5px solid rgba(45,191,138,0.25);
   color: var(--mint-hover);
@@ -645,6 +665,10 @@ a.skill-badge:hover {
   margin-top: 20px;
 }
 
+.about-links--websites {
+  margin-top: 10px;
+}
+
 .about-social-btn {
   display: inline-flex;
   align-items: center;
@@ -663,6 +687,17 @@ a.skill-badge:hover {
   border-color: var(--mint);
   color: var(--mint);
   background: rgba(45,191,138,0.06);
+}
+
+.about-links--websites .about-social-btn {
+  border-color: var(--mint);
+  color: var(--mint);
+  background: transparent;
+}
+
+.about-links--websites .about-social-btn:hover {
+  color: #fff;
+  background: var(--mint);
 }
 
 /* ============================================================
@@ -792,6 +827,11 @@ a.skill-badge:hover {
   object-fit: cover;
 }
 
+.project-hero-img.project-hero-img--contain img {
+  object-fit: contain;
+  background: #fff;
+}
+
 .project-header {
   max-width: 760px;
   margin-bottom: 48px;
@@ -817,6 +857,28 @@ a.skill-badge:hover {
   font-size: 0.85rem;
   color: var(--text-muted);
   margin-bottom: 20px;
+}
+
+.study-use-note {
+  margin: 4px 0 10px;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-style: italic;
+}
+
+.note-references {
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.note-references h2 {
+  margin-top: 0;
+}
+
+.note-references p {
+  color: var(--text-muted);
+  font-size: 0.88rem;
 }
 
 .project-meta span::before {
@@ -1080,7 +1142,7 @@ a.skill-badge:hover {
   color: #fff;
   font-size: 26px;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;

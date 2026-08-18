@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mechanics-Guided Member Grouping for Cross-Section Optimization with Heterogeneous Graphs Shaoyi Wang</title>
+  <link rel="stylesheet" href="../../../style.css" />
+</head>
+<body data-root="../../../">
+  <header class="site-header"></header>
+  <main>
+    <div class="container">
+      <div class="project-back"><a href="../../projects.html?filter=research">← Back to Research</a></div>
+
+      <div class="project-hero-img project-hero-img--contain">
+        <img src="../../../assets/images/projects/research/iass2026/graph.png" alt="A steel frame converted into a heterogeneous graph of connection and member nodes" />
+      </div>
+
+      <div class="project-header">
+        <div class="card-category">Research</div>
+        <h1 class="project-title">Mechanics-Guided Member Grouping for Cross-Section Optimization with Heterogeneous Graphs</h1>
+        <div class="project-meta">
+          <span>2026</span>
+        </div>
+        <div class="card-tags">
+          <span class="tag">Graph neural networks</span>
+          <span class="tag">Structural optimization</span>
+          <span class="tag">Computational design</span>
+        </div>
+
+        <div class="project-meta">
+          <p><strong>Authors</strong><br />Shaoyi Wang, Tao Sun, Ramon E. Weber, and Simon Schleicher</p>
+          <p><strong>Publication</strong><br />Proceedings of IASS-IWSS 2026, Turin, Italy</p>
+        </div>
+      </div>
+
+      <div class="project-body">
+        <h2>The design problem</h2>
+        <p>Optimizing every steel member independently can reduce weight, but it often creates too many different section sizes and a difficult search problem. The resulting design may be efficient on paper while becoming harder to fabricate, procure, coordinate, and converge computationally. This research asks whether structurally similar members can be identified first, then sized together as practical groups.</p>
+
+        <h2>Turning a structure into a graph</h2>
+        <p>The method represents a structural frame as a heterogeneous graph with two kinds of nodes: connection points and linear members. Each member carries geometric information and force responses from an initial finite-element simulation. Graph connections describe both physical incidence and adjacency between members. This lets the model understand not only where a member sits, but also how it participates in the load path.</p>
+
+        <figure class="project-figure project-figure-wide">
+          <img src="../../../assets/images/projects/research/iass2026/graph.png" alt="Construction of the heterogeneous structural graph" />
+          <figcaption>Connection points and structural members become different node types, while their physical relationships become graph edges.</figcaption>
+        </figure>
+
+        <h2>How the workflow works</h2>
+        <p>A Heterogeneous Graph Attention Network learns a compact representation for each member. Training brings members closer when they have similar mechanical responses or share structural connections. A Gaussian Mixture Model then clusters the learned representations separately for columns, girders, and beams. Finally, every member in a cluster shares a cross-section group during Karamba3D sizing.</p>
+
+        <figure class="project-figure project-figure-wide">
+          <img src="../../../assets/images/projects/research/iass2026/pipeline.jpg" alt="Pipeline from structural simulation to graph learning, clustering, and cross-section assignment" />
+          <figcaption>The pipeline combines simulation data, heterogeneous graph learning, unsupervised clustering, and grouped cross-section assignment.</figcaption>
+        </figure>
+
+        <h2>Case study</h2>
+        <p>The whole-building case study contains 2,395 steel members. The proposed method first reduces them to 120 learned groups, then assigns shared sections at the group level. The grouped solution converged within 15 iterations and used 21 cross-section types. By comparison, element-wise sizing produced 55 types and did not converge within the tested iteration limit.</p>
+        <p>The grouped design achieved a maximum displacement of 4.90 cm, lower than the original reference design, while keeping total steel weight comparable to that reference. More importantly, member utilization stayed within a safer and more controlled range. The result illustrates the main tradeoff: a small weight penalty relative to a fully individualized solution can yield a much simpler, safer, and more reliable section system.</p>
+
+        <figure class="project-figure project-figure-wide">
+          <img src="../../../assets/images/projects/research/iass2026/result_1.png" alt="Comparison of original, element-wise, and graph-grouped cross-section assignments" />
+          <figcaption>Comparison of the original design, element-wise automatic sizing, and assignment using graph-based member groups.</figcaption>
+        </figure>
+
+        <h2>Beyond one building</h2>
+        <p>Additional tests on a spatial truss and a gridshell suggest that the same idea can extend to different structural systems. The learned groups can recognize meaningful structural regions, such as a ring beam, while still allowing curved and irregular systems to be sized with a manageable set of sections.</p>
+
+        <figure class="project-figure project-figure-wide">
+          <img src="../../../assets/images/projects/research/iass2026/result_2.png" alt="Graph-based grouped sizing applied to a spatial truss and a gridshell" />
+          <figcaption>Element-wise and cluster-based assignments for a spatial truss and a gridshell.</figcaption>
+        </figure>
+
+        <h2>Conclusion</h2>
+        <p>The method introduces a group-aware layer between structural analysis and sizing, helping designers balance structural performance with constructability and computational stability. It is particularly useful during early-stage design, when clear and rationalized decisions can be more valuable than a narrowly optimized member-by-member result.</p>
+      </div>
+    </div>
+  </main>
+  <footer class="site-footer"><p>&copy; 2026 Shaoyi Wang</p></footer>
+
+  <script src="../../../scripts/components.js"></script>
+  <script src="../../../scripts/main.js?v=back-tabs-1"></script>
+</body>
+</html>
