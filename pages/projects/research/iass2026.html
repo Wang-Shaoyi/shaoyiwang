@@ -39,7 +39,7 @@
         <p>Optimizing every steel member independently can reduce weight, but it often creates too many different section sizes and a difficult search problem. The resulting design may be efficient on paper while becoming harder to fabricate, procure, coordinate, and converge computationally. This research asks whether structurally similar members can be identified first, then sized together as practical groups.</p>
 
         <h2>Turning a structure into a graph</h2>
-        <p>The method represents a structural frame as a heterogeneous graph with two kinds of nodes: connection points and linear members. Each member carries geometric information and force responses from an initial finite-element simulation. Graph connections describe both physical incidence and adjacency between members. This lets the model understand not only where a member sits, but also how it participates in the load path.</p>
+        <p>The method represents a structural frame as a heterogeneous graph with two kinds of nodes: connection points and linear members. Each member carries geometric information and force responses from an initial finite-element simulation. Graph connections describe both physical incidence and adjacency between members.</p>
 
         <figure class="project-figure project-figure-wide">
           <img src="../../../assets/images/projects/research/iass2026/graph.png" alt="Construction of the heterogeneous structural graph" />
@@ -56,7 +56,7 @@
 
         <h2>Case study</h2>
         <p>The whole-building case study contains 2,395 steel members. The proposed method first reduces them to 120 learned groups, then assigns shared sections at the group level. The grouped solution converged within 15 iterations and used 21 cross-section types. By comparison, element-wise sizing produced 55 types and did not converge within the tested iteration limit.</p>
-        <p>The grouped design achieved a maximum displacement of 4.90 cm, lower than the original reference design, while keeping total steel weight comparable to that reference. More importantly, member utilization stayed within a safer and more controlled range. The result illustrates the main tradeoff: a small weight penalty relative to a fully individualized solution can yield a much simpler, safer, and more reliable section system.</p>
+        <p>The grouped design achieved a maximum displacement of 4.90 cm, lower than the original reference design, while keeping total steel weight comparable to that reference. Member utilization stayed within a safer and more controlled range.</p>
 
         <figure class="project-figure project-figure-wide">
           <img src="../../../assets/images/projects/research/iass2026/result_1.png" alt="Comparison of original, element-wise, and graph-grouped cross-section assignments" />
@@ -72,7 +72,7 @@
         </figure>
 
         <h2>Conclusion</h2>
-        <p>The method introduces a group-aware layer between structural analysis and sizing, helping designers balance structural performance with constructability and computational stability. It is particularly useful during early-stage design, when clear and rationalized decisions can be more valuable than a narrowly optimized member-by-member result.</p>
+        <p>The method introduces a group-aware layer between structural analysis and sizing, helping designers balance structural performance with constructability and computational stability. This is useful during early-stage design, as clear and rationalized decisions for structural member selection can better shape next-step design.</p>
       </div>
     </div>
   </main>

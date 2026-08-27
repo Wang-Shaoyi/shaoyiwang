@@ -79,20 +79,20 @@ if (Test-Path $galleryDir) {
 $orderedCategories = @($categoryOrder | Where-Object { $byCategory.Contains($_) })
 $orderedCategories += @($byCategory.Keys | Where-Object { $orderedCategories -notcontains $_ } | Sort-Object { NaturalKey $_ })
 
-# Round-robin merge: one album from each category in turn, cycling until all are used.
+# End-aligned round-robin merge. Shorter categories align with the oldest end
+# of the longest category, so newer albums from a larger category stay together
+# at the front before alternating begins.
 $albums = @()
-$cursors = @{}
-$orderedCategories | ForEach-Object { $cursors[$_] = 0 }
-$remaining = $true
-while ($remaining) {
-    $remaining = $false
+$maxCount = 0
+foreach ($category in $orderedCategories) {
+    $maxCount = [Math]::Max($maxCount, $byCategory[$category].Count)
+}
+for ($row = 0; $row -lt $maxCount; $row++) {
     foreach ($category in $orderedCategories) {
         $list = $byCategory[$category]
-        $i = $cursors[$category]
-        if ($i -lt $list.Count) {
-            $albums += $list[$i]
-            $cursors[$category] = $i + 1
-            if ($i + 1 -lt $list.Count) { $remaining = $true }
+        $startOffset = $maxCount - $list.Count
+        if ($row -ge $startOffset) {
+            $albums += $list[$row - $startOffset]
         }
     }
 }
