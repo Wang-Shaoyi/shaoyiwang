@@ -233,10 +233,11 @@ ul { list-style: none; }
   font-weight: 800;
   margin-bottom: 10px;
   letter-spacing: -0.02em;
+  color: var(--orange);
 }
 
-.page-hero h1 .accent-mint  { color: var(--mint); }
-.page-hero h1 .accent-orange { color: var(--orange); }
+.page-hero h1 .accent-mint,
+.page-hero h1 .accent-orange { color: inherit; }
 
 .page-hero p {
   color: var(--text-muted);
