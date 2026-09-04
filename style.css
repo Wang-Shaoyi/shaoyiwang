@@ -9,12 +9,12 @@
   --surface2:     #eef0f3;
   --border:       #e2e6ea;
 
-  --mint:         #2dbf8a;
-  --mint-hover:   #26a87a;
-  --mint-soft:    #e6f9f2;
-  --orange:       #f97316;
-  --orange-hover: #e8650a;
-  --orange-soft:  #fff2e8;
+  --mint:         #37bf82;
+  --mint-hover:   #30a874;
+  --mint-soft:    #e8f9ee;
+  --orange:       #f97d16;
+  --orange-hover: #e86f0a;
+  --orange-soft:  #fff4e8;
 
   --text:         #1a1a2e;
   --text-muted:   #6b7280;
@@ -262,7 +262,7 @@ ul { list-style: none; }
 .btn:hover {
   background: var(--mint-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(45,191,138,0.3);
+  box-shadow: 0 4px 16px rgba(55,191,130,0.3);
 }
 
 .btn-orange {
@@ -271,7 +271,7 @@ ul { list-style: none; }
 
 .btn-orange:hover {
   background: var(--orange-hover);
-  box-shadow: 0 4px 16px rgba(249,115,22,0.3);
+  box-shadow: 0 4px 16px rgba(249,125,22,0.3);
 }
 
 .btn-outline {
@@ -390,7 +390,7 @@ button.tag {
   cursor: pointer;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
-button.tag:hover { background: rgba(45,191,138,0.12); color: var(--mint); border-color: rgba(45,191,138,0.4); }
+button.tag:hover { background: rgba(55,191,130,0.12); color: var(--mint); border-color: rgba(55,191,130,0.4); }
 
 .tag--active {
   background: var(--mint) !important;
@@ -405,8 +405,8 @@ button.tag:hover { background: rgba(45,191,138,0.12); color: var(--mint); border
   gap: 8px;
   padding: 8px 14px;
   margin-bottom: 12px;
-  background: rgba(45,191,138,0.08);
-  border: 1px solid rgba(45,191,138,0.25);
+  background: rgba(55,191,130,0.08);
+  border: 1px solid rgba(55,191,130,0.25);
   border-radius: var(--radius);
   font-size: 0.85rem;
   color: var(--text-muted);
@@ -647,7 +647,7 @@ a.code-item--link:hover .code-desc { color: var(--text); }
   padding: 5px 13px;
   border-radius: 4px;
   background: var(--mint-soft);
-  border: 1.5px solid rgba(45,191,138,0.25);
+  border: 1.5px solid rgba(55,191,130,0.25);
   color: var(--mint-hover);
   font-size: 0.82rem;
   font-weight: 500;
@@ -687,7 +687,7 @@ a.skill-badge:hover {
 .about-social-btn:hover {
   border-color: var(--mint);
   color: var(--mint);
-  background: rgba(45,191,138,0.06);
+  background: rgba(55,191,130,0.06);
 }
 
 .about-links--websites .about-social-btn {
