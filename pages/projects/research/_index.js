@@ -9,6 +9,18 @@
 
 const RESEARCH_PROJECTS = [
   {
+    id: 'res-4',
+    title: 'Inverse Design',
+    category: 'Research',
+    categorySlug: 'research',
+    featured: false,
+    description: 'An ongoing research project exploring inverse design for architectural systems.',
+    tags: ['Inverse design', 'Computational design'],
+    image: 'assets/images/place_holder.png',
+    page: 'pages/projects/research/inverse-design.html',
+    year: 2026
+  },
+  {
     id: 'res-3',
     title: 'Mechanics-Guided Member Grouping for Cross-Section Optimization with Heterogeneous Graphs',
     category: 'Research',

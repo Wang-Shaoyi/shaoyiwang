@@ -701,6 +701,16 @@ a.skill-badge:hover {
   background: var(--mint);
 }
 
+.about-links--websites .about-social-btn--orange {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+.about-links--websites .about-social-btn--orange:hover {
+  color: #fff;
+  background: var(--orange);
+}
+
 /* ============================================================
    FOOTER
    ============================================================ */
