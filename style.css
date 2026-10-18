@@ -9,15 +9,16 @@
   --surface2:     #eef0f3;
   --border:       #e2e6ea;
 
-  --mint:         #37bf82;
-  --mint-hover:   #30a874;
-  --mint-soft:    #e8f9ee;
-  --orange:       #f97d16;
-  --orange-hover: #e86f0a;
-  --orange-soft:  #fff4e8;
+  --mint:         #8fc63d;
+  --mint-hover:   #7daf33;
+  --mint-soft:    #f1f8e7;
+  --orange:       #f29f32;
+  --orange-hover: #dc8a23;
+  --orange-soft:  #fff5e6;
 
   --text:         #1a1a2e;
   --text-muted:   #6b7280;
+  --font-display: 'Segoe UI', system-ui, -apple-system, sans-serif;
 
   --radius:       4px;
   --nav-h:        60px;
@@ -82,6 +83,7 @@ ul { list-style: none; }
    HEADER / NAV
    ============================================================ */
 .site-header {
+  display: none;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -194,8 +196,8 @@ ul { list-style: none; }
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  padding: 0 0 28px;
-  margin-bottom: 8px;
+  padding: 0 0 16px;
+  margin-bottom: 0;
 }
 
 .filter-btn {
@@ -225,8 +227,11 @@ ul { list-style: none; }
    PAGE HERO (inner pages)
    ============================================================ */
 .page-hero {
-  padding: 56px 0 44px;
+  padding: 32px 0 12px;
 }
+
+.page-hero + .section,
+.page-hero + .section-tight { padding-top: 12px; }
 
 .page-hero h1 {
   font-size: clamp(1.8rem, 4.5vw, 2.8rem);
@@ -262,7 +267,7 @@ ul { list-style: none; }
 .btn:hover {
   background: var(--mint-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(55,191,130,0.3);
+  box-shadow: 0 4px 16px rgba(143,198,61,0.3);
 }
 
 .btn-orange {
@@ -390,7 +395,7 @@ button.tag {
   cursor: pointer;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
-button.tag:hover { background: rgba(55,191,130,0.12); color: var(--mint); border-color: rgba(55,191,130,0.4); }
+button.tag:hover { background: rgba(143,198,61,0.12); color: var(--mint); border-color: rgba(143,198,61,0.4); }
 
 .tag--active {
   background: var(--mint) !important;
@@ -405,8 +410,8 @@ button.tag:hover { background: rgba(55,191,130,0.12); color: var(--mint); border
   gap: 8px;
   padding: 8px 14px;
   margin-bottom: 12px;
-  background: rgba(55,191,130,0.08);
-  border: 1px solid rgba(55,191,130,0.25);
+  background: rgba(143,198,61,0.08);
+  border: 1px solid rgba(143,198,61,0.25);
   border-radius: var(--radius);
   font-size: 0.85rem;
   color: var(--text-muted);
@@ -434,7 +439,7 @@ button.tag:hover { background: rgba(55,191,130,0.12); color: var(--mint); border
 
 .pub-item {
   display: grid;
-  grid-template-columns: 56px 1fr;
+  grid-template-columns: 1fr;
   gap: 0 20px;
   padding: 20px 0;
   border-bottom: 1px solid var(--border);
@@ -545,7 +550,7 @@ a.code-item--link:hover .code-desc { color: var(--text); }
 /* ============================================================
    GALLERY GRID
    ============================================================ */
-.gallery-filter { margin-bottom: 32px; }
+.gallery-filter { margin-bottom: 0; }
 
 .gallery-grid {
   display: grid;
@@ -647,7 +652,7 @@ a.code-item--link:hover .code-desc { color: var(--text); }
   padding: 5px 13px;
   border-radius: 4px;
   background: var(--mint-soft);
-  border: 1.5px solid rgba(55,191,130,0.25);
+  border: 1.5px solid rgba(143,198,61,0.25);
   color: var(--mint-hover);
   font-size: 0.82rem;
   font-weight: 500;
@@ -662,6 +667,7 @@ a.skill-badge:hover {
 
 .about-links {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-top: 20px;
 }
@@ -687,7 +693,7 @@ a.skill-badge:hover {
 .about-social-btn:hover {
   border-color: var(--mint);
   color: var(--mint);
-  background: rgba(55,191,130,0.06);
+  background: rgba(143,198,61,0.06);
 }
 
 .about-links--websites .about-social-btn {
@@ -859,6 +865,13 @@ a.skill-badge:hover {
   line-height: 1.15;
   letter-spacing: -0.02em;
   margin-bottom: 14px;
+}
+
+.project-year {
+  margin: 0 0 16px;
+  color: var(--text-muted);
+  font-size: .85rem;
+  line-height: 1.5;
 }
 
 .project-meta {
@@ -1042,7 +1055,7 @@ a.skill-badge:hover {
    ============================================================ */
 .sticky-back {
   position: fixed;
-  top: var(--nav-h);
+  top: 0;
   left: 0;
   right: 0;
   z-index: 90;
@@ -1207,3 +1220,43 @@ a.skill-badge:hover {
   .code-item { flex-direction: column; gap: 6px; }
   .code-links { margin-left: 0; }
 }
+
+/* Display type matches the bold board navigation; prose keeps Open Sans. */
+body :is(
+  h1, h2, h3, h4, h5, h6,
+  .section-title, .home-section-label, .home-section-link,
+  .card-title, .card-category, .pub-title, .code-title,
+  .devlog-title, .gallery-caption-title,
+  .btn, .pub-link, .filter-btn, .tab-btn, .tag, .skill-badge,
+  .about-social-btn, .project-back a, .sticky-back a,
+  .board-tile-title, .board-sector-tab, .board-district-label,
+  .board-recent-item strong, .board-recent-item small
+) {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-synthesis: none;
+}
+
+/* The board provides its own BACK toolbar for embedded content. */
+body.board-embedded .project-back,
+body.board-embedded .sticky-back,
+body.board-embedded .site-footer { display: none; }
+body.board-embedded { overscroll-behavior: contain; font-size: 14px; line-height: 1.65; }
+body.board-embedded .project-intro { font-size: .88rem; line-height: 1.7; }
+body.board-embedded .project-body p,
+body.board-embedded .project-body ul,
+body.board-embedded .project-body ol { font-size: .85rem; line-height: 1.7; }
+body.board-embedded .project-body h2 { font-size: 1.1rem; }
+body.board-embedded .project-title { font-size: clamp(1.5rem, 5vw, 2.5rem); }
+body.board-embedded .page-hero { padding: 24px 0 10px; }
+body.board-embedded .section { padding-top: 28px; }
+body.board-embedded .page-hero + .section,
+body.board-embedded .page-hero + .section-tight { padding-top: 8px; }
+body.board-embedded #gallery-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+body.board-embedded #projects-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+body.board-embedded #projects-grid .card-thumb { aspect-ratio: 3 / 2; }
+body.board-embedded #projects-grid .card-body { padding: 12px; }
+body.board-embedded #projects-grid .card-title { font-size: .95rem; line-height: 1.25; }
+body.board-embedded #projects-grid .card-desc { font-size: .78rem; line-height: 1.5; }
+body.board-embedded #projects-grid .card-category { font-size: .65rem; }
+body.board-embedded #projects-grid .tag { font-size: .65rem; padding: 3px 6px; }

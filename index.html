@@ -3,28 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Research, design, making, and teaching by Shaoyi Wang." />
   <title>Shaoyi Wang</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="styles/portfolio-board.css" />
 </head>
-<body data-root="">
-  <header class="site-header"></header>
-  <main>
-    <div class="container">
-      <div class="home-section-bar">
-        <span class="home-section-label">Featured</span>
-        <a class="home-section-link" href="pages/projects.html">All projects →</a>
-      </div>
-      <div class="card-grid" id="home-grid"></div>
+<body class="portfolio-board-page" data-root="">
+  <a class="board-skip-link" href="#portfolio-board">Skip to portfolio board</a>
+  <a class="board-classic-link" href="classic/index.html">Back to Classic Mode</a>
+
+  <main class="board-page-main">
+    <div class="board-scroll" aria-label="Horizontally scroll the portfolio board on small screens">
+      <section class="portfolio-board" id="portfolio-board" aria-label="Shaoyi Wang portfolio board">
+        <div class="board-district-label board-district-label--research">Research</div>
+        <div class="board-district-label board-district-label--design">Design</div>
+        <div class="board-district-label board-district-label--development">Development</div>
+        <div class="board-grid" id="board-grid"></div>
+      </section>
     </div>
   </main>
-  <footer class="site-footer"><p>&copy; 2026 Shaoyi Wang</p></footer>
+  <footer class="board-page-footer">&copy; 2026 Shaoyi Wang</footer>
 
-  <script src="scripts/components.js"></script>
-  <!-- load all project categories so featured filter works -->
   <script src="pages/projects/research/_index.js"></script>
   <script src="pages/projects/design/_index.js"></script>
   <script src="pages/projects/making/_index.js"></script>
   <script src="pages/projects/app_game/_index.js"></script>
-  <script src="scripts/main.js"></script>
+  <script src="scripts/board-project-intros.js"></script>
+  <script src="scripts/gallery-data.js"></script>
+  <script src="scripts/portfolio-board.js"></script>
 </body>
 </html>

@@ -1,0 +1,7 @@
+.teaching-header { margin-top: 28px; }
+.teaching-header .card-category { color: #a985cf; }
+.teaching-meta { display: flex; flex-wrap: wrap; gap: 12px 32px; margin: 20px 0; }
+.teaching-meta p { margin: 0; }
+.teaching-source { font-size: .8rem; color: #777e86; line-height: 1.6; }
+.project-figure figcaption { line-height: 1.6; }
+.project-figure + .project-figure { margin-top: 28px; }

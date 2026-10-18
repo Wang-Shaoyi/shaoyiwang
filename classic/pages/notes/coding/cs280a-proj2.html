@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fun with Filters and Frequencies - Shaoyi Wang</title>
+  <link rel="stylesheet" href="../../../style.css"/>
+  <link rel="stylesheet" href="../../../../assets/lib/katex/katex.min.css" />
+  <style>
+    /* WP block rendering overrides */
+    .wp-post-body figure.wp-block-image { margin: 1.5rem 0; }
+    .wp-post-body figure.wp-block-image img { max-width: 100%; height: auto; border-radius: 4px; display: block; }
+    .wp-post-body .wp-block-gallery {
+      display: flex; flex-wrap: wrap; gap: 10px; margin: 1.5rem 0; list-style: none; padding: 0;
+    }
+    .wp-post-body .wp-block-gallery figure.wp-block-image { flex: 1 1 180px; margin: 0; }
+    .wp-post-body .wp-block-gallery figure.wp-block-image img { width: 100%; height: auto; border-radius: 4px; }
+    .wp-element-caption, .wp-block-image figcaption { font-size: .82rem; color: #888; text-align: center; margin-top: 5px; }
+    .wp-post-body h1.wp-block-heading { font-size: 1.55rem; font-weight: 700; margin: 2.2rem 0 .7rem; }
+    .wp-post-body h2.wp-block-heading,
+    .wp-block-jetpack-markdown h2 { font-size: 1.25rem; font-weight: 600; margin: 2rem 0 .6rem; border: none; padding: 0; }
+    .wp-post-body h3.wp-block-heading,
+    .wp-block-jetpack-markdown h3 { font-size: 1.1rem; font-weight: 600; margin: 1.6rem 0 .5rem; }
+    .wp-post-body h4.wp-block-heading,
+    .wp-block-jetpack-markdown h4 { font-size: 1rem; font-weight: 600; margin: 1.3rem 0 .4rem; color: #555; }
+    .wp-block-jetpack-markdown table { width: 100%; border-collapse: collapse; margin: 1.2rem 0; font-size: .9rem; }
+    .wp-block-jetpack-markdown td,
+    .wp-block-jetpack-markdown th { border: 1px solid var(--border); padding: .45rem .75rem; }
+    .wp-block-jetpack-markdown th { background: var(--surface); font-weight: 600; }
+    img.latex { vertical-align: middle; height: 1.15em; display: inline; }
+    .wp-post-body pre, .wp-block-code { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1rem 1.2rem; overflow-x: auto; font-size: .88rem; margin: 1.2rem 0; }
+    .wp-post-body code { background: var(--surface); border-radius: 3px; padding: .1em .35em; font-size: .88em; }
+    .wp-post-body pre code { background: none; padding: 0; }
+    .wp-block-separator { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+    .sharedaddy, .sd-block-ui, #jp-post-flair { display: none !important; }
+  </style>
+</head>
+<body data-root="../../../">
+  <div class="classic-mode-bar"><a class="classic-mode-link" href="../../../../index.html">Back to Monopoly Mode</a></div>
+  <header class="site-header"></header>
+  <main><div class="container">
+    <div class="project-back"><a href="../../notes.html#tab-coding">&#8592; Back to Notes</a></div>
+    <div class="project-header" style="margin-top:28px">
+      <div class="card-category">Coding Notes</div>
+      <h1 class="project-title">Fun with Filters and Frequencies</h1>
+      <div class="card-tags">
+        <span class="tag">CS280A Computer Vision</span>
+      </div>
+    </div>
+    <div class="project-body wp-post-body">
+<h1 class="wp-block-heading has-text-align-left"><strong>Part 1: Fun with Filters</strong></h1>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading">Part 1.1: Convolutions from Scratch</h2>
+
+
+
+<h4 class="wp-block-heading has-text-align-center">Convolutions with loops</h4>
+
+
+
+<p class="wp-block-paragraph">I selected a photo of mine and performed convolution from scratch with 4 for loops, 2 for loops, and <code><a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.convolve2d.html" data-type="link"><mark style="background-color:rgba(0, 0, 0, 0);color:#cf2e2e" class="has-inline-color">scipy.signal.convolve2d</mark></a></code>. The convolutions are performed with a 9 x 9 box filter and the customized padding uses <code>np.pad()</code> function. The box filter is:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>K_{9 \times 9}(i,j) = \frac{1}{81}, \quad i,j \in {1,\dots,9}<br>$$</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-4 is-cropped wp-block-gallery-2 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img fetchpriority="high" decoding="async" width="417" height="409" src="../../../../assets/images/notes/coding/cs280a/1-0.png" alt="" class="wp-image-645"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" width="417" height="409" src="../../../../assets/images/notes/coding/cs280a/1-1.png" alt="" class="wp-image-647"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" width="417" height="409" src="../../../../assets/images/notes/coding/cs280a/1-2.png" alt="" class="wp-image-646"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="417" height="409" src="../../../../assets/images/notes/coding/cs280a/1-3.png" alt="" class="wp-image-648"></figure>
+</figure>
+
+
+
+<h5 class="wp-block-heading has-text-align-center">Convolution with 4 for loops</h5>
+
+
+
+<p class="wp-block-paragraph">The function <code><mark style="background-color:rgba(0, 0, 0, 0);color:#cf2e2e" class="has-inline-color">convolution_4_for_loops(image, filter)</mark></code> here carries out 2D convolution with four nested loops. The outer two loops slide across the image, while the inner two loops move over every element of the filter. At each position, it multiplies the filter values with the corresponding image patch pixel by pixel, sums them up, and assigns the result to the output. The edges are padded with zeros (<code><mark style="background-color:rgba(0, 0, 0, 0);color:#cf2e2e" class="has-inline-color">'mode = constant'</mark></code> in <code><mark style="background-color:rgba(0, 0, 0, 0);color:#cf2e2e" class="has-inline-color">np.pad</mark></code>).</p>
+
+
+<div class="wp-block-code">
+	<div class="cm-editor">
+		<div class="cm-scroller">
+			
+<pre><code><div class="cm-line">def convolution_4_for_loops(image, filter):</div><div class="cm-line">    image_h, image_w = image.shape</div><div class="cm-line">    filter_h, filter_w = filter.shape</div><div class="cm-line"></div><div class="cm-line">    # padding size</div><div class="cm-line">    pad_h = filter_h // 2</div><div class="cm-line">    pad_w = filter_w // 2</div><div class="cm-line">    </div><div class="cm-line">    # intiailize result image</div><div class="cm-line">    result_image = np.zeros((image_h - pad_h * 2, image_w - pad_w * 2)) </div><div class="cm-line"></div><div class="cm-line">    # for loops for image</div><div class="cm-line">    for h in range(0,image_h - pad_h * 2 ):</div><div class="cm-line">        for w in range(0, image_w - 2* pad_w):</div><div class="cm-line">            current_pixel = 0</div><div class="cm-line"></div><div class="cm-line">            # for loops for filter</div><div class="cm-line">            for i in range(filter_h):</div><div class="cm-line">                for j in range(filter_w):</div><div class="cm-line">                    current_pixel += image[h - pad_h + i, w - pad_w + j] * filter[i,j] # update value pixel by pixel</div><div class="cm-line">    </div><div class="cm-line">            result_image[h, w] = current_pixel</div><div class="cm-line">    </div><div class="cm-line">    padded_a_edge = np.pad(result_image, pad_width=((pad_h, pad_h), (pad_w, pad_w)), mode='constant')</div><div class="cm-line"></div><div class="cm-line">    return padded_a_edge</div></code></pre>
+		</div>
+	</div>
+</div>
+
+
+<h5 class="wp-block-heading has-text-align-center">Convolution with 2 for loops</h5>
+
+
+
+<p class="wp-block-paragraph">The function <code>convolution_2_for_loops(image, filter)</code> performs 2D convolution using two loops. For each pixel, it extracts a patch the size of the filter, multiplies it element-wise with the filter, sums the result, and stores it in the output (<code><mark style="background-color:rgba(0, 0, 0, 0);color:#cf2e2e" class="has-inline-color">'mode = constant'</mark></code> in <code><mark style="background-color:rgba(0, 0, 0, 0);color:#cf2e2e" class="has-inline-color">np.pad</mark></code>). </p>
+
+
+<div class="wp-block-code">
+	<div class="cm-editor">
+		<div class="cm-scroller">
+			
+<pre><code><div class="cm-line">def convolution_2_for_loops(image, filter):</div><div class="cm-line">    image_h, image_w = image.shape</div><div class="cm-line">    filter_h, filter_w = filter.shape</div><div class="cm-line">    </div><div class="cm-line">    # padding size</div><div class="cm-line">    pad_h = filter_h // 2</div><div class="cm-line">    pad_w = filter_w // 2</div><div class="cm-line"></div><div class="cm-line">    # intiailize result image</div><div class="cm-line">    result_image = np.zeros((image_h - pad_h * 2, image_w - pad_w * 2)) </div><div class="cm-line"></div><div class="cm-line">    # for loops for image</div><div class="cm-line">    for h in range(0,image_h - pad_h * 2 ):</div><div class="cm-line">        for w in range(0, image_w - 2* pad_w):</div><div class="cm-line"></div><div class="cm-line">            current_image = image[ h : h+2*pad_h+1, w : w+2*pad_w+1]</div><div class="cm-line">            result_image[h, w] = np.sum(current_image * filter)</div><div class="cm-line"></div><div class="cm-line">    padded_a_edge = np.pad(result_image, pad_width=((pad_h, pad_h), (pad_w, pad_w)), mode='constant')</div><div class="cm-line"></div><div class="cm-line">    return padded_a_edge</div></code></pre>
+		</div>
+	</div>
+</div>
+
+
+<h5 class="wp-block-heading has-text-align-center">Comparing the methods</h5>
+
+
+
+<p class="wp-block-paragraph">Comparing the two implementations, the <strong>four-loop version</strong> explicitly iterates over both the image and the filter, which makes it the slowest (&asymp;7.9 s). The <strong>two-loop version</strong> is more efficient since it replaces the inner loops with NumPy operations, reducing the runtime to about 1.1 s. In contrast, the built-in <code><strong>scipy.signal.convolve2d</strong></code> is the fastest (&asymp;0.7 s), as it is highly optimized. The results from all three methods are essentially the same, except for minor differences at the boundaries due to different padding treatments.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><strong>.</strong></p>
+
+
+
+<h3 class="wp-block-heading">1.1.2 Convolution with finite difference operators</h3>
+
+
+
+<p class="wp-block-paragraph">To compute <strong>partial derivatives</strong> in x and y directions, I used the following kernels:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>D_x = [\,1 \; 0 \; -1\,], \quad D_y = \begin{bmatrix} 1 \ 0 \ -1 \end{bmatrix} <br>$$</p>
+
+
+
+<p class="wp-block-paragraph">These are discrete approximations of image gradients:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br> \frac{\partial I}{\partial x} \approx I * D_x, \quad \frac{\partial I}{\partial y} \approx I * D_y <br>$$</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-1 is-cropped wp-block-gallery-3 is-layout-flex wp-block-gallery-is-layout-flex" style="border-style:none;border-width:0px;border-radius:0px">
+<figure class="wp-block-image size-full" style="margin-right:200px;margin-left:200px"><img loading="lazy" decoding="async" width="794" height="367" src="../../../../assets/images/notes/coding/cs280a/1-4-1.png" alt="" class="wp-image-664"></figure>
+
+
+
+<figure class="wp-block-image size-full" style="margin-right:200px;margin-left:200px"><img loading="lazy" decoding="async" width="794" height="367" src="../../../../assets/images/notes/coding/cs280a/1-5.png" alt="" class="wp-image-651"></figure>
+
+
+
+<figure class="wp-block-image size-full" style="margin-right:200px;margin-left:200px"><img loading="lazy" decoding="async" width="794" height="369" src="../../../../assets/images/notes/coding/cs280a/1-6.png" alt="" class="wp-image-650"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">I computed the partial derivatives in both x and y directions using all three methods mentioned in the previous section. The results are similar, but there are still differences in runtime performance.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading">Part 1.2: Finite Difference Operator</h2>
+
+
+
+<p class="wp-block-paragraph">Using the same&nbsp;finite difference operators&nbsp;\(D_x\) and \(D_y\) as the previous section, I performed partial derivatives of the cameraman image.</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-2 wp-block-gallery-4 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-full"><img loading="lazy" decoding="async" width="1182" height="383" src="../../../../assets/images/notes/coding/cs280a/1-7-1.png" alt="" class="wp-image-672"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">Then I combine them to form the <strong>gradient magnitude image</strong>. This image highlights edges regardless of their direction. The formula is:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>G(x,y) = \sqrt{\left(\frac{\partial I}{\partial x}(x,y)\right)^2 + \left(\frac{\partial I}{\partial y}(x,y)\right)^2} <br>$$</p>
+
+
+
+<p class="wp-block-paragraph">where \(G(x,y)\) represents the gradient magnitude at pixel \((x,y)\).</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-5 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="388" height="409" src="../../../../assets/images/notes/coding/cs280a/1-8.png" alt="" class="wp-image-693"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="388" height="409" src="../../../../assets/images/notes/coding/cs280a/1-9.png" alt="" class="wp-image-692"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">To convert the gradient magnitude image into a <strong>binary edge image</strong>, I used a threshold \(T = 0.25 \). This threshold is selected because it keeps most edges of the human and the camera, including some background information (to keep the edges, some noise is also kept). Pixels with gradient magnitude larger than \(T\) are marked as edges (1), otherwise suppressed (0):</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>B(x,y) = \{<br>\begin{array}{ll}<br>1, &amp; \text{if } G(x,y) &gt; T \\<br>0, &amp; \text{otherwise}<br>\end{array}<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">As we can see the in the result binarized image, the operation successfully extracted the edges, but the result is a bit noisy.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading">Part 1.3: Derivative of Gaussian (DoG) Filter</h2>
+
+
+
+<p class="wp-block-paragraph">Since the raw difference operator \(D_x\), \(D_y\) is sensitive to noise, here are two methods to solve the issue. The first method uses a Gaussian filter to blur the image and then applies finite difference operators (the two left images), the second method takes the derivative of the Gaussian filter then uses the filter to convolve the image (the two right images). The threshold for the binary edge images are still set as \(T = 0.25 \). The details of the process is as follows:</p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="247" src="../../../../assets/images/notes/coding/cs280a/1-11.png" alt="" class="wp-image-691"></figure>
+
+
+
+<h4 class="wp-block-heading has-text-align-center">Gaussian blurring + Finite difference operators</h4>
+
+
+
+<p class="wp-block-paragraph">The 2D Gaussian kernel is created from the outer product of a 1D Gaussian vector with its transpose. I then convolved the original image \(I\) with \(G\) to blur the image, and apply the finite difference filters:</p>
+
+
+
+<p class="wp-block-paragraph">$$ I_G = I * G, \quad<br>\frac{\partial I}{\partial x} \approx I_G * D_x, \quad<br>\frac{\partial I}{\partial y} \approx I_G * D_y<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">Then I calculated the gradient magnitude and binary edge image with the same method as Part 1.2.</p>
+
+
+
+<h4 class="wp-block-heading has-text-align-center">Derivative of gaussian (DoG) filters</h4>
+
+
+
+<p class="wp-block-paragraph">Instead of performing two convolutions, here combines them into a single convolution by first computing the derivative of Gaussian filters:</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-6 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large" style="margin-right:300px;margin-left:300px"><img loading="lazy" decoding="async" width="571" height="299" src="../../../../assets/images/notes/coding/cs280a/1-13.png" alt="" class="wp-image-716"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">$$<br>DoG_x = G * D_x, \quad DoG_y = G * D_y<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">Then, I convolved the image directly with these DoG filters:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\frac{\partial I}{\partial x} \approx I * DoG_x, \quad<br>\frac{\partial I}{\partial y} \approx I * DoG_y<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">Finally, I calculated the gradient magnitude and binary edge image with the same method as Part 1.2.</p>
+
+
+
+<h4 class="wp-block-heading has-text-align-center">Observations</h4>
+
+
+
+<p class="wp-block-paragraph">Both methods (Gaussian blurring + Finite difference operators&#8203; &amp; DoG filters) produce very similar edge maps. The main difference is that DoG combines the two steps into one convolution, making it more efficient. Moreover, the Gaussian smoothing helps reduce noise, so the edge maps are much more cleaner than when using the raw difference operator alone!</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading">Bells &amp; Whistles</h2>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-7 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-full" style="margin-right:var(--wp--preset--spacing--80);margin-left:var(--wp--preset--spacing--80)"><img loading="lazy" decoding="async" width="794" height="393" src="../../../../assets/images/notes/coding/cs280a/1-14.png" alt="" class="wp-image-702"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">In this part, I computed both the gradient magnitude and the gradient orientation of the image. The partial derivatives in the x and y directions were obtained using the finite difference filters, and the orientation at each pixel was calculated with the arctangent function:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\theta(x,y) = \arctan2\left( \frac{\partial I}{\partial y}, \frac{\partial I}{\partial x} \right)<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">Visualizing all gradient orientations is a mess (left)! To better display the orientations, I mapped the results into the HSV color space with:</p>
+
+
+
+<ul class="wp-block-list">
+<li><strong>Hue (H):</strong> encodes the gradient orientation (mapped from [&minus;&pi;,&pi;] to [0,1])</li>
+
+
+
+<li><strong>Saturation (S): </strong>set to 1 for full color</li>
+
+
+
+<li><strong>Value (V):</strong> set to the normalized gradient magnitude</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph">The result is shown as the right image. This way, edges in different directions appear in different colors, and the brightness reflects the edge strength.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h1 class="wp-block-heading has-text-align-left"><strong>Part 2: Fun with Frequencies!</strong></h1>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading">Part 2.1: Image &ldquo;Sharpening&rdquo;</h2>
+
+
+
+<h4 class="wp-block-heading has-text-align-center">Process</h4>
+
+
+
+<p class="wp-block-paragraph">The unsharp masking technique sharpens an image by enhancing its high-frequency components.</p>
+
+
+
+<p class="wp-block-paragraph">The first step is to perform low-pass filtering (Gaussian smoothing). Here I use kernel size = 7 and sigma = 1.</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>I_{\text{smooth}} = I * G<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">Then subtract the blurred image from the original to isolate details:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>I_{\text{details}} = I &ndash; I_{\text{smooth}}<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">Next, add details back with scaling and use a factor &alpha; to control the sharping strength. </p>
+
+
+
+<p class="wp-block-paragraph">$$<br>I_{\text{sharp}} = I + \alpha \cdot I_{\text{details}}<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">I also tried to operate the images with a single convolution kernel:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>H = (1+\alpha)\delta &ndash; \alpha G<br>$$</p>
+
+
+<div class="wp-block-code">
+	<div class="cm-editor">
+		<div class="cm-scroller">
+			
+<pre><code><div class="cm-line">def unsharp_mask_single_conv(image, alpha=1):</div><div class="cm-line">    # create gaussian filter</div><div class="cm-line">    g_1d = cv2.getGaussianKernel(7, 1)</div><div class="cm-line">    g_2d = np.outer(g_1d, g_1d.T)</div><div class="cm-line">    g_2d = g_2d / g_2d.sum()  # normalize</div><div class="cm-line"></div><div class="cm-line">    # create identity kernel delta</div><div class="cm-line">    delta = np.zeros_like(g_2d)</div><div class="cm-line">    center = (g_2d.shape[0]//2, g_2d.shape[1]//2)</div><div class="cm-line">    delta[center] = 1.0</div><div class="cm-line"></div><div class="cm-line">    # build unsharp mask filter kernel</div><div class="cm-line">    single_kernel = (1 + alpha) * delta - alpha * g_2d</div><div class="cm-line"></div><div class="cm-line">    # apply filter to each channel</div><div class="cm-line">    sharpened = np.zeros_like(image)</div><div class="cm-line">    for i in range(3):</div><div class="cm-line">        sharpened[:,:,i] = scipy.signal.convolve2d(image[:,:,i], single_kernel, mode='same')</div><div class="cm-line"></div><div class="cm-line">    return np.clip(sharpened, 0, 1)</div></code></pre>
+		</div>
+	</div>
+</div>
+
+
+<h4 class="wp-block-heading has-text-align-center">Results</h4>
+
+
+
+<p class="wp-block-paragraph">Here I operated the function on the Taj image and a concrete house image. I compare the results of &alpha; = 1 and &alpha; = 3.</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-1 is-cropped wp-block-gallery-8 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="246" src="../../../../assets/images/notes/coding/cs280a/2-1.png" alt="" class="wp-image-726"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="171" src="../../../../assets/images/notes/coding/cs280a/2-2.png" alt="" class="wp-image-725"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">When sharpening with &alpha;=1, the edges become clearer and the overall sharpness improves without introducing strong artifacts. When increasing to &alpha;=3, the images look even sharper, but halos around strong edges, especially along high-contrast boundaries. This demonstrates that higher values of &alpha; enhance edge sharpness but can also lead to over-sharpening effects.</p>
+
+
+
+<h4 class="wp-block-heading has-text-align-center">Evaluation</h4>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="310" src="../../../../assets/images/notes/coding/cs280a/2-3.png" alt="" class="wp-image-729"></figure>
+
+
+
+<p class="wp-block-paragraph">I used my photo to show the effect of blurring and then resharpening the image. After sharpening, the image becomes clearer than the blurred version, but it still does not fully recover the fine details of the original. This is because blurring removes high-frequency information, and sharpening can only enhance what remains rather than restore the lost details.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading">Part 2.2: Hybrid Images</h2>
+
+
+
+<h4 class="wp-block-heading has-text-align-center">Process with frequency analysis</h4>
+
+
+
+<p class="wp-block-paragraph">I tried to create hybrid image of my parents to see how they look together! Here are the aligned version of the original high frequency image (my mom) and the original low frequency image (my dad). The right image is the final result of the hybrid operation.</p>
+
+
+
+<figure class="wp-block-image size-full"><img loading="lazy" decoding="async" width="950" height="331" src="../../../../assets/images/notes/coding/cs280a/2-5.png" alt="" class="wp-image-731"></figure>
+
+
+
+<p class="wp-block-paragraph">One image was processed with a <strong>high-pass filter</strong> (original minus Gaussian-blurred version) to retain the high-frequency details, while the other image was processed with a <strong>low-pass filter</strong> (2D Gaussian) to retain only the low-frequency components. These two filtered results were then added together to form the hybrid image.</p>
+
+
+
+<figure class="wp-block-image size-full"><img loading="lazy" decoding="async" width="950" height="331" src="../../../../assets/images/notes/coding/cs280a/2-7.png" alt="" class="wp-image-733"></figure>
+
+
+
+<p class="wp-block-paragraph">For the Gaussian smoothing, I used a kernel size of 35&times;35. The high-pass filter used a standard deviation of <mark style="background-color:rgba(0, 0, 0, 0);color:#cf2e2e" class="has-inline-color">&sigma;=8</mark>, while the low-pass filter was generated with <mark style="background-color:rgba(0, 0, 0, 0);color:#cf2e2e" class="has-inline-color">&sigma;=5</mark>. These cutoff frequencies were chosen experimentally to balance between clarity of the low-frequency structure and visibility of the high-frequency details.</p>
+
+
+
+<p class="wp-block-paragraph">The following image illustrates the entire pipeline: the Fourier transforms of the two input images, their filtered versions, and the final hybrid image in the frequency domain. The <strong>high-pass filtered image</strong> highlights the periphery of the spectrum (high frequencies, which looks very bright), while the <strong>low-pass filtered image</strong> retains only the middle of the spectrum (low frequencies, which looks dark at the corners). When combined, the hybrid image contains both types of information: when viewed up close, the high-frequency content dominates, and when viewed from farther away, the low-frequency structure becomes more apparent.</p>
+
+
+
+<figure class="wp-block-image size-full"><img loading="lazy" decoding="async" width="990" height="765" src="../../../../assets/images/notes/coding/cs280a/2-8.png" alt="" class="wp-image-736"></figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h4 class="wp-block-heading has-text-align-center">Other results</h4>
+
+
+
+<p class="wp-block-paragraph">Here are all the results that I created with the same pipeline (I also applied the automatic cropping function that I wrote in project 1 to cut off the edges with aligning!):</p>
+
+
+
+<p class="wp-block-paragraph"><strong>Derek and cat Nutmeg:</strong></p>
+
+
+
+<figure class="wp-block-image size-full"><img loading="lazy" decoding="async" width="950" height="410" src="../../../../assets/images/notes/coding/cs280a/2-4-1.png" alt="" class="wp-image-743"></figure>
+
+
+
+<p class="wp-block-paragraph"><strong>Me smiling and not smiling:</strong></p>
+
+
+
+<figure class="wp-block-image size-full"><img loading="lazy" decoding="async" width="938" height="425" src="../../../../assets/images/notes/coding/cs280a/2-6-1.png" alt="" class="wp-image-744"></figure>
+
+
+
+<p class="wp-block-paragraph"><strong>Me and a game character:</strong></p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-9 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="950" height="244" src="../../../../assets/images/notes/coding/cs280a/2-9.png" alt="" class="wp-image-746"></figure>
+</figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading">Bells &amp; Whistles</h2>
+
+
+
+<p class="wp-block-paragraph">To explore the effect of color in hybrid images, I compared four different cases: using grayscale for both inputs, adding color only to the low-frequency image, adding color only to the high-frequency image, and keeping both inputs in color.</p>
+
+
+
+<p class="wp-block-paragraph">From the results, adding color to the low-frequency image makes the hybrid look clearer and closer to a normal picture, especially when viewed from far away. Adding color only to the high-frequency image does not change much, since edges and fine details do not benefit a lot from color. When both images are in color, the result looks almost the same as when only the low-frequency one is in color. It works better to have the color in low frequencies!</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-4 is-cropped wp-block-gallery-10 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="292" height="409" src="../../../../assets/images/notes/coding/cs280a/2-10-1.png" alt="" class="wp-image-748"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="292" height="409" src="../../../../assets/images/notes/coding/cs280a/2-10-2.png" alt="" class="wp-image-750"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="292" height="409" src="../../../../assets/images/notes/coding/cs280a/2-10-3.png" alt="" class="wp-image-751"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="292" height="409" src="../../../../assets/images/notes/coding/cs280a/2-10-4.png" alt="" class="wp-image-749"></figure>
+</figure>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-4 is-cropped wp-block-gallery-11 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="367" height="409" src="../../../../assets/images/notes/coding/cs280a/2-11-1-1.png" alt="" class="wp-image-769"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="367" height="409" src="../../../../assets/images/notes/coding/cs280a/2-11-2-1.png" alt="" class="wp-image-770"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="367" height="409" src="../../../../assets/images/notes/coding/cs280a/2-11-3-1.png" alt="" class="wp-image-771"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="367" height="409" src="../../../../assets/images/notes/coding/cs280a/2-11-4-1.png" alt="" class="wp-image-772"></figure>
+</figure>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-4 is-cropped wp-block-gallery-12 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="271" height="409" src="../../../../assets/images/notes/coding/cs280a/2-12-1.png" alt="" class="wp-image-758"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="271" height="409" src="../../../../assets/images/notes/coding/cs280a/2-12-2.png" alt="" class="wp-image-759"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="271" height="409" src="../../../../assets/images/notes/coding/cs280a/2-12-3.png" alt="" class="wp-image-760"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="271" height="409" src="../../../../assets/images/notes/coding/cs280a/2-12-4-1.png" alt="" class="wp-image-761"></figure>
+</figure>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-4 is-cropped wp-block-gallery-13 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="515" height="409" src="../../../../assets/images/notes/coding/cs280a/2-13-1.png" alt="" class="wp-image-762"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="515" height="409" src="../../../../assets/images/notes/coding/cs280a/2-13-2.png" alt="" class="wp-image-763"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="515" height="409" src="../../../../assets/images/notes/coding/cs280a/2-13-3.png" alt="" class="wp-image-764"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="515" height="409" src="../../../../assets/images/notes/coding/cs280a/2-13-4.png" alt="" class="wp-image-765"></figure>
+</figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading">Part 2.3: Gaussian and Laplacian Stacks</h2>
+
+
+
+<p class="wp-block-paragraph">To implement Gaussian and Laplacian stacks, I first wrote a function to build the Gaussian stack. The stack starts with the original grayscale image. For each higher level i, I applied a Gaussian filter with increasing standard deviation and filter size:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\sigma = 2i, n = 6\sigma + 1<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">This way, all levels in the stack have the same image dimensions, and the results can be stored in a single 3D matrix.</p>
+
+
+
+<p class="wp-block-paragraph">The Laplacian stack was then obtained by subtracting consecutive levels of the Gaussian stack. For each level i, the Laplacian image is defined as the difference between the Gaussian at level i and level i+1. The final level of the Laplacian stack stores the lowest frequency image, i.e., the last Gaussian image.</p>
+
+
+
+<p class="wp-block-paragraph">The Laplacian stack can be expressed as:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>L_i = G_i &ndash; G_{i+1}, \quad i = 0, 1, \dots, N-2,  \quad L_{N-1} = G_{N-1}<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">Below are the results of running the Laplacian stacks on the apple and orange images with level of 4:</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-1 is-cropped wp-block-gallery-14 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="200" src="../../../../assets/images/notes/coding/cs280a/2-14.png" alt="" class="wp-image-775"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="200" src="../../../../assets/images/notes/coding/cs280a/2-16.png" alt="" class="wp-image-776"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">Here shows a colored version of the same operation (normalized for better visualization):</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-1 is-cropped wp-block-gallery-15 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="200" src="../../../../assets/images/notes/coding/cs280a/2-15.png" alt="" class="wp-image-777"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="200" src="../../../../assets/images/notes/coding/cs280a/2-17.png" alt="" class="wp-image-778"></figure>
+</figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading">Part 2.4: Multiresolution Blending (a.k.a. the oraple!)</h2>
+
+
+
+<h4 class="wp-block-heading has-text-align-center">Gray Blending</h4>
+
+
+
+<p class="wp-block-paragraph">I first applied the same Gaussian filters that were used for the apple and orange images to blur the mask.</p>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="200" src="../../../../assets/images/notes/coding/cs280a/2-18-1.png" alt="" class="wp-image-783"></figure>
+
+
+
+<p class="wp-block-paragraph">By applying this blurred mask to each level of the Laplacian stack, I got the following results, which combine the two inputs into a smooth blend (the &ldquo;Oraple&rdquo;).</p>
+
+
+
+<figure class="wp-block-image aligncenter size-large is-resized"><img loading="lazy" decoding="async" width="510" height="1024" src="../../../../assets/images/notes/coding/cs280a/2-18.png" alt="" class="wp-image-781" style="width:536px;height:auto"></figure>
+
+
+
+<p class="wp-block-paragraph">Here are some other blends in grayscale: a bread dog and crystal ball galaxy. They both used irregular masks to get the result!</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-16 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="510" height="1024" src="../../../../assets/images/notes/coding/cs280a/2-20-1.png" alt="" class="wp-image-786"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="510" height="1024" src="../../../../assets/images/notes/coding/cs280a/2-21-1.png" alt="" class="wp-image-785"></figure>
+</figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading">Bells &amp; Whistles</h2>
+
+
+
+<h4 class="wp-block-heading has-text-align-center">Colored Blending</h4>
+
+
+
+<p class="wp-block-paragraph">Here are the result blending images:</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-17 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="526" height="520" src="../../../../assets/images/notes/coding/cs280a/2-24.png" alt="" class="wp-image-791"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="520" height="522" src="../../../../assets/images/notes/coding/cs280a/2-22.png" alt="" class="wp-image-790"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="522" height="518" src="../../../../assets/images/notes/coding/cs280a/2-23.png" alt="" class="wp-image-789"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">Here are the general process:</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-18 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="510" height="1024" src="../../../../assets/images/notes/coding/cs280a/2-19.png" alt="" class="wp-image-793"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="510" height="1024" src="../../../../assets/images/notes/coding/cs280a/2-20.png" alt="" class="wp-image-794"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="510" height="1024" src="../../../../assets/images/notes/coding/cs280a/2-21.png" alt="" class="wp-image-792"></figure>
+</figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><em>END</em></p>
+    </div>
+  </div></main>
+  <footer class="site-footer"><p>&copy; 2026 Shaoyi Wang</p></footer>
+  <script src="../../../../assets/lib/katex/katex.min.js"></script>
+  <script src="../../../../assets/lib/katex/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Display math broken by <br> elements — KaTeX can't match delimiters
+      // across DOM element boundaries, so normalise before rendering.
+      document.querySelectorAll('p').forEach(function(el) {
+        var html = el.innerHTML;
+        if (html.indexOf('$$') === -1 && html.indexOf('\\[') === -1) return;
+        // \[...\] containing <br> — strip the breaks
+        html = html.replace(/\\\[([\s\S]*?)\\\]/g, function(_, c) {
+          return '\\[' + c.replace(/<br\s*\/?>/g, '\n') + '\\]';
+        });
+        // $$...$$ containing <br> — strip breaks and switch to \[...\]
+        html = html.replace(/\$\$([\s\S]*?)\$\$/g, function(_, c) {
+          return c.indexOf('<') === -1
+            ? '$$' + c + '$$'
+            : '\\[' + c.replace(/<br\s*\/?>/g, '\n') + '\\]';
+        });
+        el.innerHTML = html;
+      });
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "\\[", right: "\\]", display: true},
+          {left: "\\(", right: "\\)", display: false},
+          {left: "$",  right: "$",   display: false}
+        ]
+      });
+    });
+  </script>
+
+  <script src="../../../scripts/components.js"></script>
+  <script src="../../../scripts/main.js?v=back-tabs-1"></script>
+</body></html>

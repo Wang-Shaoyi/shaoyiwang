@@ -30,7 +30,7 @@ const DESIGN_PROJECTS = [
     tags: ['Structure design'],
     image: 'assets/images/projects/design/23_vertiport/cable-net_vertiport.png',
     page: 'pages/projects/design/vertiport.html',
-    year: 2025
+    year: 2023
   },
 
   {
@@ -51,7 +51,7 @@ const DESIGN_PROJECTS = [
     title: 'Silk Tapestry Pavilion',
     category: 'Design',
     categorySlug: 'design',
-    featured: true,
+    featured: false,
     description: 'Internship Work at Song Und Partners Atelier.',
     tags: ['Architecture', 'Computational design'],
     image: 'assets/images/projects/design/22_kesi/kesi.png',
@@ -72,18 +72,6 @@ const DESIGN_PROJECTS = [
     year: 2021
   },
 
-  {
-    id: 'des-6',
-    title: 'Bamboo Garden: After Review',
-    category: 'Design',
-    categorySlug: 'design',
-    featured: false,
-    description: 'The 1st BFU International Garden-Making Festival',
-    tags: ['Landscape architecture'],
-    image: 'assets/images/projects/design/18_bamboo/bamboo.jpeg',
-    page: 'pages/projects/design/bamboo.html',
-    year: 2018
-  },
   {
     id: 'des-7',
     title: 'White-Noise Apartment',

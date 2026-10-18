@@ -8,6 +8,27 @@ const _root = (document.body.getAttribute('data-root') !== null)
   ? document.body.getAttribute('data-root')
   : (_inPages ? '../' : '');
 
+// Keep full static pages usable inside the board's central reading window.
+const _embeddedInBoard = window.parent !== window && new URLSearchParams(location.search).get('embed') === 'board';
+if (_embeddedInBoard) {
+  document.body.classList.add('board-embedded');
+  window.parent.postMessage({ type: 'portfolio-board-page-ready', title: document.title }, '*');
+  document.addEventListener('click', (event) => {
+    const link = event.target.closest('a[href]');
+    if (!link || link.target === '_blank') return;
+    const destination = new URL(link.href, location.href);
+    if (destination.href === new URL(_root + 'index.html', location.href).href || destination.pathname.endsWith('/board-preview.html')) {
+      event.preventDefault();
+      window.parent.postMessage({ type: 'portfolio-board-back' }, '*');
+    } else if (destination.origin === location.origin && /\.html$/.test(destination.pathname)) {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      destination.searchParams.set('embed', 'board');
+      window.parent.postMessage({ type: 'portfolio-board-navigate', href: destination.href, title: link.textContent.trim() }, '*');
+    }
+  });
+}
+
 // Keep visible copy free of em-dash separators across all pages.
 const _textWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
 while (_textWalker.nextNode()) {
@@ -17,44 +38,15 @@ while (_textWalker.nextNode()) {
   }
 }
 
-// Project Back buttons preserve the page from which the visitor opened a card.
-// Explicit category/tab links remain the fallback for direct visits.
+// Every content page returns to the portfolio board.
 document.querySelectorAll('.project-back a').forEach((a) => {
-  const originalHref = a.getAttribute('href') || '';
-  const sourceParams = new URLSearchParams(window.location.search);
-  const sourcePage = sourceParams.get('from');
-
-  if (sourcePage === 'home') {
-    a.href = _root + 'index.html';
-    a.textContent = '← Back to Home';
-  } else if (sourcePage === 'projects') {
-    const sourceFilter = sourceParams.get('filter');
-    a.href = _root + 'pages/projects.html' +
-      (sourceFilter && sourceFilter !== 'all' ? `?filter=${encodeURIComponent(sourceFilter)}` : '');
-    a.textContent = '← Back to Projects';
-  } else if (!originalHref || originalHref.startsWith('javascript:')) {
-    if (window.location.pathname.includes('/pages/notes/coding/')) {
-      a.href = _root + 'pages/notes.html#tab-coding';
-    } else if (window.location.pathname.includes('/pages/notes/math/')) {
-      a.href = _root + 'pages/notes.html#tab-math';
-    } else if (window.location.pathname.includes('/pages/notes/game_develop/')) {
-      a.href = _root + 'pages/notes.html#tab-game_develop';
-    } else if (window.location.pathname.includes('/pages/projects/research/')) {
-      a.href = _root + 'pages/projects.html?filter=research';
-    } else if (window.location.pathname.includes('/pages/projects/design/')) {
-      a.href = _root + 'pages/projects.html?filter=design';
-    } else if (window.location.pathname.includes('/pages/projects/making/')) {
-      a.href = _root + 'pages/projects.html?filter=making';
-    } else if (window.location.pathname.includes('/pages/projects/app_game/')) {
-      a.href = _root + 'pages/projects.html?filter=app-game';
-    } else {
-      a.href = _root + 'index.html';
-    }
-  }
+  a.href = _root + 'index.html';
+  a.textContent = 'BACK';
 });
 
 // Sticky back bar — appears when .project-back scrolls out of view
 (function initStickyBack() {
+  if (_embeddedInBoard) return;
   const backEl = document.querySelector('.project-back');
   if (!backEl) return;
   const srcLink = backEl.querySelector('a');
@@ -82,7 +74,7 @@ const PROJECTS = [
   ...(typeof DESIGN_PROJECTS   !== 'undefined'  ? DESIGN_PROJECTS    : []),
   ...(typeof MAKING_PROJECTS   !== 'undefined'  ? MAKING_PROJECTS    : []),
   ...(typeof APP_GAME_PROJECTS !== 'undefined'  ? APP_GAME_PROJECTS  : []),
-].sort((a, b) => (b.year || 0) - (a.year || 0));
+].filter((project) => project.published !== false).sort((a, b) => (b.year || 0) - (a.year || 0));
 
 // ============================================================
 // CARD RENDERER  — clicking navigates to the project page
@@ -102,7 +94,6 @@ function renderCards(projects, containerId) {
       <div class="card-body">
         <div class="card-eyebrow">
           <div class="card-category">${p.category}</div>
-          <div class="card-year">${p.year}</div>
         </div>
         <h3 class="card-title">${p.title}</h3>
         <p class="card-desc">${p.description}</p>
@@ -115,13 +106,19 @@ function renderCards(projects, containerId) {
     const go = () => {
       const source = containerId === 'home-grid' ? 'home' : 'projects';
       const destinationParams = new URLSearchParams({ from: source });
+      if (_embeddedInBoard) destinationParams.set('embed', 'board');
       if (source === 'projects') {
         destinationParams.set(
           'filter',
           new URLSearchParams(window.location.search).get('filter') || 'all'
         );
       }
-      window.location.href = `${_root + project.page}?${destinationParams.toString()}`;
+      const destination = new URL(`${_root + project.page}?${destinationParams.toString()}`, location.href);
+      if (_embeddedInBoard) {
+        window.parent.postMessage({ type: 'portfolio-board-navigate', href: destination.href, title: project.title }, '*');
+      } else {
+        window.location.href = destination.href;
+      }
     };
     card.addEventListener('click', go);
     card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') go(); });
@@ -197,7 +194,6 @@ function renderPublications(containerId) {
   if (!el) return;
   el.innerHTML = PUBLICATIONS.map((p) => `
     <div class="pub-item">
-      <div class="pub-year">${p.year}</div>
       <div>
         <div class="pub-title">${p.title}</div>
         <div class="pub-meta">${p.citation}${p.doi
@@ -405,6 +401,14 @@ if (document.getElementById('gallery-grid')) {
   }
 
   function openAlbum(a) {
+    if (_embeddedInBoard) {
+      window.parent.postMessage({
+        type: 'portfolio-board-lightbox',
+        images: a.images.map((src, index) => ({ src: new URL(_root + src, location.href).href, alt: a.title || '', caption: a.images.length > 1 ? `${index + 1} / ${a.images.length}` : '' })),
+        index: 0,
+      }, '*');
+      return;
+    }
     album = a;
     photoIdx = 0;
     showPhoto();
@@ -491,6 +495,15 @@ if (document.getElementById('gallery-grid')) {
   }
 
   function open(idx, hero) {
+    if (_embeddedInBoard) {
+      const images = hero ? [heroImg] : navImgs;
+      window.parent.postMessage({
+        type: 'portfolio-board-lightbox',
+        images: images.map((img) => ({ src: img.src, alt: img.alt || '', caption: img.closest('figure')?.querySelector('figcaption')?.textContent.trim() || '' })),
+        index: hero ? 0 : idx,
+      }, '*');
+      return;
+    }
     isHero     = !!hero;
     currentIdx = isHero ? 0 : idx;
     setImage(isHero ? heroImg : navImgs[currentIdx]);
@@ -517,10 +530,10 @@ if (document.getElementById('gallery-grid')) {
 
   // Wire up images
   navImgs.forEach((img, i) => {
-    img.addEventListener('click', (e) => { e.stopPropagation(); open(i, false); });
+    img.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); open(i, false); });
   });
   if (heroImg) {
-    heroImg.addEventListener('click', (e) => { e.stopPropagation(); open(0, true); });
+    heroImg.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); open(0, true); });
   }
 
   // Controls

@@ -31,5 +31,17 @@ const MAKING_PROJECTS = [
     page: 'pages/projects/making/lamp.html',
     year: 2022
   },
+  {
+    id: 'des-6',
+    title: 'Bamboo Garden: After Review',
+    category: 'Making',
+    categorySlug: 'making',
+    featured: false,
+    description: 'The 1st BFU International Garden-Making Festival',
+    tags: ['Landscape architecture'],
+    image: 'assets/images/projects/design/18_bamboo/bamboo.jpeg',
+    page: 'pages/projects/design/bamboo.html',
+    year: 2018
+  },
   // ── Add new making projects below ────────────────────────
 ];

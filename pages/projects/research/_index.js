@@ -10,6 +10,7 @@
 const RESEARCH_PROJECTS = [
   {
     id: 'res-4',
+    published: false,
     title: 'Inverse Design',
     category: 'Research',
     categorySlug: 'research',
@@ -37,7 +38,7 @@ const RESEARCH_PROJECTS = [
     title: 'Conformal 3D printing on bending-active formwork',
     category: 'Research',
     categorySlug: 'research',
-    featured: true,
+    featured: false,
     description: 'Structural implications of toolpath strategies and interlayer timing.',
     tags: ['Robotic fabrication'],
     image: 'assets/images/projects/research/iass2025/shell_toolpath.png',

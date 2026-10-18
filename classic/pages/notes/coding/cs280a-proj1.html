@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Colorizing the Prokudin-Gorskii Photo Collection - Shaoyi Wang</title>
+  <link rel="stylesheet" href="../../../style.css"/>
+  <link rel="stylesheet" href="../../../../assets/lib/katex/katex.min.css" />
+  <style>
+    /* WP block rendering overrides */
+    .wp-post-body figure.wp-block-image { margin: 1.5rem 0; }
+    .wp-post-body figure.wp-block-image img { max-width: 100%; height: auto; border-radius: 4px; display: block; }
+    .wp-post-body .wp-block-gallery {
+      display: flex; flex-wrap: wrap; gap: 10px; margin: 1.5rem 0; list-style: none; padding: 0;
+    }
+    .wp-post-body .wp-block-gallery figure.wp-block-image { flex: 1 1 180px; margin: 0; }
+    .wp-post-body .wp-block-gallery figure.wp-block-image img { width: 100%; height: auto; border-radius: 4px; }
+    .wp-element-caption, .wp-block-image figcaption { font-size: .82rem; color: #888; text-align: center; margin-top: 5px; }
+    .wp-post-body h1.wp-block-heading { font-size: 1.55rem; font-weight: 700; margin: 2.2rem 0 .7rem; }
+    .wp-post-body h2.wp-block-heading,
+    .wp-block-jetpack-markdown h2 { font-size: 1.25rem; font-weight: 600; margin: 2rem 0 .6rem; border: none; padding: 0; }
+    .wp-post-body h3.wp-block-heading,
+    .wp-block-jetpack-markdown h3 { font-size: 1.1rem; font-weight: 600; margin: 1.6rem 0 .5rem; }
+    .wp-post-body h4.wp-block-heading,
+    .wp-block-jetpack-markdown h4 { font-size: 1rem; font-weight: 600; margin: 1.3rem 0 .4rem; color: #555; }
+    .wp-block-jetpack-markdown table { width: 100%; border-collapse: collapse; margin: 1.2rem 0; font-size: .9rem; }
+    .wp-block-jetpack-markdown td,
+    .wp-block-jetpack-markdown th { border: 1px solid var(--border); padding: .45rem .75rem; }
+    .wp-block-jetpack-markdown th { background: var(--surface); font-weight: 600; }
+    img.latex { vertical-align: middle; height: 1.15em; display: inline; }
+    .wp-post-body pre, .wp-block-code { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1rem 1.2rem; overflow-x: auto; font-size: .88rem; margin: 1.2rem 0; }
+    .wp-post-body code { background: var(--surface); border-radius: 3px; padding: .1em .35em; font-size: .88em; }
+    .wp-post-body pre code { background: none; padding: 0; }
+    .wp-block-separator { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+    .sharedaddy, .sd-block-ui, #jp-post-flair { display: none !important; }
+  </style>
+</head>
+<body data-root="../../../">
+  <div class="classic-mode-bar"><a class="classic-mode-link" href="../../../../index.html">Back to Monopoly Mode</a></div>
+  <header class="site-header"></header>
+  <main><div class="container">
+    <div class="project-back"><a href="../../notes.html#tab-coding">&#8592; Back to Notes</a></div>
+    <div class="project-header" style="margin-top:28px">
+      <div class="card-category">Coding Notes</div>
+      <h1 class="project-title">Colorizing the Prokudin-Gorskii Photo Collection</h1>
+      <div class="card-tags">
+        <span class="tag">CS280A Computer Vision</span>
+      </div>
+    </div>
+    <div class="project-body wp-post-body">
+<p class="wp-block-paragraph"><em>Note: click on the images to enlarge.</em></p>
+
+
+
+<div class="wp-block-jetpack-markdown"><h2>Introduction</h2>
+<p>Sergei Mikhailovich Prokudin-Gorskii (1863&ndash;1944) was a pioneer of early color photography. As early as 1907, he believed that color photos would become the future of documentation.</p>
+<p>He developed a technique to capture three separate black-and-white images of the same scene, each through a different color filter: <strong>red</strong>, <strong>green</strong>, and <strong>blue</strong>. When these images are aligned and combined, they form a full-color photo.</p>
+<p>The glass plates were digitized and released online, giving us the chance to reconstruct full-color images using modern image processing techniques.</p>
+<h2>Single-scale implementation</h2>
+</div>
+
+
+
+<p class="wp-block-paragraph"></p>
+
+
+
+<p class="wp-block-paragraph">In the single-scale alignment approach, the aim is to align the red and green channels to the blue channel by minimizing the L2 distance between them. For each possible (x, y) displacement within a specified search range (from -20 to 20 pixels), I used <code>np.roll()</code> to shift the red channel and green channel images and then calculated the alignment quality using the <strong>L2 distance</strong> between the shifted image and the reference image (the blue channel image). To avoid misleading contributions from the image borders (which become invalid after shifting), I crop out the boundary pixels affected by the shift before computing the score.</p>
+
+
+
+<p class="wp-block-paragraph">The L2 score is calculated as follows:</p>
+
+
+
+<p class="wp-block-paragraph">\[<br>L_2 = \sum_{(i,j) \in \text{Overlap}} \left( I_1(i, j) &ndash; I_2(i, j) \right)^2<br>\]</p>
+
+
+
+<p class="wp-block-paragraph">Here, \(I_1\) is the reference image (the blue channel), and \(I_2\) is the shifted image (green or red channel).</p>
+
+
+
+<p class="wp-block-paragraph">During the search, I keep track of the best (i.e., lowest) L2 score, and update the optimal shift values accordingly. Finally, the function returns the best-shifted version of the red and green channel images with the x and y offsets and the final score.</p>
+
+
+
+<p class="wp-block-paragraph">Once the best shifts are found, I aligned the green and red channels accordingly and stack them with the blue channel to create the final color image.</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-3 is-cropped wp-block-gallery-2 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-full"><img fetchpriority="high" decoding="async" width="390" height="341" src="../../../../assets/images/notes/coding/cs280a/2_aligned_cathedral.jpg" alt="" class="wp-image-307"><figcaption class="wp-element-caption">cathedral</figcaption></figure>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" width="396" height="341" src="../../../../assets/images/notes/coding/cs280a/2_aligned_tobolsk.jpg" alt="" class="wp-image-310"><figcaption class="wp-element-caption">tobolsk</figcaption></figure>
+
+
+
+<figure class="wp-block-image size-full"><img decoding="async" width="401" height="341" src="../../../../assets/images/notes/coding/cs280a/2_aligned_mosque.jpg" alt="" class="wp-image-311"><figcaption class="wp-element-caption">mosque</figcaption></figure>
+
+
+
+<figure class="wp-block-image size-full"><img loading="lazy" decoding="async" width="391" height="341" src="../../../../assets/images/notes/coding/cs280a/2_aligned_monastery.jpg" alt="" class="wp-image-306" title="image"><figcaption class="wp-element-caption">monastery</figcaption></figure>
+
+
+
+<figure class="wp-block-image size-full"><img loading="lazy" decoding="async" width="399" height="341" src="../../../../assets/images/notes/coding/cs280a/2_aligned_Clothing.jpg" alt="" class="wp-image-312"><figcaption class="wp-element-caption">clothing</figcaption></figure>
+</figure>
+
+
+
+<div class="wp-block-jetpack-markdown"><p>Here we see all the small-scale images works well (including the three given images and two selected images). The moving vectors of each image channel are listed as follows:</p>
+</div>
+
+
+
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td class="has-text-align-center" data-align="center"><strong>Image name</strong></td><td class="has-text-align-center" data-align="center"><strong>green channel vector</strong></td><td class="has-text-align-center" data-align="center"><strong>red channel vector</strong></td></tr><tr><td class="has-text-align-center" data-align="center">cathedral.jpg</td><td class="has-text-align-center" data-align="center">[2, 5]</td><td class="has-text-align-center" data-align="center">[3, 12]</td></tr><tr><td class="has-text-align-center" data-align="center">tobolsk.jpg</td><td class="has-text-align-center" data-align="center">[3, 3]</td><td class="has-text-align-center" data-align="center">[3, 6]</td></tr><tr><td class="has-text-align-center" data-align="center">mosque.jpg</td><td class="has-text-align-center" data-align="center">[4, 5]</td><td class="has-text-align-center" data-align="center">[7, 13]</td></tr><tr><td class="has-text-align-center" data-align="center">monastery.jpg</td><td class="has-text-align-center" data-align="center">[2, -3]</td><td class="has-text-align-center" data-align="center">[2, 3]</td></tr><tr><td class="has-text-align-center" data-align="center">clothing.jpg</td><td class="has-text-align-center" data-align="center">[-2, 2]</td><td class="has-text-align-center" data-align="center">[-4, 12]</td></tr></tbody></table></figure>
+
+
+
+<hr class="wp-block-separator has-alpha-channel-opacity">
+
+
+
+<div class="wp-block-jetpack-markdown"><h2>Multiscale pyramid version for large images</h2>
+</div>
+
+
+
+<p class="wp-block-paragraph">To speed up the alignment for high-resolution images, I implemented a <strong>pyramid-based coarse-to-fine alignment</strong> strategy. Instead of aligning on the full-resolution images right away (which is computationally expensive), I gradually align the images from low resolution to high resolution. </p>
+
+
+
+<p class="wp-block-paragraph">Here&rsquo;s how it works:</p>
+
+
+
+<h5 class="wp-block-heading">Image pyramid construction</h5>
+
+
+
+<p class="wp-block-paragraph">For each level of the pyramid, I downsample all input images with a factor \(f\) to get lower-resolution images:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>I_{\text{low}} = I[::f,\ ::f]<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">where&nbsp;\(f = 2^t\)&nbsp;represents the downsampling factor at level&nbsp;\(t\). This reduces the image size by a factor of&nbsp;\(f\), making alignment significantly faster at coarser levels. To determine the initial level of the image pyramid, I set the value of \(t\) dynamically based on the input image size, where \(h\) is the height of the image:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>t = \left\lfloor \log_{10}(h) \right\rfloor<br>$$</p>
+
+
+
+<h5 class="wp-block-heading">Recursive Refinement</h5>
+
+
+
+<p class="wp-block-paragraph">Starting from the coarsest level of the pyramid, I align the downsampled red and green channels to the blue channel. At each level, the estimated shift is scaled up and passed as the initial guess for the next finer level, allowing the alignment to gradually refine as the resolution increases. The shift is calculated as follows:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\text{shift}_{\text{next}} = \text{shift}_{\text{prev}} + \Delta \text{shift} \times f<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">where  \( \text{shift}_{\text{next}} \) is the updated cumulative shift to be used as the initial guess for the next (finer) level, \(\text{shift}_{\text{prev}}\) is the cumulative shift from the previous (coarser) level, and \(\Delta \text{shift} \) is the local optimal shift found at the current level. This helps ensure the final alignment is both globally accurate and locally refined.</p>
+
+
+
+<h5 class="wp-block-heading">Dynamic search window</h5>
+
+
+
+<p class="wp-block-paragraph">For the coarsest levels (where \(f > 3\)), I use a larger search window of &plusmn;15 pixels. For finer levels, I reduce the search range to &plusmn;5 pixels, since we are already quite close to the optimal shift.</p>
+
+
+
+<h5 class="wp-block-heading">Final Output</h5>
+
+
+
+<p class="wp-block-paragraph">After refining over all pyramid levels, the function returns the best aligned version of the red and green channel image along with the total x and y shift values relative to the red channel image.</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-3 is-cropped wp-block-gallery-3 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="390" height="341" src="../../../../assets/images/notes/coding/cs280a/7_edge_feature_cathedral.jpg" alt="" class="wp-image-535"><figcaption class="wp-element-caption">cathedral</figcaption></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="396" height="341" src="../../../../assets/images/notes/coding/cs280a/7_edge_feature_tobolsk.jpg" alt="" class="wp-image-537"><figcaption class="wp-element-caption">tobolsk</figcaption></figure>
+
+
+
+<figure class="wp-block-image size-full"><img loading="lazy" decoding="async" width="391" height="341" src="../../../../assets/images/notes/coding/cs280a/2_aligned_monastery-2.jpg" alt="" class="wp-image-532"><figcaption class="wp-element-caption">monastery</figcaption></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="902" src="../../../../assets/images/notes/coding/cs280a/2_aligned_church.jpg" alt="" class="wp-image-338"><figcaption class="wp-element-caption">church</figcaption></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="890" src="../../../../assets/images/notes/coding/cs280a/2_aligned_italil.jpg" alt="" class="wp-image-342"><figcaption class="wp-element-caption">italil</figcaption></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="895" src="../../../../assets/images/notes/coding/cs280a/2_aligned_harvesters.jpg" alt="" class="wp-image-347"><figcaption class="wp-element-caption">harvesters</figcaption></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="888" src="../../../../assets/images/notes/coding/cs280a/2_aligned_icon.jpg" alt="" class="wp-image-348"><figcaption class="wp-element-caption">icon</figcaption></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="872" src="../../../../assets/images/notes/coding/cs280a/2_aligned_siren.jpg" alt="" class="wp-image-356"><figcaption class="wp-element-caption">siren</figcaption></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="885" src="../../../../assets/images/notes/coding/cs280a/2_aligned_three_generations.jpg" alt="" class="wp-image-351"><figcaption class="wp-element-caption">three_generations</figcaption></figure>
+</figure>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-3 is-cropped wp-block-gallery-4 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="879" src="../../../../assets/images/notes/coding/cs280a/2_aligned_lugano.jpg" alt="" class="wp-image-354"><figcaption class="wp-element-caption">lugano</figcaption></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="880" src="../../../../assets/images/notes/coding/cs280a/2_aligned_melons.jpg" alt="" class="wp-image-358"><figcaption class="wp-element-caption">melons</figcaption></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="874" src="../../../../assets/images/notes/coding/cs280a/2_aligned_self_portrait.jpg" alt="" class="wp-image-360"><figcaption class="wp-element-caption">self_portrait</figcaption></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="897" src="../../../../assets/images/notes/coding/cs280a/2_aligned_lastochikino.jpg" alt="" class="wp-image-341"><figcaption class="wp-element-caption">lastochikino</figcaption></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="888" src="../../../../assets/images/notes/coding/cs280a/2_aligned_emir.jpg" alt="" class="wp-image-346"><figcaption class="wp-element-caption">emir</figcaption></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">The moving vectors of each image channel are listed as follows:</p>
+
+
+
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td class="has-text-align-center" data-align="center"><strong>Image name</strong></td><td class="has-text-align-center" data-align="center"><strong>green channel vector</strong></td><td class="has-text-align-center" data-align="center"><strong>red channel vector</strong></td></tr><tr><td class="has-text-align-center" data-align="center">cathedral.jpg</td><td class="has-text-align-center" data-align="center">[2, 5]</td><td class="has-text-align-center" data-align="center">[3, 12]</td></tr><tr><td class="has-text-align-center" data-align="center">tobolsk.jpg</td><td class="has-text-align-center" data-align="center">[3, 3]</td><td class="has-text-align-center" data-align="center">[3, 6]</td></tr><tr><td class="has-text-align-center" data-align="center">monastery.jpg</td><td class="has-text-align-center" data-align="center">[2, -3]</td><td class="has-text-align-center" data-align="center">[2, 3]</td></tr><tr><td class="has-text-align-center" data-align="center">church.tif</td><td class="has-text-align-center" data-align="center">[4, 26]</td><td class="has-text-align-center" data-align="center">[-4, 59]</td></tr><tr><td class="has-text-align-center" data-align="center">italil.tif</td><td class="has-text-align-center" data-align="center">[21, 38]</td><td class="has-text-align-center" data-align="center">[35, 76]</td></tr><tr><td class="has-text-align-center" data-align="center">harvesters.tif</td><td class="has-text-align-center" data-align="center">[17, 60]</td><td class="has-text-align-center" data-align="center">[13, 124]</td></tr><tr><td class="has-text-align-center" data-align="center">icon.tif</td><td class="has-text-align-center" data-align="center">[17, 41]</td><td class="has-text-align-center" data-align="center">[23, 90]</td></tr><tr><td class="has-text-align-center" data-align="center">siren.tif</td><td class="has-text-align-center" data-align="center">[-6, 50]</td><td class="has-text-align-center" data-align="center">[-25, 96]</td></tr><tr><td class="has-text-align-center" data-align="center">three_generations.tif</td><td class="has-text-align-center" data-align="center">[14, 53]</td><td class="has-text-align-center" data-align="center">[11, 112]</td></tr><tr><td class="has-text-align-center" data-align="center">lugano.tif</td><td class="has-text-align-center" data-align="center">[-16, 41]</td><td class="has-text-align-center" data-align="center">[-29, 93]</td></tr><tr><td class="has-text-align-center" data-align="center">melons.tif</td><td class="has-text-align-center" data-align="center">[11, 82]</td><td class="has-text-align-center" data-align="center">[14, 179]</td></tr><tr><td class="has-text-align-center" data-align="center">self_portrait.tif</td><td class="has-text-align-center" data-align="center">[29, 79]</td><td class="has-text-align-center" data-align="center">[37, 176]</td></tr><tr><td class="has-text-align-center" data-align="center">lastochikino.tif</td><td class="has-text-align-center" data-align="center">[-2, -3]</td><td class="has-text-align-center" data-align="center">[-9, 75]</td></tr><tr><td class="has-text-align-center" data-align="center">emir.tif</td><td class="has-text-align-center" data-align="center">[24, 49]</td><td class="has-text-align-center" data-align="center">[61, 103]</td></tr><tr><td class="has-text-align-center" data-align="center">cathedral.jpg</td><td class="has-text-align-center" data-align="center">[2, 5]</td><td class="has-text-align-center" data-align="center">[3, 12]</td></tr><tr><td class="has-text-align-center" data-align="center">tobolsk.jpg</td><td class="has-text-align-center" data-align="center">[3, 3]</td><td class="has-text-align-center" data-align="center">[3, 6]</td></tr><tr><td class="has-text-align-center" data-align="center">monastery.jpg</td><td class="has-text-align-center" data-align="center">[2, -3]</td><td class="has-text-align-center" data-align="center">[2, 3]</td></tr></tbody></table></figure>
+
+
+
+<p class="wp-block-paragraph">This approach significantly reduces computation time compared to exhaustive full-resolution alignment, and works well for most images. Note that for the smaller jpg images, this approach has the same result as the single-scale approach. However, <strong>alignment for <code>emir.tif</code> is not as accurate</strong> compared to others, probably because the red channel contains strong contrast differences (especially in the clothing and shadows) that are not present in the green or blue channels. As a result, intensity-based alignment metrics like L2 distance or NCC may fail to find the perceptually correct alignment.</p>
+
+
+
+<p class="wp-block-paragraph">In this cases, using edge-based features or image gradients can help, which will be presented in the bells &amp; whistles session.</p>
+
+
+
+<hr class="wp-block-separator has-alpha-channel-opacity">
+
+
+
+<div class="wp-block-jetpack-markdown"><h2>Bells &amp; Whistles</h2>
+<h3>1. Automatic cropping</h3>
+</div>
+
+
+
+<p class="wp-block-paragraph">To remove the low-information borders, I compute the local standard deviation along each row and column of the image. Regions with low variation are likely to be background and are cropped out.</p>
+
+
+
+<p class="wp-block-paragraph">Let the image be \(I\), and define the row-wise and column-wise standard deviation vectors as:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\sigma_{\text{row}}(i) = \text{std}(I[i, :]), \sigma_{\text{col}}(j) = \text{std}(I[:, j])<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">To smooth out noise, I apply a moving average filter (with window size \(w = 0.05 * Width_{image}\)):</p>
+
+
+
+<p class="wp-block-paragraph">$$\tilde{\sigma}(i) = \frac{1}{w} \sum_{k = i &ndash; \lfloor w/2 \rfloor}^{i + \lfloor w/2 \rfloor} \sigma(k)$$</p>
+
+
+
+<p class="wp-block-paragraph">I then compute a central reference value (average within the middle half), and crop all rows/columns whose smoothed std is significantly below or above that, using a dynamic threshold based on (I reached the factor of 0.45 after some finetuning):</p>
+
+
+
+<p class="wp-block-paragraph">$$\tau = 0.45 \cdot \min\left( \text{std}(I),\ \max(I) &ndash; \min(I) \right)$$</p>
+
+
+
+<p class="wp-block-paragraph">Only rows and columns where</p>
+
+
+
+<p class="wp-block-paragraph">$$ \left| \tilde{\sigma}(i) &ndash; \mu \right| &lt; \tau$$ </p>
+
+
+
+<p class="wp-block-paragraph">are kept, where \(\mu\) is the mean std in the central region (from 1/4 to 3/4 of the image).</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-5 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="888" src="../../../../assets/images/notes/coding/cs280a/2_aligned_icon-1.jpg" alt="" class="wp-image-376"><figcaption class="wp-element-caption">before</figcaption></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="848" src="../../../../assets/images/notes/coding/cs280a/3_croped_icon.jpg" alt="" class="wp-image-382"><figcaption class="wp-element-caption">after</figcaption></figure>
+</figure>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-4 is-cropped wp-block-gallery-6 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="888" src="../../../../assets/images/notes/coding/cs280a/2_aligned_emir-1.jpg" alt="" class="wp-image-374"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="926" src="../../../../assets/images/notes/coding/cs280a/3_croped_emir.jpg" alt="" class="wp-image-380"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="890" src="../../../../assets/images/notes/coding/cs280a/2_aligned_italil-1.jpg" alt="" class="wp-image-377"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="958" src="../../../../assets/images/notes/coding/cs280a/3_croped_italil.jpg" alt="" class="wp-image-383"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="902" src="../../../../assets/images/notes/coding/cs280a/2_aligned_church-1.jpg" alt="" class="wp-image-373"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="918" src="../../../../assets/images/notes/coding/cs280a/3_croped_church.jpg" alt="" class="wp-image-379"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="880" src="../../../../assets/images/notes/coding/cs280a/2_aligned_melons-2.jpg" alt="" class="wp-image-400"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="918" src="../../../../assets/images/notes/coding/cs280a/3_croped_melons.jpg" alt="" class="wp-image-396"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="879" src="../../../../assets/images/notes/coding/cs280a/2_aligned_lugano-2.jpg" alt="" class="wp-image-398"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="911" src="../../../../assets/images/notes/coding/cs280a/3_croped_lugano.jpg" alt="" class="wp-image-394"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="895" src="../../../../assets/images/notes/coding/cs280a/2_aligned_harvesters-1.jpg" alt="" class="wp-image-375"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="912" src="../../../../assets/images/notes/coding/cs280a/3_croped_harvesters.jpg" alt="" class="wp-image-381"></figure>
+</figure>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-4 is-cropped wp-block-gallery-7 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="390" height="341" src="../../../../assets/images/notes/coding/cs280a/2_aligned_cathedral-1.jpg" alt="" class="wp-image-362"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="353" height="319" src="../../../../assets/images/notes/coding/cs280a/3_croped_cathedral.jpg" alt="" class="wp-image-367"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="399" height="341" src="../../../../assets/images/notes/coding/cs280a/2_aligned_Clothing-1.jpg" alt="" class="wp-image-363"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="335" height="313" src="../../../../assets/images/notes/coding/cs280a/3_croped_Clothing.jpg" alt="" class="wp-image-371"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="391" height="341" src="../../../../assets/images/notes/coding/cs280a/2_aligned_monastery-1.jpg" alt="" class="wp-image-365"></figure>
+
+
+
+<figure class="wp-block-image size-full"><img loading="lazy" decoding="async" width="362" height="322" src="../../../../assets/images/notes/coding/cs280a/3_croped_monastery.jpg" alt="" class="wp-image-368"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="396" height="341" src="../../../../assets/images/notes/coding/cs280a/2_aligned_tobolsk-1.jpg" alt="" class="wp-image-366"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="356" height="320" src="../../../../assets/images/notes/coding/cs280a/3_croped_tobolsk.jpg" alt="" class="wp-image-370"></figure>
+</figure>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-4 is-cropped wp-block-gallery-8 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="897" src="../../../../assets/images/notes/coding/cs280a/2_aligned_lastochikino-1.jpg" alt="" class="wp-image-378"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="908" src="../../../../assets/images/notes/coding/cs280a/3_croped_lastochikino.jpg" alt="" class="wp-image-384"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="872" src="../../../../assets/images/notes/coding/cs280a/2_aligned_siren-1.jpg" alt="" class="wp-image-402"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="945" src="../../../../assets/images/notes/coding/cs280a/3_croped_siren.jpg" alt="" class="wp-image-399"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="874" src="../../../../assets/images/notes/coding/cs280a/2_aligned_self_portrait-2.jpg" alt="" class="wp-image-403"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="916" src="../../../../assets/images/notes/coding/cs280a/3_croped_self_portrait.jpg" alt="" class="wp-image-401"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="885" src="../../../../assets/images/notes/coding/cs280a/2_aligned_three_generations-1.jpg" alt="" class="wp-image-397"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="958" src="../../../../assets/images/notes/coding/cs280a/3_croped_three_generations.jpg" alt="" class="wp-image-395"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">In each image pair, the left side shows the before, and the right side shows the after. Most images have had their borders appropriately cropped, though a few still retain some colored edges.</p>
+
+
+
+<hr class="wp-block-separator has-alpha-channel-opacity">
+
+
+
+<div class="wp-block-jetpack-markdown"><h3>2. Automatic contrasting</h3>
+</div>
+
+
+
+<p class="wp-block-paragraph">I performed a linear normalization of image pixel values, stretching them to the full 0&ndash;255 range. I first find the minimum and maximum intensity in the image, then rescale all pixel values accordingly using the formula</p>
+
+
+
+<p class="wp-block-paragraph">$$ I_{\text{rescaled}}(x, y) = \left( \frac{I(x, y) &ndash; I_{\min}}{I_{\max} &ndash; I_{\min}} \right) \times 255$$</p>
+
+
+
+<p class="wp-block-paragraph">which helps standardize the intensity range for visualization and further processing.</p>
+
+
+
+<p class="wp-block-paragraph">In the image comparison below, the left side shows the original image (before), and the right side shows the rescaled version (after). While there is a slight color shift, the difference is generally subtle. This is because many of the original images already have a broad dynamic range. For example, in the <em>Three Generations</em> image (the first image pair), the original intensity values already span from 1 to 246, so the rescaling has only a limited visible effect.</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-6 is-cropped wp-block-gallery-9 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="958" src="../../../../assets/images/notes/coding/cs280a/3_croped_three_generations-1.jpg" alt="" class="wp-image-415"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="958" src="../../../../assets/images/notes/coding/cs280a/4_contrast_three_generations.jpg" alt="" class="wp-image-411"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="353" height="319" src="../../../../assets/images/notes/coding/cs280a/3_croped_cathedral-1.jpg" alt="" class="wp-image-497"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="353" height="319" src="../../../../assets/images/notes/coding/cs280a/4_contrast_cathedral.jpg" alt="" class="wp-image-500"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="362" height="322" src="../../../../assets/images/notes/coding/cs280a/3_croped_monastery-1.jpg" alt="" class="wp-image-499"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="362" height="322" src="../../../../assets/images/notes/coding/cs280a/4_contrast_monastery.jpg" alt="" class="wp-image-504"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="356" height="320" src="../../../../assets/images/notes/coding/cs280a/3_croped_tobolsk-1.jpg" alt="" class="wp-image-502"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="356" height="320" src="../../../../assets/images/notes/coding/cs280a/4_contrast_tobolsk.jpg" alt="" class="wp-image-506"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="335" height="313" src="../../../../assets/images/notes/coding/cs280a/3_croped_Clothing-1.jpg" alt="" class="wp-image-498"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="335" height="313" src="../../../../assets/images/notes/coding/cs280a/4_contrast_Clothing.jpg" alt="" class="wp-image-503"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="916" src="../../../../assets/images/notes/coding/cs280a/3_croped_self_portrait-1.jpg" alt="" class="wp-image-425"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="916" src="../../../../assets/images/notes/coding/cs280a/4_contrast_self_portrait.jpg" alt="" class="wp-image-424"></figure>
+</figure>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-6 is-cropped wp-block-gallery-10 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="918" src="../../../../assets/images/notes/coding/cs280a/3_croped_church-1.jpg" alt="" class="wp-image-405"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="918" src="../../../../assets/images/notes/coding/cs280a/4_contrast_church.jpg" alt="" class="wp-image-406"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="926" src="../../../../assets/images/notes/coding/cs280a/3_croped_emir-1.jpg" alt="" class="wp-image-408"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="926" src="../../../../assets/images/notes/coding/cs280a/4_contrast_emir.jpg" alt="" class="wp-image-416"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="912" src="../../../../assets/images/notes/coding/cs280a/3_croped_harvesters-1.jpg" alt="" class="wp-image-410"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="912" src="../../../../assets/images/notes/coding/cs280a/4_contrast_harvesters.jpg" alt="" class="wp-image-420"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="848" src="../../../../assets/images/notes/coding/cs280a/3_croped_icon-1.jpg" alt="" class="wp-image-421"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="848" src="../../../../assets/images/notes/coding/cs280a/4_contrast_icon.jpg" alt="" class="wp-image-426"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="958" src="../../../../assets/images/notes/coding/cs280a/3_croped_italil-1.jpg" alt="" class="wp-image-409"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="958" src="../../../../assets/images/notes/coding/cs280a/4_contrast_italil.jpg" alt="" class="wp-image-417"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="908" src="../../../../assets/images/notes/coding/cs280a/3_croped_lastochikino-1.jpg" alt="" class="wp-image-412"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="908" src="../../../../assets/images/notes/coding/cs280a/4_contrast_lastochikino.jpg" alt="" class="wp-image-418"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="911" src="../../../../assets/images/notes/coding/cs280a/3_croped_lugano-1.jpg" alt="" class="wp-image-407"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="911" src="../../../../assets/images/notes/coding/cs280a/4_contrast_lugano.jpg" alt="" class="wp-image-413"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="918" src="../../../../assets/images/notes/coding/cs280a/3_croped_melons-1.jpg" alt="" class="wp-image-414"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="918" src="../../../../assets/images/notes/coding/cs280a/4_contrast_melons.jpg" alt="" class="wp-image-419"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="945" src="../../../../assets/images/notes/coding/cs280a/3_croped_siren-1.jpg" alt="" class="wp-image-423"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="945" src="../../../../assets/images/notes/coding/cs280a/4_contrast_siren.jpg" alt="" class="wp-image-422"></figure>
+</figure>
+
+
+
+<hr class="wp-block-separator has-alpha-channel-opacity">
+
+
+
+<div class="wp-block-jetpack-markdown"><h3>3. Automatic white balance</h3>
+</div>
+
+
+
+<p class="wp-block-paragraph">The gray-world white balance algorithm assumes that the average color of a natural image should be a neutral gray. To achieve this, each channel is rescaled so that its mean intensity matches the global average.</p>
+
+
+
+<p class="wp-block-paragraph">The scaling factor for each channel is defined as:</p>
+
+
+
+<p class="wp-block-paragraph">$$ s_c = \frac{\frac{1}{3}\left(R_{\text{avg}} + G_{\text{avg}} + B_{\text{avg}}\right)}{I_c^{\text{avg}}}, \quad c \in {{R, G, B}} $$</p>
+
+
+
+<p class="wp-block-paragraph">where \( R_{\text{avg}} \), \( G_{\text{avg}}\), and \( B_{\text{avg}}\) are the mean values of the red, green, and blue channels, and\(I_c^{\text{avg}} \)is the mean of channel \(\quad c\).</p>
+
+
+
+<p class="wp-block-paragraph">In each pair of images, the left side shows the before and the right side shows the after. Some images appear closer to their true colors after adjustment, but in others where the real scene is naturally more green or blue, the same correction results in a reddish tint. Overall, images with richer color diversity in the scene benefit more from this method, while those lacking certain colors in the original scene tend to produce biased results.</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-11 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="918" src="../../../../assets/images/notes/coding/cs280a/4_contrast_church-1.jpg" alt="church-before" class="wp-image-428"><figcaption class="wp-element-caption">before</figcaption></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="918" src="../../../../assets/images/notes/coding/cs280a/5_white_balance_church.jpg" alt="" class="wp-image-429"><figcaption class="wp-element-caption">after</figcaption></figure>
+</figure>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-6 is-cropped wp-block-gallery-12 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="926" src="../../../../assets/images/notes/coding/cs280a/4_contrast_emir-1.jpg" alt="" class="wp-image-432"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="926" src="../../../../assets/images/notes/coding/cs280a/5_white_balance_emir.jpg" alt="" class="wp-image-441"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="912" src="../../../../assets/images/notes/coding/cs280a/4_contrast_harvesters-1.jpg" alt="" class="wp-image-444"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="912" src="../../../../assets/images/notes/coding/cs280a/5_white_balance_harvesters.jpg" alt="" class="wp-image-442"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="848" src="../../../../assets/images/notes/coding/cs280a/4_contrast_icon-1.jpg" alt="" class="wp-image-449"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="848" src="../../../../assets/images/notes/coding/cs280a/5_white_balance_icon.jpg" alt="" class="wp-image-446"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="958" src="../../../../assets/images/notes/coding/cs280a/4_contrast_italil-1.jpg" alt="" class="wp-image-434"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="958" src="../../../../assets/images/notes/coding/cs280a/5_white_balance_italil.jpg" alt="" class="wp-image-439"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="908" src="../../../../assets/images/notes/coding/cs280a/4_contrast_lastochikino-1.jpg" alt="" class="wp-image-430"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="908" src="../../../../assets/images/notes/coding/cs280a/5_white_balance_lastochikino.jpg" alt="" class="wp-image-431"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="911" src="../../../../assets/images/notes/coding/cs280a/4_contrast_lugano-1.jpg" alt="" class="wp-image-437"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="911" src="../../../../assets/images/notes/coding/cs280a/5_white_balance_lugano.jpg" alt="" class="wp-image-436"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="918" src="../../../../assets/images/notes/coding/cs280a/4_contrast_melons-1.jpg" alt="" class="wp-image-433"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="918" src="../../../../assets/images/notes/coding/cs280a/5_white_balance_melons.jpg" alt="" class="wp-image-440"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="916" src="../../../../assets/images/notes/coding/cs280a/4_contrast_self_portrait-1.jpg" alt="" class="wp-image-447"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="916" src="../../../../assets/images/notes/coding/cs280a/5_white_balance_self_portrait.jpg" alt="" class="wp-image-448"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="945" src="../../../../assets/images/notes/coding/cs280a/4_contrast_siren-1.jpg" alt="" class="wp-image-445"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="945" src="../../../../assets/images/notes/coding/cs280a/5_white_balance_siren.jpg" alt="" class="wp-image-443"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="958" src="../../../../assets/images/notes/coding/cs280a/4_contrast_three_generations-1.jpg" alt="" class="wp-image-435"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="958" src="../../../../assets/images/notes/coding/cs280a/5_white_balance_three_generations.jpg" alt="" class="wp-image-438"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="353" height="319" src="../../../../assets/images/notes/coding/cs280a/4_contrast_cathedral-1.jpg" alt="" class="wp-image-508"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="353" height="319" src="../../../../assets/images/notes/coding/cs280a/5_white_balance_cathedral.jpg" alt="" class="wp-image-514"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="335" height="313" src="../../../../assets/images/notes/coding/cs280a/4_contrast_Clothing-1.jpg" alt="" class="wp-image-509"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="335" height="313" src="../../../../assets/images/notes/coding/cs280a/5_white_balance_Clothing.jpg" alt="" class="wp-image-516"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="362" height="322" src="../../../../assets/images/notes/coding/cs280a/4_contrast_monastery-1.jpg" alt="" class="wp-image-510"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="362" height="322" src="../../../../assets/images/notes/coding/cs280a/5_white_balance_monastery.jpg" alt="" class="wp-image-513"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="356" height="320" src="../../../../assets/images/notes/coding/cs280a/4_contrast_tobolsk-1.jpg" alt="" class="wp-image-515"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="356" height="320" src="../../../../assets/images/notes/coding/cs280a/5_white_balance_tobolsk.jpg" alt="" class="wp-image-517"></figure>
+</figure>
+
+
+
+<hr class="wp-block-separator has-alpha-channel-opacity">
+
+
+
+<div class="wp-block-jetpack-markdown"><h3>4. Better color mapping</h3>
+</div>
+
+
+
+<p class="wp-block-paragraph">After observing the results, I noticed that most of the images appeared bluish and somewhat dark. To address this, I designed a custom color mapping matrix \(M\) that remaps the RGB values of each pixel. The goal of this mapping is to enhance the contribution of the green and red channels while slightly reducing the influence of blue.</p>
+
+
+
+<p class="wp-block-paragraph">The transformation is applied by reshaping the image into a list of RGB vectors, multiplying each vector by \(M\), and then reshaping it back to the original image dimensions:</p>
+
+
+
+<p class="wp-block-paragraph">$$ I&rsquo; = I \cdot M^T $$</p>
+
+
+
+<p class="wp-block-paragraph">where \(I\) is the original RGB vector and \(I'\) is the adjusted color vector. For \(M\), I used the following matrix:</p>
+
+
+
+<p class="wp-block-paragraph">$$M =<br>\begin{bmatrix}<br>1.1 &amp; 0.05 &amp; 0.05 \\<br>0.05 &amp; 1.0 &amp; 0.05 \\<br>0.00 &amp; 0.00 &amp; 0.9<br>\end{bmatrix}$$</p>
+
+
+
+<p class="wp-block-paragraph">In this case, the new colors are</p>
+
+
+
+<p class="wp-block-paragraph">$$ R&rsquo; = 1.1R + 0.05G + 0.05B\\  G&rsquo; = 0.05R + 1.0G + 0.05B\\  B&rsquo; = 0.9B $$</p>
+
+
+
+<p class="wp-block-paragraph">This mapping slightly boosts red and green while lowering blue, resulting in images that look brighter and more balanced in terms of color. The result of this adjustment is that some images appear brighter and more vivid, but if the image contains a blue sky, the sky color may become slightly distorted.</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-13 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="958" src="../../../../assets/images/notes/coding/cs280a/4_contrast_three_generations-2.jpg" alt="" class="wp-image-454"><figcaption class="wp-element-caption">before</figcaption></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="958" src="../../../../assets/images/notes/coding/cs280a/6_color_mapping_three_generations.jpg" alt="" class="wp-image-461"><figcaption class="wp-element-caption">after</figcaption></figure>
+</figure>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-6 is-cropped wp-block-gallery-14 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="918" src="../../../../assets/images/notes/coding/cs280a/4_contrast_church-2.jpg" alt="" class="wp-image-452"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="918" src="../../../../assets/images/notes/coding/cs280a/6_color_mapping_church.jpg" alt="" class="wp-image-451"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="926" src="../../../../assets/images/notes/coding/cs280a/4_contrast_emir-2.jpg" alt="" class="wp-image-460"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="926" src="../../../../assets/images/notes/coding/cs280a/6_color_mapping_emir.jpg" alt="" class="wp-image-459"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="912" src="../../../../assets/images/notes/coding/cs280a/4_contrast_harvesters-2.jpg" alt="" class="wp-image-466"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="912" src="../../../../assets/images/notes/coding/cs280a/6_color_mapping_harvesters.jpg" alt="" class="wp-image-469"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="848" src="../../../../assets/images/notes/coding/cs280a/4_contrast_icon-2.jpg" alt="" class="wp-image-470"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="848" src="../../../../assets/images/notes/coding/cs280a/6_color_mapping_icon.jpg" alt="" class="wp-image-468"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="958" src="../../../../assets/images/notes/coding/cs280a/4_contrast_italil-2.jpg" alt="" class="wp-image-456"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="958" src="../../../../assets/images/notes/coding/cs280a/6_color_mapping_italil.jpg" alt="" class="wp-image-453"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="908" src="../../../../assets/images/notes/coding/cs280a/4_contrast_lastochikino-2.jpg" alt="" class="wp-image-458"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="908" src="../../../../assets/images/notes/coding/cs280a/6_color_mapping_lastochikino.jpg" alt="" class="wp-image-462"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="911" src="../../../../assets/images/notes/coding/cs280a/4_contrast_lugano-2.jpg" alt="" class="wp-image-455"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="911" src="../../../../assets/images/notes/coding/cs280a/6_color_mapping_lugano.jpg" alt="" class="wp-image-457"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="918" src="../../../../assets/images/notes/coding/cs280a/4_contrast_melons-2.jpg" alt="" class="wp-image-463"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="918" src="../../../../assets/images/notes/coding/cs280a/6_color_mapping_melons.jpg" alt="" class="wp-image-464"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="945" src="../../../../assets/images/notes/coding/cs280a/4_contrast_siren-2.jpg" alt="" class="wp-image-471"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="945" src="../../../../assets/images/notes/coding/cs280a/6_color_mapping_siren.jpg" alt="" class="wp-image-465"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="353" height="319" src="../../../../assets/images/notes/coding/cs280a/4_contrast_cathedral-2.jpg" alt="" class="wp-image-519"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="353" height="319" src="../../../../assets/images/notes/coding/cs280a/6_color_mapping_cathedral.jpg" alt="" class="wp-image-524"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="362" height="322" src="../../../../assets/images/notes/coding/cs280a/4_contrast_monastery-2.jpg" alt="" class="wp-image-520"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="362" height="322" src="../../../../assets/images/notes/coding/cs280a/6_color_mapping_monastery.jpg" alt="" class="wp-image-525"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="356" height="320" src="../../../../assets/images/notes/coding/cs280a/4_contrast_tobolsk-2.jpg" alt="" class="wp-image-522"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="356" height="320" src="../../../../assets/images/notes/coding/cs280a/6_color_mapping_tobolsk.jpg" alt="" class="wp-image-528"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="916" src="../../../../assets/images/notes/coding/cs280a/4_contrast_self_portrait-2.jpg" alt="" class="wp-image-467"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="916" src="../../../../assets/images/notes/coding/cs280a/6_color_mapping_self_portrait.jpg" alt="" class="wp-image-472"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="335" height="313" src="../../../../assets/images/notes/coding/cs280a/4_contrast_Clothing-2.jpg" alt="" class="wp-image-521"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="335" height="313" src="../../../../assets/images/notes/coding/cs280a/6_color_mapping_Clothing.jpg" alt="" class="wp-image-526"></figure>
+</figure>
+
+
+
+<hr class="wp-block-separator has-alpha-channel-opacity">
+
+
+
+<div class="wp-block-jetpack-markdown"><h3>5. Better features: gradient-based alignment</h3>
+</div>
+
+
+
+<p class="wp-block-paragraph">The motivation for switching to a gradient-based method comes from the observation that color-similarity alignment produced poor results for the <em>emir</em> image. To address this, I replaced raw RGB similarity with gradient magnitude while still using the L2&#8203; metric.</p>
+
+
+
+<p class="wp-block-paragraph">The gradient magnitude is defined as:</p>
+
+
+
+<p class="wp-block-paragraph">$$ \nabla I = \sqrt{ \left(\frac{\partial I}{\partial x}\right)^2 + \left(\frac{\partial I}{\partial y}\right)^2 } $$</p>
+
+
+
+<p class="wp-block-paragraph">With this modification, the <em>emir</em> image aligns much better, while the other images that were already performing well under RGB similarity continue to give equally strong results. The moving vectors of the<em> emir </em>image are:</p>
+
+
+
+<figure class="wp-block-table"><table class="has-fixed-layout"><tbody><tr><td class="has-text-align-center" data-align="center"><strong>method</strong></td><td class="has-text-align-center" data-align="center"><strong>green channel vector</strong></td><td class="has-text-align-center" data-align="center"><strong>red channel vector</strong></td></tr><tr><td class="has-text-align-center" data-align="center">RGB similarity</td><td class="has-text-align-center" data-align="center">[24, 49]</td><td class="has-text-align-center" data-align="center">[61, 103]</td></tr><tr><td class="has-text-align-center" data-align="center">gradient similarity</td><td class="has-text-align-center" data-align="center">[24, 49]</td><td class="has-text-align-center" data-align="center">[40, 107]</td></tr></tbody></table></figure>
+
+
+
+<p class="wp-block-paragraph">We can see a subtle change in the red channel vector, which causes the RGB similarity method to be not accurate. </p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-15 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="888" src="../../../../assets/images/notes/coding/cs280a/2_aligned_emir-2.jpg" alt="" class="wp-image-486"><figcaption class="wp-element-caption">emir (RGB similarity)</figcaption></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="888" src="../../../../assets/images/notes/coding/cs280a/7_edge_feature_emir.jpg" alt="" class="wp-image-483"><figcaption class="wp-element-caption">emir (gradient similarity)</figcaption></figure>
+</figure>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-6 is-cropped wp-block-gallery-16 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="902" src="../../../../assets/images/notes/coding/cs280a/2_aligned_church-2.jpg" alt="" class="wp-image-475"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="902" src="../../../../assets/images/notes/coding/cs280a/7_edge_feature_church.jpg" alt="" class="wp-image-476"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="895" src="../../../../assets/images/notes/coding/cs280a/2_aligned_harvesters-2.jpg" alt="" class="wp-image-491"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="895" src="../../../../assets/images/notes/coding/cs280a/7_edge_feature_harvesters.jpg" alt="" class="wp-image-490"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="888" src="../../../../assets/images/notes/coding/cs280a/2_aligned_icon-2.jpg" alt="" class="wp-image-495"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="888" src="../../../../assets/images/notes/coding/cs280a/7_edge_feature_icon.jpg" alt="" class="wp-image-493"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="890" src="../../../../assets/images/notes/coding/cs280a/2_aligned_italil-2.jpg" alt="" class="wp-image-484"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="890" src="../../../../assets/images/notes/coding/cs280a/7_edge_feature_italil.jpg" alt="" class="wp-image-482"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="897" src="../../../../assets/images/notes/coding/cs280a/2_aligned_lastochikino-2.jpg" alt="" class="wp-image-478"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="897" src="../../../../assets/images/notes/coding/cs280a/7_edge_feature_lastochikino.jpg" alt="" class="wp-image-474"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="879" src="../../../../assets/images/notes/coding/cs280a/2_aligned_lugano-3.jpg" alt="" class="wp-image-480"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="879" src="../../../../assets/images/notes/coding/cs280a/7_edge_feature_lugano.jpg" alt="" class="wp-image-481"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="880" src="../../../../assets/images/notes/coding/cs280a/2_aligned_melons-3.jpg" alt="" class="wp-image-487"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="880" src="../../../../assets/images/notes/coding/cs280a/7_edge_feature_melons.jpg" alt="" class="wp-image-485"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="874" src="../../../../assets/images/notes/coding/cs280a/2_aligned_self_portrait-3.jpg" alt="" class="wp-image-492"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="874" src="../../../../assets/images/notes/coding/cs280a/7_edge_feature_self_portrait.jpg" alt="" class="wp-image-494"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="872" src="../../../../assets/images/notes/coding/cs280a/2_aligned_siren-2.jpg" alt="" class="wp-image-488"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="872" src="../../../../assets/images/notes/coding/cs280a/7_edge_feature_siren.jpg" alt="" class="wp-image-489"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="885" src="../../../../assets/images/notes/coding/cs280a/2_aligned_three_generations-2.jpg" alt="" class="wp-image-479"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="885" src="../../../../assets/images/notes/coding/cs280a/7_edge_feature_three_generations.jpg" alt="" class="wp-image-477"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="390" height="341" src="../../../../assets/images/notes/coding/cs280a/2_aligned_cathedral-2.jpg" alt="" class="wp-image-530"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="390" height="341" src="../../../../assets/images/notes/coding/cs280a/7_edge_feature_cathedral.jpg" alt="" class="wp-image-535"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="399" height="341" src="../../../../assets/images/notes/coding/cs280a/2_aligned_Clothing-2.jpg" alt="" class="wp-image-531"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="399" height="341" src="../../../../assets/images/notes/coding/cs280a/7_edge_feature_Clothing.jpg" alt="" class="wp-image-539"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="391" height="341" src="../../../../assets/images/notes/coding/cs280a/2_aligned_monastery-2.jpg" alt="" class="wp-image-532"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="391" height="341" src="../../../../assets/images/notes/coding/cs280a/7_edge_feature_monastery.jpg" alt="" class="wp-image-538"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="401" height="341" src="../../../../assets/images/notes/coding/cs280a/2_aligned_mosque-2.jpg" alt="" class="wp-image-533"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="401" height="341" src="../../../../assets/images/notes/coding/cs280a/7_edge_feature_mosque.jpg" alt="" class="wp-image-536"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="396" height="341" src="../../../../assets/images/notes/coding/cs280a/2_aligned_tobolsk-2.jpg" alt="" class="wp-image-534"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="396" height="341" src="../../../../assets/images/notes/coding/cs280a/7_edge_feature_tobolsk.jpg" alt="" class="wp-image-537"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">In summary, gradient-based alignment could provide better results in cases where color similarity fails, particularly in images with strong local color contrasts, while preserving good results in images that were already well aligned with the RGB method.</p>
+    </div>
+  </div></main>
+  <footer class="site-footer"><p>&copy; 2026 Shaoyi Wang</p></footer>
+  <script src="../../../../assets/lib/katex/katex.min.js"></script>
+  <script src="../../../../assets/lib/katex/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Display math broken by <br> elements — KaTeX can't match delimiters
+      // across DOM element boundaries, so normalise before rendering.
+      document.querySelectorAll('p').forEach(function(el) {
+        var html = el.innerHTML;
+        if (html.indexOf('$$') === -1 && html.indexOf('\\[') === -1) return;
+        // \[...\] containing <br> — strip the breaks
+        html = html.replace(/\\\[([\s\S]*?)\\\]/g, function(_, c) {
+          return '\\[' + c.replace(/<br\s*\/?>/g, '\n') + '\\]';
+        });
+        // $$...$$ containing <br> — strip breaks and switch to \[...\]
+        html = html.replace(/\$\$([\s\S]*?)\$\$/g, function(_, c) {
+          return c.indexOf('<') === -1
+            ? '$$' + c + '$$'
+            : '\\[' + c.replace(/<br\s*\/?>/g, '\n') + '\\]';
+        });
+        el.innerHTML = html;
+      });
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "\\[", right: "\\]", display: true},
+          {left: "\\(", right: "\\)", display: false},
+          {left: "$",  right: "$",   display: false}
+        ]
+      });
+    });
+  </script>
+
+  <script src="../../../scripts/components.js"></script>
+  <script src="../../../scripts/main.js?v=back-tabs-1"></script>
+</body></html>

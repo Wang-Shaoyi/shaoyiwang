@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Neural Radiance Field - Shaoyi Wang</title>
+  <link rel="stylesheet" href="../../../style.css"/>
+  <link rel="stylesheet" href="../../../../assets/lib/katex/katex.min.css" />
+  <style>
+    /* WP block rendering overrides */
+    .wp-post-body figure.wp-block-image { margin: 1.5rem 0; }
+    .wp-post-body figure.wp-block-image img { max-width: 100%; height: auto; border-radius: 4px; display: block; }
+    .wp-post-body .wp-block-gallery {
+      display: flex; flex-wrap: wrap; gap: 10px; margin: 1.5rem 0; list-style: none; padding: 0;
+    }
+    .wp-post-body .wp-block-gallery figure.wp-block-image { flex: 1 1 180px; margin: 0; }
+    .wp-post-body .wp-block-gallery figure.wp-block-image img { width: 100%; height: auto; border-radius: 4px; }
+    .wp-element-caption, .wp-block-image figcaption { font-size: .82rem; color: #888; text-align: center; margin-top: 5px; }
+    .wp-post-body h1.wp-block-heading { font-size: 1.55rem; font-weight: 700; margin: 2.2rem 0 .7rem; }
+    .wp-post-body h2.wp-block-heading,
+    .wp-block-jetpack-markdown h2 { font-size: 1.25rem; font-weight: 600; margin: 2rem 0 .6rem; border: none; padding: 0; }
+    .wp-post-body h3.wp-block-heading,
+    .wp-block-jetpack-markdown h3 { font-size: 1.1rem; font-weight: 600; margin: 1.6rem 0 .5rem; }
+    .wp-post-body h4.wp-block-heading,
+    .wp-block-jetpack-markdown h4 { font-size: 1rem; font-weight: 600; margin: 1.3rem 0 .4rem; color: #555; }
+    .wp-block-jetpack-markdown table { width: 100%; border-collapse: collapse; margin: 1.2rem 0; font-size: .9rem; }
+    .wp-block-jetpack-markdown td,
+    .wp-block-jetpack-markdown th { border: 1px solid var(--border); padding: .45rem .75rem; }
+    .wp-block-jetpack-markdown th { background: var(--surface); font-weight: 600; }
+    img.latex { vertical-align: middle; height: 1.15em; display: inline; }
+    .wp-post-body pre, .wp-block-code { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1rem 1.2rem; overflow-x: auto; font-size: .88rem; margin: 1.2rem 0; }
+    .wp-post-body code { background: var(--surface); border-radius: 3px; padding: .1em .35em; font-size: .88em; }
+    .wp-post-body pre code { background: none; padding: 0; }
+    .wp-block-separator { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+    .sharedaddy, .sd-block-ui, #jp-post-flair { display: none !important; }
+  </style>
+</head>
+<body data-root="../../../">
+  <div class="classic-mode-bar"><a class="classic-mode-link" href="../../../../index.html">Back to Monopoly Mode</a></div>
+  <header class="site-header"></header>
+  <main><div class="container">
+    <div class="project-back"><a href="../../notes.html#tab-coding">&#8592; Back to Notes</a></div>
+    <div class="project-header" style="margin-top:28px">
+      <div class="card-category">Coding Notes</div>
+      <h1 class="project-title">Neural Radiance Field</h1>
+      <div class="card-tags">
+        <span class="tag">CS280A Computer Vision</span>
+      </div>
+    </div>
+    <div class="project-body wp-post-body">
+<h1 class="wp-block-heading">Part 0: Calibrating Your Camera and Capturing a 3D Scan</h1>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Part 0.1: Calibrating My Camera</strong></h2>
+
+
+
+<p class="wp-block-paragraph">To estimate the intrinsic parameters of my phone camera, I first captured 50 images of printed ArUco tags (4&times;4 dictionary) from different viewpoints. The focal length was kept fixed (zoom = 1.0). </p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-7 is-cropped wp-block-gallery-2 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img fetchpriority="high" decoding="async" width="800" height="600" src="../../../../assets/images/notes/coding/cs280a/IMG_5268.jpg" alt="" class="wp-image-997"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" width="800" height="600" src="../../../../assets/images/notes/coding/cs280a/IMG_5299.jpg" alt="" class="wp-image-1003"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img decoding="async" width="800" height="600" src="../../../../assets/images/notes/coding/cs280a/IMG_5301.jpg" alt="" class="wp-image-1002"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="800" height="600" src="../../../../assets/images/notes/coding/cs280a/IMG_5308.jpg" alt="" class="wp-image-1001"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="800" height="600" src="../../../../assets/images/notes/coding/cs280a/IMG_5311.jpg" alt="" class="wp-image-1000"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="800" height="600" src="../../../../assets/images/notes/coding/cs280a/IMG_5312.jpg" alt="" class="wp-image-999"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="800" height="600" src="../../../../assets/images/notes/coding/cs280a/IMG_5315.jpg" alt="" class="wp-image-998"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">For each tag, I defined a local 3D coordinate system on the tag plane to get the coordinates in the real world (<code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">objpoints</mark></code>). I iterated over all calibration images and uses OpenCV&rsquo;s ArUco detector, and found the 2D uv pixels (<code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">imgpoints</mark></code>) of all the detected ArUco tags.  Images where no markers are detected are skipped. Once the matching <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">objpoints </mark></code><mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-primary-color">and</mark><code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color"> imgpoints</mark></code> are collected, I used <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">cv2.calibrateCamera()</mark></code> to calculate the intrinsics matrix <strong><em>K</em></strong> and the distortion coefficients <strong><em>d</em></strong>, calculated as:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>K =<br>\begin{bmatrix}<br>649.0065172 &amp; 0 &amp; 407.33495294 \\<br>0 &amp; 646.83469996 &amp; 290.66436024 \\<br>0 &amp; 0 &amp; 1<br>\end{bmatrix}<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\mathbf{d} =<br>\begin{bmatrix}<br>-0.16860768 &amp;<br>1.00162078 &amp;<br>-0.00521381 &amp;<br>0.006493 &amp;<br>-1.91354924<br>\end{bmatrix}<br>$$</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Part 0.2: Capturing a 3D Object Scan</strong></h2>
+
+
+
+<p class="wp-block-paragraph">I 50 took photos of my little friend (who was also in the <a href="./2025/09/02/becoming-friends-with-your-camera/" data-type="link"><mark style="background-color:rgba(0, 0, 0, 0);color:#0693e3" class="has-inline-color">dolly zoom project</mark></a>) with an ArUco tag:</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-7 is-cropped wp-block-gallery-3 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="800" height="600" src="../../../../assets/images/notes/coding/cs280a/IMG_5342.jpg" alt="" class="wp-image-1011"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="800" height="600" src="../../../../assets/images/notes/coding/cs280a/IMG_5351.jpg" alt="" class="wp-image-1012"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="800" height="600" src="../../../../assets/images/notes/coding/cs280a/IMG_5359.jpg" alt="" class="wp-image-1014"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="800" height="600" src="../../../../assets/images/notes/coding/cs280a/IMG_5377.jpg" alt="" class="wp-image-1013"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="800" height="600" src="../../../../assets/images/notes/coding/cs280a/IMG_5381.jpg" alt="" class="wp-image-1017"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="800" height="600" src="../../../../assets/images/notes/coding/cs280a/IMG_5389.jpg" alt="" class="wp-image-1016"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="800" height="600" src="../../../../assets/images/notes/coding/cs280a/IMG_5391.jpg" alt="" class="wp-image-1015"></figure>
+</figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Part 0.3: Estimating Camera Pose</strong></h2>
+
+
+
+<p class="wp-block-paragraph">I estimate the camera pose (rotation and translation) for each image of the scanned object using the ArUco tag and OpenCV&rsquo;s <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">cv2.solvePnP()</mark></code>. For each input image, I first detect the single ArUco tag; if a tag is found, I collect both the <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">objpoints</mark></code> and the <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">imgpoints</mark></code>, to serve as inputs along with <strong><em>K</em></strong> and <strong><em>d</em></strong> for the PnP function. After solving the extrinsics of all the images, the camera frustums&rsquo; poses and images are shown as follows:</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-4 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="711" src="../../../../assets/images/notes/coding/cs280a/0-3-1.png" alt="" class="wp-image-1020"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="632" src="../../../../assets/images/notes/coding/cs280a/0-3-2.png" alt="" class="wp-image-1021"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="661" src="../../../../assets/images/notes/coding/cs280a/0-3-3.png" alt="" class="wp-image-1019"></figure>
+</figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Part 0.4: Undistorting images and creating a dataset</strong></h2>
+
+
+
+<p class="wp-block-paragraph">I randomly split the valid views into a training set (about \(N_{\text{train}} \approx 0.9N \)) and a validation set (the remaining \(N_{\text{val}} = N - N_{\text{train}} \)&#8203;). For each selected image, I first undistort it using the calibrated intrinsics <strong><em>K</em></strong> and distortion coefficients <strong><em>d</em></strong>, then store the undistorted images and their corresponding camera-to-world matrices for late NeRF training.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h1 class="wp-block-heading">Part 1: Fit a Neural Field to a 2D Image</h1>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h4 class="wp-block-heading"><strong>Model Architecture &amp; Positional Encoding</strong></h4>
+
+
+
+<p class="wp-block-paragraph">I use a small MLP with sinusoidal positional encoding to map 2D pixel coordinates \( x \in \mathbb{R}^2\) to RGB colors. The positional encoding expands the input as:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\mathrm{PE}(x)<br>= \big[x,\, \sin(2^{0}\pi x),\, \cos(2^{0}\pi x),\, \ldots,\,<br>\sin(2^{L-1}\pi x),\, \cos(2^{L-1}\pi x)\big].<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">with L=10, giving a 42-D feature vector. This is then fed into a <strong>4-layer MLP with 256 hidden units</strong> and <strong>ReLU</strong> activations, followed by a <strong>final sigmoid layer</strong> to produce 3-channel RGB values in the range (0,1). </p>
+
+
+
+<figure class="wp-block-image aligncenter size-large is-resized"><img loading="lazy" decoding="async" width="1024" height="306" src="../../../../assets/images/notes/coding/cs280a/mlp_img.jpg" alt="" class="wp-image-1029" style="aspect-ratio:3.3464287724432937;width:486px;height:auto"></figure>
+
+
+
+<p class="wp-block-paragraph">I train the 2D NeRF network using <strong>mean squared error (MSE) loss</strong> between the predicted and ground-truth RGB colors, optimized with <strong>Adam</strong> (learning rate \(1\times10^{-2}\)). At each iteration, I sample <strong><em>N</em>=10,000</strong> pixels, run a forward pass, backpropagate the <strong>MSE loss</strong>, and update the MLP weights. To monitor reconstruction quality, I convert the MSE to the peak signal-to-noise ratio (PSNR):</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\mathrm{PSNR} = 10 \cdot \log_{10}\left(\frac{1}{\mathrm{MSE}}\right)<br>$$</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h4 class="wp-block-heading"><strong>Data Loader</strong></h4>
+
+
+
+<p class="wp-block-paragraph">To build each mini-batch, I conceptually flatten the \(H \times W\) image into a 1D array of \(H\! \cdot\! W \) pixels and randomly sample<em> N</em> indices from \(\{0,\dots,H\! \cdot\! W-1\}\). For each sampled index <code>idx</code>, I recover its 2D location (ys, xs) with the following code:</p>
+
+
+<div class="wp-block-code">
+	<div class="cm-editor">
+		<div class="cm-scroller">
+			
+<pre><code><div class="cm-line">def data_loader(img, N):</div><div class="cm-line">    h,w = img.shape[:2]</div><div class="cm-line"></div><div class="cm-line">    # generate random coords</div><div class="cm-line">    idx = np.random.choice(h * w, size=N, replace=True)</div><div class="cm-line">    ys = idx // w</div><div class="cm-line">    xs = idx %  w</div><div class="cm-line">    input_coords = np.stack([ys/h, xs/w], axis = 0).T </div><div class="cm-line"></div><div class="cm-line">    # find colors</div><div class="cm-line">    output_colors = img[ys, xs]</div><div class="cm-line"></div><div class="cm-line">    # turn to tensors</div><div class="cm-line">    input_coords = torch.from_numpy(input_coords).float()</div><div class="cm-line">    output_colors = torch.from_numpy(output_colors).float()</div><div class="cm-line"></div><div class="cm-line">    return input_coords, output_colors</div></code></pre>
+		</div>
+	</div>
+</div>
+
+
+<p class="wp-block-paragraph">The dataloader returns an input matrix \(\mathbf{X} \in \mathbb{R}^{N \times 2}\) of normalized pixel coordinates, and a target matrix \(\mathbf{Y} \in \mathbb{R}^{N \times 3}\) containing the corresponding RGB colors of those pixels.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h4 class="wp-block-heading"><strong>Training Results</strong></h4>
+
+
+
+<p class="wp-block-paragraph">I trained 1000 iterations for each image. As for both the fox image and the cat meme, at the very early iterations, the network only recovers a smooth, almost uniform color field with visible grid-like artifacts. By iteration ~50, the rough pattern of the animal starts to appear, and by iteration ~140 the face and background are clearly recognizable, though still blurry. As training continues to 1000 iterations, the model gradually sharpens edges and refines high-frequency details, producing a close reconstruction of the original image.</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-1 is-cropped wp-block-gallery-5 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large" style="margin-right:var(--wp--preset--spacing--70);margin-left:var(--wp--preset--spacing--70)"><img loading="lazy" decoding="async" width="1024" height="366" src="../../../../assets/images/notes/coding/cs280a/1-2-1.png" alt="" class="wp-image-1036"></figure>
+
+
+
+<figure class="wp-block-image size-large" style="margin-right:var(--wp--preset--spacing--70);margin-left:var(--wp--preset--spacing--70)"><img loading="lazy" decoding="async" width="922" height="427" src="../../../../assets/images/notes/coding/cs280a/1-2-3.png" alt="" class="wp-image-1037"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">Below shows the PSNR curve for training on the cat meme. Although the curve fluctuates a lot during the training process, the final PSNR reached over 35, showing great image reconstruction results.</p>
+
+
+
+<figure class="wp-block-image aligncenter size-full is-resized"><img loading="lazy" decoding="async" width="996" height="393" src="../../../../assets/images/notes/coding/cs280a/1-4-2.png" alt="" class="wp-image-1043" style="aspect-ratio:2.5344121506103137;width:697px;height:auto"></figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h4 class="wp-block-heading"><strong>Hyperparameter Tuning</strong></h4>
+
+
+
+<p class="wp-block-paragraph">I vary both the maximum positional encoding frequency <strong><em>L</em></strong> and the <strong><em>MLP width</em></strong> (number of hidden channels). With a high frequency <strong>L = 10</strong> and wide network (<strong>width = 256</strong>), the model recovers sharp edges and fine textures. Reducing the <strong>width =</strong> <strong>32 </strong>with the same <strong>L = 10</strong> keeps most structures but introduces noise and blurring. When I lower the frequency to <strong>L = 2</strong>, the network can only represent very smooth, low-frequency content: the reconstructions become over-smoothed and almost piecewise planar, and this effect is even stronger when the <strong>width</strong> is also reduced to <strong>32</strong>. The same trend appears for both the fox and cat images.</p>
+
+
+
+<figure class="wp-block-image aligncenter size-full is-resized"><img loading="lazy" decoding="async" width="790" height="583" src="../../../../assets/images/notes/coding/cs280a/1-3-1-1.png" alt="" class="wp-image-1047" style="aspect-ratio:1.3550963522821688;width:505px;height:auto"></figure>
+
+
+
+<figure class="wp-block-image aligncenter size-full is-resized"><img loading="lazy" decoding="async" width="631" height="590" src="../../../../assets/images/notes/coding/cs280a/1-3-2-1.png" alt="" class="wp-image-1048" style="aspect-ratio:1.0694933658200694;width:511px;height:auto"></figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h1 class="wp-block-heading">Part 2: Fit a Neural Radiance Field from Multi-view Images</h1>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Part 2.1: Create Rays from Cameras</strong></h2>
+
+
+
+<h4 class="wp-block-heading"><strong>Camera to World Coordinate Conversion</strong></h4>
+
+
+
+<p class="wp-block-paragraph">To convert 3D points from camera space to world space, I implement a <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">transform(c2w, x_c)</mark></code> function. For each camera-space point \(\mathbf{x}_c \in \mathbb{R}^3\), I first form the homogeneous vector \(\tilde{\mathbf{x}}_c = [\mathbf{x}_c^\top, 1]^\top\) and then apply the camera-to-world matrix \( \mathrm{c2w} \in \mathbb{R}^{4\times 4}\):</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\tilde{\mathbf{x}}_w = \mathrm{c2w}\,\tilde{\mathbf{x}}_c,<br>\qquad<br>\mathbf{x}_w = \frac{\tilde{\mathbf{x}}_w[0:3]}{\tilde{\mathbf{x}}_w[3]}.<br>$$</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h4 class="wp-block-heading"><strong>Pixel to Camera Coordinate Conversion</strong></h4>
+
+
+
+<p class="wp-block-paragraph">To map pixel coordinates back to camera space, I invert the pinhole projection to create a function <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">pixel_to_camera(K, uv, s)</mark></code>. Given normalized pixel coordinates \((u, v)\), depth \(s = z_c\)&#8203;, and the intrinsic matrix <strong><em>K</em></strong>, I first form the homogeneous pixel vector \(\tilde{\mathbf{u}} = [u, v, 1]^\top\) and solve:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\mathbf{x}_c = s K^{-1} \tilde{\mathbf{u}}<br>= s<br>\begin{bmatrix}<br>x_c \\<br>y_c \\<br>z_c<br>\end{bmatrix}.<br>$$</p>
+
+
+
+<h4 class="wp-block-heading"><strong>Pixel to Ray</strong></h4>
+
+
+
+<p class="wp-block-paragraph">Given the camera intrinsics <strong><em>K</em></strong>, a camera-to-world matrix <strong>c2w</strong>, and a set of pixel coordinates <code><strong>uv</strong></code>, I implemented the function <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">pixel_to_ray</mark></code> that converts each pixel into a 3D ray in world space. I first assume a unit depth s = 1 and use <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">pixel_to_camera</mark></code> to back-project each pixel (u, v) into camera coordinates, then apply <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">transform</mark></code> to map these points into world coordinates \(\mathbf{X}_w\)&#8203;. The ray origin \(\mathbf{r}_o\) is taken from the translation part of <strong>c2w</strong> (the camera center), and the ray direction \(\mathbf{r}_d\) is obtained by normalizing \(\mathbf{X}_w - \mathbf{r}_o\)&#8203;. </p>
+
+
+<div class="wp-block-code">
+	<div class="cm-editor">
+		<div class="cm-scroller">
+			
+<pre><code><div class="cm-line">def pixel_to_ray(K, c2w, uv):</div><div class="cm-line">    N = uv.shape[0]</div><div class="cm-line">    device, dtype = uv.device, uv.dtype</div><div class="cm-line"></div><div class="cm-line">    # s = 1 </div><div class="cm-line">    s = torch.ones((N, 1), device=device, dtype=dtype)</div><div class="cm-line"></div><div class="cm-line">    # camera coords to world coords</div><div class="cm-line">    x_c = pixel_to_camera(K, uv, s)   # (N,3)</div><div class="cm-line">    x_w = transform(c2w, x_c)  # (N,3)</div><div class="cm-line"></div><div class="cm-line">    # ray origin from c2w</div><div class="cm-line">    if c2w.dim() == 2:        # (4,4)</div><div class="cm-line">        ray_o = c2w[:3, 3].unsqueeze(0).expand(N, -1)   # (N,3)</div><div class="cm-line">    else:                  # (N,4,4)</div><div class="cm-line">        ray_o = c2w[:, :3, 3]                           # (N,3)</div><div class="cm-line"></div><div class="cm-line">    # normalized ray direction</div><div class="cm-line">    ray_d = F.normalize(x_w - ray_o, dim=-1)     # (N,3)</div><div class="cm-line">    return ray_o, ray_d</div></code></pre>
+		</div>
+	</div>
+</div>
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Part 2.2: Sampling</strong></h2>
+
+
+
+<h4 class="wp-block-heading"><strong>Sampling Rays from Images</strong></h4>
+
+
+
+<p class="wp-block-paragraph">To train the 3D NeRF, I sample rays directly from all training images. I first flatten the entire dataset of size <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">(num_images, H, W)</mark></code> into a 1D list of <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">total = num_images&middot;H&middot;W</mark></code> pixels, randomly pick <strong>N</strong> linear indices, and decode each index into an image id and a pixel location <code>(x, y)</code>. After shifting to pixel centers by adding <code>0.5</code> to the coordinates, I use the corresponding camera pose <strong>c2w</strong> and the shared intrinsics <strong>K</strong> in <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">pixel_to_ray</mark></code> to compute the ray origins and directions, and I use the RGB value at <code>(x, y)</code> as the supervision color for each ray.</p>
+
+
+
+<pre class="wp-block-code"><code>    def sample_rays(self, random=True, N=1000):
+        H, W, C = self.H, self.W, 3
+        total = self.count * H * W
+        device = self.images.device
+
+        # choose indices
+        idx = torch.randint(0, total, (N,), device=device)
+        img_ids = idx // (H * W)
+        pix_ids = idx %  (H * W)
+
+        ys = self.ys_flat[pix_ids]  # (N,)
+        xs = self.xs_flat[pix_ids]  # (N,)
+
+        # + 0.5 pixel center
+        uvs = torch.stack([xs.float() + 0.5, ys.float() + 0.5], dim=-1)  # (N,2)
+
+        c2w_curr = self.c2w[img_ids]  # (N,4,4)
+
+        ray_o, ray_d = pixel_to_ray(self.K, c2w_curr, uvs)               # (N,3),(N,3)
+        pixels = self.images[img_ids, ys, xs, :]                         # (N,3), in [0,1]
+
+        return ray_o, ray_d, pixels</code></pre>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h4 class="wp-block-heading"><strong>Sampling Points along Rays</strong></h4>
+
+
+
+<p class="wp-block-paragraph">For each ray, I discretize the continuous segment between a near and far bound (\(t \in [2.0, 6.0]\)) into <mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color"><code>nsamples=64</code></mark> bins. I first build bin edges, then either take the midpoint of each bin (no perturbation) or add uniform random noise inside each bin during training (stratified sampling), so that different points along the ray are visited over time. The 3D sample positions are computed as </p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\mathbf{x}(t) = \mathbf{r}_o + t\,\mathbf{r}_d,<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">and I also keep the per-sample interval length <strong>&Delta;t</strong> (stored in <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">deltas</mark></code>) for volume rendering later.</p>
+
+
+<div class="wp-block-code">
+	<div class="cm-editor">
+		<div class="cm-scroller">
+			
+<pre><code><div class="cm-line">def sample_along_rays(ray_o,ray_d, perturb, n_samples = 64, near = 2.0, far = 6.0):</div><div class="cm-line">    device, dtype = ray_o.device, ray_o.dtype</div><div class="cm-line">    B = ray_o.shape[0]</div><div class="cm-line"></div><div class="cm-line">    ray_d = F.normalize(ray_d, dim=-1)    # normalize directions</div><div class="cm-line"></div><div class="cm-line">    # record delta</div><div class="cm-line">    t_edges = torch.linspace(near, far, n_samples + 1, device=device, dtype=dtype)     # (N+1,)</div><div class="cm-line">    deltas_1d = (t_edges[1:] - t_edges[:-1])     # (N,)</div><div class="cm-line"></div><div class="cm-line">    # get the points</div><div class="cm-line">    if perturb:</div><div class="cm-line">        t = t_edges[:-1][None, :] + torch.rand(B, n_samples, device=device, dtype=dtype) * deltas_1d[None, :]</div><div class="cm-line">    else:</div><div class="cm-line">        t = 0.5 * (t_edges[:-1] + t_edges[1:])[None, :].expand(B, n_samples)  # (B,N)</div><div class="cm-line"></div><div class="cm-line">    deltas = deltas_1d[None, :, None].expand(B, n_samples, 1)    # (B,N,1)</div><div class="cm-line">    points = ray_o[:, None, :] + t[:, :, None] * ray_d[:, None, :]    # (B,N,3)</div><div class="cm-line"></div><div class="cm-line">    return points, deltas</div></code></pre>
+		</div>
+	</div>
+</div>
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Part 2.3: Putting the Dataloading All Together</strong></h2>
+
+
+
+<p class="wp-block-paragraph">I wrap the multiview images and camera parameters in a <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">RaysData</mark></code> dataset. In the constructor, I move the RGB images, intrinsics <strong>K</strong>, and camera-to-world matrices <strong>c2w</strong> to a chosen device (&ldquo;cuda&rdquo; on google colab) and normalize all pixel values to [0, 1]. I then precompute the integer pixel grid (x, y) for each image using <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">torch.meshgrid</mark></code>, flatten it into a list of 2D coordinates <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">uvs</mark></code>, and flatten the images into a matching list of RGB colors <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">pixels</mark></code>. </p>
+
+
+
+<p class="wp-block-paragraph">Then I used viser to visualize the rays and sampled points. The first image randomly shows 100 rays, and the second &amp; third images show 100 rays coming from a single image.</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-6 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="814" src="../../../../assets/images/notes/coding/cs280a/2-3-1.png" alt="" class="wp-image-1069"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="797" src="../../../../assets/images/notes/coding/cs280a/2-3-2.png" alt="" class="wp-image-1068"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="1024" height="673" src="../../../../assets/images/notes/coding/cs280a/2-3-4.png" alt="" class="wp-image-1070"></figure>
+</figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Part 2.4: Neural Radiance Field</strong></h2>
+
+
+
+<p class="wp-block-paragraph">I implemented a 3D NeRF-style MLP that takes as input a 3D position <strong>x</strong> and a view direction <strong>d</strong>. Both are first encoded with sinusoidal positional encodings (with \(L_x = 10\) for positions and \(L_d = 4\) for directions). The encoded position passes through several ReLU layers, with a skip connection that concatenates the original encoding back into the middle of the network. I applied the given Neural Network Structure:</p>
+
+
+
+<figure class="wp-block-image aligncenter size-large is-resized"><img loading="lazy" decoding="async" width="1024" height="332" src="../../../../assets/images/notes/coding/cs280a/mlp_nerf.png" alt="" class="wp-image-1075" style="aspect-ratio:3.082703145320553;width:809px;height:auto"></figure>
+
+
+
+<p class="wp-block-paragraph">From this shared feature, one head predicts the <strong>density</strong> \(\sigma(\mathbf{x}) \ge 0\) using a ReLU output, and another head conditions on the encoded view direction to predict the <strong>color</strong> \(\mathbf{c}(\mathbf{x},\mathbf{d}) \in (0,1)^3\) using a final sigmoid. Overall, the network realizes:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>F_\theta(\mathbf{x}, \mathbf{d}) = \big(\mathbf{c}(\mathbf{x},\mathbf{d}),\, \sigma(\mathbf{x})\big)<br>$$</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Part 2.5: Volume Rendering</strong></h2>
+
+
+
+<p class="wp-block-paragraph">Given per-sample density \( \sigma_i \)&#8203;, color \(\mathbf{c}_i\)&#8203;, and interval length \(\delta_i\)&#8203; along each ray, the function <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">volrend</mark></code> first converts densities to opacities:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\alpha_i = 1 &ndash; \exp(-\sigma_i \delta_i)<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">then computes the accumulated transmittance \(T_i\) by multiplying the &ldquo;not yet terminated&rdquo; probabilities along the ray. The final pixel color is obtained as a weighted sum:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\hat{\mathbf{C}}(\mathbf{r}) = \sum_{i=1}^N T_i\,\alpha_i\,\mathbf{c}_i<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">where the weights \(w_i = T_i \alpha_i\) are implemented in code as <code><mark style="background-color:rgba(0, 0, 0, 0);color:#f78da7" class="has-inline-color">weights = T * alpha</mark></code> before summing over all samples.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Training Results</strong></h2>
+
+
+
+<p class="wp-block-paragraph">I train the NeRF model using all training views wrapped in a <code>RaysData</code> dataset. </p>
+
+
+
+<p class="wp-block-paragraph">I use 4000 optimization iterations, sampling 10,000 rays per iteration and 64 points per ray between near and far bounds of 2.0 and 6.0. The NeRF network has width 256 with positional encoding levels 10 for 3D points and 4 for view directions. I optimize with Adam using a learning rate of 5&times;10<sup>&minus;4</sup>. </p>
+
+
+
+<p class="wp-block-paragraph">Below (left) shows the Validation PSNR Curve, which reaches ~26 after 4000 iterations. The training loss (right) curve goes down rapidly at the beginning and became stable in later stage of training.</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-7 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="590" height="390" src="../../../../assets/images/notes/coding/cs280a/2-5-2.png" alt="" class="wp-image-1082"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="589" height="390" src="../../../../assets/images/notes/coding/cs280a/2-5-3.png" alt="" class="wp-image-1081"></figure>
+</figure>
+
+
+
+<p class="wp-block-paragraph">Here is how it looks like during the training process. At iteration 100, the image is still blurry; when it reaches 500 iteration, the overall shape of the Lego appears; as the training continues, the model is learning more high-frequency details and returns a good reconstruction of the image.</p>
+
+
+
+<figure class="wp-block-image aligncenter size-full is-resized"><img loading="lazy" decoding="async" width="950" height="651" src="../../../../assets/images/notes/coding/cs280a/2-5-1.png" alt="" class="wp-image-1080" style="aspect-ratio:1.4593284209010393;width:640px;height:auto"></figure>
+
+
+
+<p class="wp-block-paragraph">Here are the spherical renderings video of the Lego. To prove that the model is working properly, I rendered around multiple rotational axis:</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-8 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="200" height="200" src="../../../../assets/images/notes/coding/cs280a/2-5-5.gif" alt="" class="wp-image-1087"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="200" height="200" src="../../../../assets/images/notes/coding/cs280a/2-5-6.gif" alt="" class="wp-image-1085"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="200" height="200" src="../../../../assets/images/notes/coding/cs280a/2-5-4.gif" alt="" class="wp-image-1086"></figure>
+</figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Part 2.6: Training with your own data</strong></h2>
+
+
+
+<p class="wp-block-paragraph">Here is a GIF of camera circling my object showing novel views:</p>
+
+
+
+<figure class="wp-block-image aligncenter size-full"><img loading="lazy" decoding="async" width="400" height="300" src="../../../../assets/images/notes/coding/cs280a/2-6-3-compress-1.gif" alt="" class="wp-image-1090"></figure>
+
+
+
+<p class="wp-block-paragraph">Here is the training loss and the train PSNR curve. The final loss gets very low, and the train PSNR curve reaches 23. However, the model have problems with over fitting, so it may produce some inaccurate effects in image reconstruction.</p>
+
+
+
+<figure class="wp-block-gallery has-nested-images columns-default is-cropped wp-block-gallery-9 is-layout-flex wp-block-gallery-is-layout-flex">
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="589" height="390" src="../../../../assets/images/notes/coding/cs280a/2-6-6.png" alt="" class="wp-image-1098"></figure>
+
+
+
+<figure class="wp-block-image size-large"><img loading="lazy" decoding="async" width="589" height="390" src="../../../../assets/images/notes/coding/cs280a/2-6-8.png" alt="" class="wp-image-1097"></figure>
+</figure>
+
+
+
+<h4 class="wp-block-heading"><strong>Hyperparameter Changes</strong></h4>
+
+
+
+<p class="wp-block-paragraph">I experimented with different near&ndash;far bounds for volume rendering. Using near=2.0, far=6.0 produced very &ldquo;messy&rdquo; reconstructions with lots of floating artifacts in front of the object. </p>
+
+
+
+<figure class="wp-block-image aligncenter size-large is-resized"><img loading="lazy" decoding="async" width="1024" height="614" src="../../../../assets/images/notes/coding/cs280a/2-6-0.png" alt="" class="wp-image-1093" style="width:470px;height:auto"></figure>
+
+
+
+<p class="wp-block-paragraph">Expanding the range to near=0.04, far=6.0 removed some artifacts but made the result overly blurred, since many samples were wasted on empty space far from the object:</p>
+
+
+
+<figure class="wp-block-image aligncenter size-large is-resized"><img loading="lazy" decoding="async" width="1024" height="628" src="../../../../assets/images/notes/coding/cs280a/2-6-1.png" alt="" class="wp-image-1094" style="aspect-ratio:1.6305825445144073;width:453px;height:auto"></figure>
+
+
+
+<p class="wp-block-paragraph">I finally obtained the best trade-off with near=0.04, far=1.0, and increased the training schedule from 4000 to 6000 iterations to allow the model to fully converge under this tighter depth range. Here is the intermediate renders of the scene during training in the final model:</p>
+
+
+
+<figure class="wp-block-image aligncenter size-full is-resized"><img loading="lazy" decoding="async" width="950" height="583" src="../../../../assets/images/notes/coding/cs280a/2-6-5.png" alt="" class="wp-image-1096" style="aspect-ratio:1.6295462464152664;width:470px;height:auto"></figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<h2 class="wp-block-heading"><strong>Bells &amp; Whistles</strong></h2>
+
+
+
+<p class="wp-block-paragraph">To render a depth map from a given camera pose, I reuse the NeRF volume-rendering weights but replace colors with per-sample depths. For each pixel, I cast a ray, sample 3D points between the near and far bounds, and run the NeRF to obtain densities \(\sigma_i\)&#8203;. These are converted to opacities \(\alpha_i\)&#8203; and accumulated transmittance \(T_i\)&#8203;, giving weights \(w_i = T_i \alpha_i\)&#8203;. Instead of compositing RGB, I compute the Euclidean depth \(d_i = \lVert \mathbf{x}_i - \mathbf{r}_o \rVert_2\)&#8203; for each sample and take a weighted average:</p>
+
+
+
+<p class="wp-block-paragraph">$$<br>\hat{D}(\mathbf{r}) =<br>\frac{\sum_{i=1}^{N} w_i d_i}<br>{\sum_{i=1}^{N} w_i + \varepsilon}<br>$$</p>
+
+
+
+<p class="wp-block-paragraph">I rendered for each frame to create the Lego depth-map gif:</p>
+
+
+
+<figure class="wp-block-image aligncenter size-full is-resized"><img loading="lazy" decoding="async" width="200" height="200" src="../../../../assets/images/notes/coding/cs280a/2-6.gif" alt="" class="wp-image-1113" style="width:280px;height:auto"></figure>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph">.</p>
+
+
+
+<p class="has-text-align-center wp-block-paragraph"><em>END</em></p>
+    </div>
+  </div></main>
+  <footer class="site-footer"><p>&copy; 2026 Shaoyi Wang</p></footer>
+  <script src="../../../../assets/lib/katex/katex.min.js"></script>
+  <script src="../../../../assets/lib/katex/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Display math broken by <br> elements — KaTeX can't match delimiters
+      // across DOM element boundaries, so normalise before rendering.
+      document.querySelectorAll('p').forEach(function(el) {
+        var html = el.innerHTML;
+        if (html.indexOf('$$') === -1 && html.indexOf('\\[') === -1) return;
+        // \[...\] containing <br> — strip the breaks
+        html = html.replace(/\\\[([\s\S]*?)\\\]/g, function(_, c) {
+          return '\\[' + c.replace(/<br\s*\/?>/g, '\n') + '\\]';
+        });
+        // $$...$$ containing <br> — strip breaks and switch to \[...\]
+        html = html.replace(/\$\$([\s\S]*?)\$\$/g, function(_, c) {
+          return c.indexOf('<') === -1
+            ? '$$' + c + '$$'
+            : '\\[' + c.replace(/<br\s*\/?>/g, '\n') + '\\]';
+        });
+        el.innerHTML = html;
+      });
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "\\[", right: "\\]", display: true},
+          {left: "\\(", right: "\\)", display: false},
+          {left: "$",  right: "$",   display: false}
+        ]
+      });
+    });
+  </script>
+
+  <script src="../../../scripts/components.js"></script>
+  <script src="../../../scripts/main.js?v=back-tabs-1"></script>
+</body></html>
