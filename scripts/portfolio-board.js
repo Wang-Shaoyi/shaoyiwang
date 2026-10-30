@@ -37,7 +37,7 @@
     { project: 'res-1', group: 'structure-research' },
     { project: 'res-3', group: 'structure-research' },
     { label: 'Spatial Systems Lab', displayLabel: 'Our Lab', href: 'https://spatial-systems.io/', kind: 'link', group: 'structure-research', external: true },
-    { project: 'res-4', group: 'buildings-research', future: true, estimate: 'est. 2026/11' },
+    { project: 'res-4', group: 'buildings-research' },
     { label: 'Urban', note: 'Future project', group: 'buildings-research', future: true },
     { label: 'Retrofit', note: 'Future project', group: 'buildings-research', future: true },
     { label: 'See all Publications', href: 'pages/publications.html', kind: 'list', accent: 'brand' },

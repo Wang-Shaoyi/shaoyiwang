@@ -10,14 +10,14 @@
 const RESEARCH_PROJECTS = [
   {
     id: 'res-4',
-    published: false,
-    title: 'Inverse Design',
+    published: true,
+    title: 'Inverse Design of Architectural Floorplans',
     category: 'Research',
     categorySlug: 'research',
     featured: false,
-    description: 'An ongoing research project exploring inverse design for architectural systems.',
-    tags: ['Inverse design', 'Computational design'],
-    image: 'assets/images/place_holder.png',
+    description: 'Controllable floorplan synthesis through differentiable binary subdivision.',
+    tags: ['Inverse design', 'Floorplan synthesis'],
+    image: 'assets/images/projects/research/inverse-design/9_result_boundary.png',
     page: 'pages/projects/research/inverse-design.html',
     year: 2026
   },
