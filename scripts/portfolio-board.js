@@ -154,7 +154,7 @@
   }
 
   const recentProjects = projects
-    .filter((project) => project.published !== false && (project.id === 'res-3' || Number(project.year) === 2025))
+    .filter((project) => project.published !== false && (['res-4', 'res-3'].includes(project.id) || Number(project.year) === 2025))
     .sort((a, b) => Number(b.year) - Number(a.year));
   grid.innerHTML = spaces.map(tileMarkup).join('') + `
     <section class="board-center" aria-labelledby="board-recents-heading">

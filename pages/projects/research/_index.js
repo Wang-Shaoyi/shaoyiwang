@@ -14,7 +14,7 @@ const RESEARCH_PROJECTS = [
     title: 'Inverse Design of Architectural Floorplans',
     category: 'Research',
     categorySlug: 'research',
-    featured: false,
+    featured: true,
     description: 'Controllable floorplan synthesis through differentiable binary subdivision.',
     tags: ['Inverse design', 'Floorplan synthesis'],
     image: 'assets/images/projects/research/inverse-design/9_result_boundary.png',
