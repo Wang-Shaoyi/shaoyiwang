@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="Spatial: a Grasshopper plugin, example definitions and related data for architectural floorplan research." />
+  <title>Spatial | Shaoyi Wang</title>
+  <link rel="stylesheet" href="../../../style.css" />
+  <style>
+    .project-video-placeholder {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: var(--text-muted);
+    }
+    .project-body pre {
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body data-root="../../../">
+  <header class="site-header"></header>
+  <main>
+    <div class="container">
+      <div class="project-back"><a href="../../projects.html?filter=app-game">← Back to App &amp; Game</a></div>
+
+      <div class="project-header" style="margin-top:28px">
+        <h1 class="project-title">Spatial</h1>
+        <div class="project-links">
+          <a class="btn" href="https://github.com/Spatial-Lab-Systems/SpatialGH_InverseDesign" target="_blank" rel="noopener noreferrer">download from github↗</a>
+        </div>
+      </div>
+
+      <div class="project-body">
+        <p>This is the software for our research on <a href="https://www.nature.com/articles/s41467-024-52506-z#citeas" target="_blank" rel="noopener noreferrer"><strong>A hypergraph model shows the carbon reduction potential of effective space use in housing</strong></a> and <a href="https://www.sciencedirect.com/science/article/pii/S0926580526005637" target="_blank" rel="noopener noreferrer"><strong>Inverse design of architectural floorplans with gradient-based optimization of binary subdivision graphs</strong></a>.</p>
+        <p>The plugin is available on Rhino 8 with Windows.</p>
+
+        <h2>Tutorial Videos</h2>
+        <h3 id="spatial-basics-video">Spatial basics</h3>
+        <div class="project-video">
+          <!-- Replace this placeholder with the Spatial basics video embed. -->
+          <div class="project-video-placeholder">Video coming soon</div>
+        </div>
+
+        <h3 id="walkthrough-video">Inverse design walkthrough</h3>
+        <div class="project-video">
+          <iframe src="https://www.youtube-nocookie.com/embed/sGq6Yk5CWIo" title="Spatial Grasshopper walkthrough" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+
+        <h2>Installation</h2>
+        <ol>
+          <li>
+            <p><strong>Find your Grasshopper components folder.</strong> In Rhino, open Grasshopper, then go to <code>File &gt; Special Folders &gt; Components Folder</code>. This is normally:</p>
+            <pre><code>%APPDATA%\Grasshopper\Libraries</code></pre>
+            <p>(i.e. <code>C:\Users\&lt;you&gt;\AppData\Roaming\Grasshopper\Libraries</code>).</p>
+          </li>
+          <li>
+            <p><strong>Unblock the files if needed.</strong> If the zip was downloaded from the web, Windows may flag the <code>.zip</code> files as blocked. Right-click on the <code>.zip</code> folder → Properties → check "Unblock" → OK.</p>
+          </li>
+          <li>
+            <p><strong>Unzip the plugin there.</strong> Extract <code>SpatialGH_InverseDesign.zip</code> directly into that <code>Libraries</code> folder, so you end up with:</p>
+            <pre><code>Libraries\SpatialGH_InverseDesign\SpatialGH.gha
+Libraries\SpatialGH_InverseDesign\... (dependency DLLs)</code></pre>
+          </li>
+          <li>
+            <p><strong>Restart Rhino/Grasshopper.</strong> The plugin's components should now appear on the Grasshopper ribbon.</p>
+          </li>
+          <li>
+            <p><strong>Sign in and activate.</strong> Add the <code>Spatial Sign In</code> component and complete the browser sign-in with an activated Spatial account.</p>
+          </li>
+        </ol>
+
+        <h2>Example files</h2>
+        <ul>
+          <li><strong><code>Spatial_basics.gh</code> &amp; <code>Spatial_basics.3dm</code></strong>: walks through the plugin's basic functions, including loading an apartment, basic fitting functions, editing floorplans from our web UI, and fitting furniture. Watch this <a href="#spatial-basics-video">tutorial video</a> to see how it works.</li>
+          <li><strong><code>InverseDesign_walkthrough.gh</code></strong>: walks through the plugin's functionality related to inverse design: the inverse design loop, inverse design with filtering, adding a room, and removing a room. Watch this <a href="#walkthrough-video">tutorial video</a> to see how it works.</li>
+          <li><strong><code>InverseDesign_examples.gh</code> &amp; <code>InverseDesign_examples.3dm</code></strong>: shows the results produced for several different inputs on the same boundary.</li>
+        </ul>
+        <figure class="project-figure">
+          <img src="../../../assets/images/projects/app_game/spatial/floorplan-examples.png" alt="Examples of floorplans with different room configurations" width="1969" height="613" style="height:auto" loading="lazy" decoding="async" />
+        </figure>
+
+
+      </div>
+    </div>
+  </main>
+  <footer class="site-footer"><p>&copy; 2026 Shaoyi Wang</p></footer>
+  <script src="../../../scripts/components.js"></script>
+  <script src="../../../scripts/main.js?v=back-tabs-1"></script>
+</body>
+</html>

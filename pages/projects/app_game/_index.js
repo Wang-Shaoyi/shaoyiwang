@@ -34,5 +34,18 @@ const APP_GAME_PROJECTS = [
     page: 'pages/projects/app_game/innorender.html',
     year: 2024
   },
+  {
+    id: 'app-3',
+    published: false,
+    title: 'Spatial',
+    category: 'App & Game',
+    categorySlug: 'app-game',
+    featured: false,
+    description: 'A Grasshopper plugin for searching, generating and editing floorplans.',
+    tags: ['Design tool development', 'Floorplan generation'],
+    image: 'assets/images/projects/app_game/spatial/floorplan-examples.png',
+    page: 'pages/projects/app_game/spatial.html',
+    year: 2026
+  },
   // ── Add new app & game projects below ────────────────────
 ];
