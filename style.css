@@ -1261,3 +1261,6 @@ body.board-embedded #projects-grid .card-title { font-size: .95rem; line-height:
 body.board-embedded #projects-grid .card-desc { font-size: .78rem; line-height: 1.5; }
 body.board-embedded #projects-grid .card-category { font-size: .65rem; }
 body.board-embedded #projects-grid .tag { font-size: .65rem; padding: 3px 6px; }
+
+/* Keep the graphical abstract fully visible on project cards. */
+.card[data-id="res-4"] .card-thumb img { object-fit: contain; background: #fff; }

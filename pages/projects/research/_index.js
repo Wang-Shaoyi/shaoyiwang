@@ -17,7 +17,7 @@ const RESEARCH_PROJECTS = [
     featured: true,
     description: 'Controllable floorplan synthesis through differentiable binary subdivision.',
     tags: ['Inverse design', 'Floorplan synthesis'],
-    image: 'assets/images/projects/research/inverse-design/9_result_boundary.png',
+    image: 'assets/images/projects/research/inverse-design/graphical-abstract.png',
     page: 'pages/projects/research/inverse-design.html',
     year: 2026
   },
