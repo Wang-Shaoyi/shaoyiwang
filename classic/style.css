@@ -434,7 +434,7 @@ button.tag:hover { background: rgba(143,198,61,0.12); color: var(--mint); border
 
 .pub-item {
   display: grid;
-  grid-template-columns: 56px 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0 20px;
   padding: 20px 0;
   border-bottom: 1px solid var(--border);
@@ -442,6 +442,7 @@ button.tag:hover { background: rgba(143,198,61,0.12); color: var(--mint); border
 }
 
 .pub-item:first-child { border-top: 1px solid var(--border); }
+.pub-item > div { min-width: 0; overflow-wrap: anywhere; }
 
 .pub-year {
   font-size: 0.8rem;
@@ -1203,7 +1204,7 @@ a.skill-badge:hover {
 
 @media (max-width: 480px) {
   .gallery-grid { grid-template-columns: repeat(2, 1fr); }
-  .pub-item { grid-template-columns: 40px 1fr; gap: 0 12px; }
+  .pub-item { grid-template-columns: minmax(0, 1fr); }
   .code-item { flex-direction: column; gap: 6px; }
   .code-links { margin-left: 0; }
 }
