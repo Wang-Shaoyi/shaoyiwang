@@ -200,8 +200,9 @@ function renderPublications(containerId) {
           ? ` <a href="${p.doi}" target="_blank" rel="noopener">${p.doi}</a>`
           : ''}</div>
         <div class="pub-links">
-          ${p.links.map((l) =>
-            `<a class="pub-link${l.style === 'orange' ? ' orange' : ''}" href="${l.url}"${/^https?:\/\//.test(l.url) ? ' target="_blank" rel="noopener"' : ''}>${l.label}</a>`
+          ${p.links.map((l) => l.url
+            ? `<a class="pub-link${l.style === 'orange' ? ' orange' : ''}" href="${l.url}"${/^https?:\/\//.test(l.url) ? ' target="_blank" rel="noopener"' : ''}>${l.label}</a>`
+            : `<span class="pub-link" aria-disabled="true">${l.label}</span>`
           ).join('')}
         </div>
       </div>

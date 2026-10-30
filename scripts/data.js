@@ -16,6 +16,24 @@ const PUBLICATIONS = [
 
   {
     year: '2026',
+    title: 'From Teaching to Teaming: Human-AI Co-Design Environment for Architectural and Structural Design',
+    citation: 'Sun, T., <strong>Wang, S.</strong>, Schleicher, S., &amp; Weber, R. E. (2026). From Teaching to Teaming: Human-AI Co-Design Environment for Architectural and Structural Design. Proceedings of the Association for Computer Aided Design in Architecture (ACADIA).',
+    links: [
+      { label: 'PDF · Coming soon' },
+    ],
+  },
+
+  {
+    year: '2026',
+    title: 'Capturing Structural Intuition: Human-Gated Imitation Learning for Structural Design with Flow Matching',
+    citation: 'Sun, T., <strong>Wang, S.</strong>, Schleicher, S., &amp; Weber, R. E. (2026). Capturing Structural Intuition: Human-Gated Imitation Learning for Structural Design with Flow Matching. Proceedings of the IASS Annual Symposium. International Association for Shell and Spatial Structures.',
+    links: [
+      { label: 'PDF · Coming soon' },
+    ],
+  },
+
+  {
+    year: '2026',
     title: 'Mechanics-Guided Member Grouping for Cross-Section Optimization with Heterogeneous Graphs',
     citation: '<strong>Wang, S.</strong>, Sun, T., Weber, R. E., &amp; Schleicher, S. (2026). Mechanics-Guided Member Grouping for Cross-Section Optimization with Heterogeneous Graphs. Proceedings of IASS-IWSS 2026, Turin, Italy.',
     links: [
