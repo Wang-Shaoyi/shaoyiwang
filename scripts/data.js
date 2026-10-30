@@ -4,6 +4,17 @@
 const PUBLICATIONS = [
 
   {
+    year: '2027',
+    title: 'Inverse design of architectural floorplans with gradient-based optimization of binary subdivision graphs',
+    citation: '<strong>Wang, S.</strong>, &amp; Weber, R. E. (2027). Inverse design of architectural floorplans with gradient-based optimization of binary subdivision graphs. Automation in Construction, 193, 107322.',
+    doi: 'https://doi.org/10.1016/j.autcon.2026.107322',
+    links: [
+      { label: 'Paper', url: 'https://www.sciencedirect.com/science/article/pii/S0926580526005637' },
+      { label: 'Page', url: 'projects/research/inverse-design.html', style: 'orange' },
+    ],
+  },
+
+  {
     year: '2026',
     title: 'Mechanics-Guided Member Grouping for Cross-Section Optimization with Heterogeneous Graphs',
     citation: '<strong>Wang, S.</strong>, Sun, T., Weber, R. E., &amp; Schleicher, S. (2026). Mechanics-Guided Member Grouping for Cross-Section Optimization with Heterogeneous Graphs. Proceedings of IASS-IWSS 2026, Turin, Italy.',
