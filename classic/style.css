@@ -1248,3 +1248,5 @@ a.skill-badge:hover {
 
 /* Keep the graphical abstract fully visible on project cards. */
 .card[data-id="res-4"] .card-thumb img { object-fit: contain; background: #fff; }
+
+.pub-link[aria-disabled="true"] { opacity: .65; pointer-events: none; }

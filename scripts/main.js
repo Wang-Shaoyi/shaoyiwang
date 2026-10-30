@@ -17,7 +17,7 @@ if (_embeddedInBoard) {
     const link = event.target.closest('a[href]');
     if (!link || link.target === '_blank') return;
     const destination = new URL(link.href, location.href);
-    if (destination.href === new URL(_root + 'index.html', location.href).href || destination.pathname.endsWith('/board-preview.html')) {
+    if (destination.href === new URL(_root + 'monopoly.html', location.href).href || destination.pathname.endsWith('/board-preview.html')) {
       event.preventDefault();
       window.parent.postMessage({ type: 'portfolio-board-back' }, '*');
     } else if (destination.origin === location.origin && /\.html$/.test(destination.pathname)) {
@@ -40,7 +40,7 @@ while (_textWalker.nextNode()) {
 
 // Every content page returns to the portfolio board.
 document.querySelectorAll('.project-back a').forEach((a) => {
-  a.href = _root + 'index.html';
+  a.href = _root + 'monopoly.html';
   a.textContent = 'BACK';
 });
 

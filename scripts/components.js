@@ -39,7 +39,7 @@
       const back = document.createElement('div');
       back.className = 'project-back';
       const link = document.createElement('a');
-      link.href = root + 'index.html';
+      link.href = root + 'monopoly.html';
       link.textContent = 'BACK';
       back.append(link);
       container.prepend(back);
